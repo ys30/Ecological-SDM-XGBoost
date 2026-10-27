@@ -4,16 +4,16 @@ An end-to-end **environmental machine-learning workflow** for species presence/a
 
 ## Why this project matters
 
-Species distribution models connect ecological observations with environmental conditions. This project demonstrates a reproducible workflow for moving from exploratory analysis and baseline models to spatial cross-validation, XGBoost tuning, model evaluation, and final prediction.
+Species distribution models connect ecological observations with environmental conditions. This project demonstrates a reproducible workflow for moving from exploratory analysis and baseline models to feature-subset comparisons, XGBoost tuning, model evaluation, and final prediction.
 
 **Focus:** ecological analytics · environmental predictors · spatial modeling · machine learning  
-**Tools:** R · XGBoost · caret · spatial cross-validation
+**Tools:** R · XGBoost · caret · ecological/spatial predictors
 
 ## Analytical workflow
 
 1. **Explore and validate the data** — inspect distributions, missingness, class balance, and candidate predictors.
 2. **Establish baselines** — compare logistic-regression and random-forest baselines before tuning a more complex model.
-3. **Build feature sets and spatial CV** — organize predictors and use spatially aware validation to reduce overly optimistic performance estimates caused by spatial dependence.
+3. **Compare environmental and geographic feature sets** — evaluate environmental-only, coordinate-only, and combined predictors. The inspected script uses `train_train` and `train_val` partitions; **a geographically blocked validation protocol is not established by that code excerpt**, notwithstanding the filename `01_feature_sets_and_spatial_cv.R`.
 4. **Tune XGBoost** — search model hyperparameters with cross-validation.
 5. **Evaluate performance** — assess predictive performance using classification metrics including Accuracy, Precision, F1, AUC, and Log-loss.
 6. **Train and predict** — fit the selected workflow and generate final predictions.
@@ -40,10 +40,14 @@ results/
 - Environmental and ecological data preprocessing
 - Binary species presence/absence modeling
 - Baseline-to-ML model comparison
-- Spatially aware cross-validation
+- Environmental-versus-coordinate feature comparisons; spatial blocking requires separate verification
 - XGBoost hyperparameter tuning
 - Multi-metric model evaluation
 - Reproducible R analysis organized as a sequential pipeline
+
+## Evaluation caveat
+
+A model's AUC/log-loss on a held-out partition should not be labeled spatially independent unless folds are created by geographic groups or blocks. Numerical comparison claims should be sourced from saved evaluation outputs; the currently committed `results/submission_xgb_tuned.csv` is a prediction/submission artifact, not by itself a cross-validation results table.
 
 ## Reproduce the workflow
 
