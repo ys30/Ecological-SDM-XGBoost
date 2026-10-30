@@ -166,6 +166,14 @@ The [geographic validation script](scripts/07_longitude_block_cv.R) partitions w
 **Audit files:** [Per-fold metrics](results/longitude_block_cv_metrics.csv) · [Summary](results/longitude_block_cv_summary.csv) · [Out-of-fold predictions](results/longitude_block_cv_predictions.csv).
 
 
+## Matched-feature protocol comparison
+
+[![Matched protocol comparison](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-protocols.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-protocols.yml)
+
+To reduce confounding from different feature sets and boosting configurations, the [matched comparison script](scripts/08_matched_protocol_comparison.R) fits the **same environmental/taxon predictors** with **the same fixed 300-round XGBoost settings** under two evaluation protocols: one random plot-level holdout and five longitude-band holdouts. Neither protocol uses geographic coordinates as predictors.
+
+**Pending automated execution:** [Per-fold metrics](results/matched_protocol_metrics.csv), [summary](results/matched_protocol_summary.csv), and the comparison chart will be linked after output verification. This comparison still differs in training/validation proportions (80/20 vs four of five geographic bands), and a single random plot holdout does not characterize split-to-split uncertainty.
+
 ## Technical judgment & next steps
 
 - **Spatial leakage:** Records can share plots. Current code shows random/stratified validation; plot-grouped and spatially blocked holdouts are needed before claiming transfer to new geographic locations. A script filename mentioning spatial CV is not evidence that blocking was implemented.
