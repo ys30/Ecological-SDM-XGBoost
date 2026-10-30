@@ -104,12 +104,21 @@ scripts/
   03_evaluate_tuned_xgboost.R
   04_train_full_cv_nrounds_predict.R
   05_export_portfolio_figures.R
+  06_evaluate_plot_holdout.R
 results/
   RESULTS_AND_INTERPRETATION.md
   submission_xgb_tuned.csv
 ```
 
 Run the numbered scripts from the repository root with the packages used in each script installed. The code covers exploratory analysis, baseline fitting, feature-set comparisons, tuning, validation, and probability export. **Historical results are not yet accompanied by a complete saved, machine-readable validation benchmark**, so exact numerical reproduction remains a work item.
+
+## New experiment: plot-grouped holdout evaluation
+
+[![Evaluate SDM plot-held-out XGBoost](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-xgboost.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-xgboost.yml)
+
+A new [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) partitions the data by **plot ID**, so no plot occurs in both model fitting and held-out evaluation. Boosting rounds are selected with **plot-grouped internal cross-validation**, followed by evaluation on previously unseen plots. This is a separate experiment from the historical random-split validation and is **not equivalent to geographic-block extrapolation**.
+
+Once the workflow successfully publishes its output, review [plot-held-out metrics](results/plot_holdout_metrics.csv), [validation predictions](results/plot_holdout_predictions.csv), and [feature importance](results/plot_holdout_feature_importance.csv). The corresponding ROC, precision–recall, and importance PNGs are written to `results/figures/06_*`, `07_*`, and `08_*`. **Do not treat these outputs as available or report their values until the workflow completes successfully.**
 
 ## Technical judgment & next steps
 
