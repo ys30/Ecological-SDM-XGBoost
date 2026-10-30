@@ -226,13 +226,30 @@ The [spatial audit script](scripts/10_spatial_holdout_maps.R) joins plot-held-ou
 
 **Data integrity:** These are observed-location point maps, **not** interpolated habitat suitability surfaces or predictions over unsampled territory. No basemap boundaries or land-cover data are inferred. [Download the row-level spatial audit CSV](results/spatial_holdout_audit.csv) to trace plotted predictions to coordinates, species, and actual occurrence labels.
 
-## Two-dimensional spatial-block cross-validation
+## Two-dimensional spatial-block cross-validation — verified
 
 [![2D spatial-block CV](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-spatial-2d.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-spatial-2d.yml)
 
-The [2D spatial-block script](scripts/11_spatial_2d_block_cv.R) builds a 4 × 4 quantile grid from observed plot longitude/latitude, assigns **whole grid cells** to five deterministic folds, and evaluates geographic transfer using the same environmental/taxon features and fixed 300-round XGBoost configuration as the longitude-band benchmark. Fold assignments and individual out-of-fold predictions are exported for auditing.
+The [2D spatial-block script](scripts/11_spatial_2d_block_cv.R) uses a **4 × 4 quantile grid** of observed plot longitude/latitude (16 occupied blocks), assigning complete blocks and plots to five folds. Each fold fits the same environmental/taxon features and fixed 300-round XGBoost settings as the longitude-band study; geographic coordinates are excluded as predictors.
 
-**Status:** Automated workflow configured; numerical results and two figures are pending verified publication. This quantile-grid design is not a metric-distance buffered spatial CV; some training and validation grid cells may be adjacent. The 2D folds and longitude-band folds differ in composition, so their metrics should be interpreted descriptively.
+**Verified five-fold mean:** ROC AUC **0.9072** (SD **0.0210**), average precision **0.4386**, log loss **0.1823**, and recall at 0.5 **0.2543**.
+
+| Held-out 2D spatial fold | Plots | Presence prevalence | ROC AUC | Average precision | Recall at 0.5 |
+|---|---:|---:|---:|---:|---:|
+| 1 | 237 | 7.01% | 0.8912 | 0.3657 | 0.3609 |
+| 2 | 234 | 8.92% | 0.9364 | 0.5822 | 0.2575 |
+| 3 | 234 | 9.51% | 0.8850 | 0.4128 | 0.2584 |
+| 4 | 229 | 7.26% | 0.9040 | 0.3695 | 0.2331 |
+| 5 | 233 | 7.30% | 0.9194 | 0.4626 | 0.1618 |
+
+![Audited 2D spatial-block assignments](results/figures/16_spatial_2d_block_assignments.png)
+
+![ROC AUC across 2D spatial holdout folds](results/figures/17_spatial_2d_block_auc.png)
+
+**Interpretation:** The 2D block mean ROC AUC (0.9072) lies between the longitude-band mean (0.8895) and the single matched-feature random plot holdout (0.9289). These are **descriptive, non-paired comparisons** with different held-out regions; they do not establish statistical significance or causality. The grid uses latitude/longitude quantiles rather than equal-distance buffered geographic blocks, and training/validation regions may be adjacent. Positive-class recall varies considerably across folds.
+
+**Audit files:** [Fold metrics](results/spatial_2d_block_cv_metrics.csv) · [Summary](results/spatial_2d_block_cv_summary.csv) · [Fold diagnostics](results/spatial_2d_block_fold_diagnostics.csv) · [Plot/block assignments](results/spatial_2d_block_assignments.csv) · [Out-of-fold predictions](results/spatial_2d_block_cv_predictions.csv).
+
 
 ## Technical judgment & next steps
 
