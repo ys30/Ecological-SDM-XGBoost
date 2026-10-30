@@ -4,13 +4,22 @@
 
 [**Results & technical interpretation**](results/RESULTS_AND_INTERPRETATION.md) · [**Portfolio**](https://ys30.github.io/)
 
-## At a glance
+## At a glance — reproducible evidence
 
-| Dataset | Modeling | Best reported validation result |
-|---|---|---|
-| 9,336 labeled species–plot records; 8 tree species | Logistic regression → Random forest → XGBoost | **ROC AUC 0.9396 · Log loss 0.1693** |
+**9,336 labeled species–plot records · 1,167 plots · 8 tree species · 8.0% observed presences.** The central question is how well ecological occurrence models generalize when validation separates plots or geographic regions.
 
-> **Evidence note:** These are historical **validation** scores documented in the research report, not independently reproduced benchmark results or scores on the unlabeled test set. The dataset has **8.0% positive observations**, making minority-class recall and probabilistic evaluation particularly important.
+| Validation design | ROC AUC | Average precision | Protocol |
+|---|---:|---:|---|
+| Plot-grouped holdout | **0.9377** | **0.6276** | 234 held-out plots; includes geographic coordinates; training-only CV selected 500 rounds |
+| Matched-feature random plot holdout | **0.9289** | **0.5767** | One random plot split; environmental + taxon predictors, 300 rounds |
+| Longitude-band spatial CV | **0.8895** | **0.4474** | Mean across five geographic bands; environmental + taxon predictors, 300 rounds |
+| Two-dimensional spatial-block CV | **0.9072** | **0.4386** | Mean across five spatial folds; environmental + taxon predictors, 300 rounds |
+
+**Comparison rule:** Only the last three rows use matched feature sets and fixed boosting budgets. They are still not paired experiments; the random result is a single holdout, while spatial results are unweighted fold means. The plot-grouped result uses a different feature set and training protocol, so its higher score must not be interpreted as a controlled estimate of spatial leakage.
+
+**Ecological decision insight:** On the plot-grouped holdout, the 0.50 classification threshold detects only **36.9%** of observed presences. The ROC AUC therefore does not imply equally strong presence detection. Calibration and alternative thresholds are analyzed as exploratory diagnostics, not independently validated threshold optimization.
+
+**Historical report, distinct from reproducible evaluations:** A previously reported random-split ROC AUC of **0.9396** and log loss of **0.1693** remain documented below as historical validation figures. They are not independent external-test results and are not presented as the headline benchmark.
 
 ## Problem & approach
 
@@ -105,12 +114,22 @@ scripts/
   04_train_full_cv_nrounds_predict.R
   05_export_portfolio_figures.R
   06_evaluate_plot_holdout.R
+  07_longitude_block_cv.R
+  08_matched_protocol_comparison.R
+  09_calibration_thresholds.R
+  10_spatial_holdout_maps.R
+  11_spatial_2d_block_cv.R
 results/
   RESULTS_AND_INTERPRETATION.md
+  plot_holdout_metrics.csv
+  longitude_block_cv_summary.csv
+  matched_protocol_summary.csv
+  spatial_2d_block_cv_summary.csv
+  spatial_2d_block_fold_diagnostics.csv
   submission_xgb_tuned.csv
 ```
 
-Run the numbered scripts from the repository root with the packages used in each script installed. The code covers exploratory analysis, baseline fitting, feature-set comparisons, tuning, validation, and probability export. **Historical results are not yet accompanied by a complete saved, machine-readable validation benchmark**, so exact numerical reproduction remains a work item.
+Run the numbered scripts from the repository root with the packages used in each script installed. The code covers exploratory analysis, baseline fitting, feature-set comparisons, tuning, validation, and probability export. **Historical report scores** have not been independently reconstructed under an identical archived protocol. In contrast, the newer plot-grouped, longitude-band, matched-feature, and 2D spatial-block experiments provide saved machine-readable metrics, predictions, and reproducible scripts.
 
 ## Plot-grouped holdout evaluation — verified results
 
@@ -251,13 +270,14 @@ The [2D spatial-block script](scripts/11_spatial_2d_block_cv.R) uses a **4 × 4 
 **Audit files:** [Fold metrics](results/spatial_2d_block_cv_metrics.csv) · [Summary](results/spatial_2d_block_cv_summary.csv) · [Fold diagnostics](results/spatial_2d_block_fold_diagnostics.csv) · [Plot/block assignments](results/spatial_2d_block_assignments.csv) · [Out-of-fold predictions](results/spatial_2d_block_cv_predictions.csv).
 
 
-## Technical judgment & next steps
+## Scientific limitations and reproducibility audit
 
-- **Spatial leakage:** Records can share plots. Current code shows random/stratified validation; plot-grouped and spatially blocked holdouts are needed before claiming transfer to new geographic locations. A script filename mentioning spatial CV is not evidence that blocking was implemented.
-- **Rare-presence detection:** Evaluate precision–recall AUC, sensitivity, F1, and calibration alongside ROC AUC and log loss; choose decision thresholds according to survey or conservation costs.
-- **Ablation design:** Separate the incremental contributions of species identity, environmental predictors, and coordinates through controlled feature ablations.
-- **Reproducibility:** Save validation predictions, folds, seeds, model parameters, metrics, and generated figures; verify temperature scaling and coordinate reference system.
-- **Explainability:** Add species-specific partial dependence/SHAP diagnostics, checking correlated-predictor limitations before ecological interpretation.
+- **Validation unit and spatial dependence:** The new holdout and spatial CV protocols separate plot IDs; longitude bands and 2D grid cells are implemented and audited. The 2D design uses latitude/longitude quantiles and may place training cells adjacent to validation cells. Neither spatial design is a distance-buffered test or an independent external dataset.
+- **Comparability:** The 0.9377 plot-held-out ROC AUC includes coordinates and training-side CV-selected rounds, unlike the matched-feature 300-round comparison. The random-vs-spatial contrasts are descriptive, not paired statistical significance tests.
+- **Class imbalance and decision thresholds:** Overall prevalence is about 8%. Positive-class recall remains modest and varies by geographic fold. The holdout threshold sweep reuses the evaluation labels, so the observed F1 maximum at 0.30 is exploratory and **not** a deployment-ready threshold.
+- **Data semantics:** Verify original temperature scaling and projected coordinate reference system before assigning physical units or presenting continuous geographic suitability surfaces. Existing geographic figures map observed sample coordinates only.
+- **Historical versus reproduced evidence:** Legacy model-comparison figures are retained as historical reported results. Newer validated outputs are linked to their scripts and CSV files; no unlabeled test-set score or external validation is claimed.
+- **Scope:** Species-specific model benchmarking, SHAP/partial-dependence, and buffered spatial CV are optional future research extensions, not prerequisites for this completed portfolio case study.
 
 ## Relevance to environmental & climate data science
 
