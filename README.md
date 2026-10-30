@@ -56,6 +56,18 @@ The historical gain-based feature-importance plot ranked **annual temperature, l
 
 For tables, methodology notes, figure inventory, and limitations, see [Results and interpretation](results/RESULTS_AND_INTERPRETATION.md).
 
+## Portfolio-ready figures
+
+A standalone [figure-export script](scripts/05_export_portfolio_figures.R) creates five data-derived PNGs (class balance, species counts, environmental histograms, faceted coordinate box plots, and numeric correlation heatmap), plus recalculated species counts and numeric correlations. **The script is committed, but its PNG outputs have not yet been generated or checked in.** It avoids treating species identity as observed pairwise co-occurrence.
+
+Run from the repository root:
+
+```bash
+Rscript scripts/05_export_portfolio_figures.R
+```
+
+After execution, the figures are saved under `results/figures/`. This step requires R and the `ggplot2`, `dplyr`, and `tidyr` packages. Validate the outputs before publishing ecological interpretations.
+
 ## Reproducible workflow
 
 ```text
@@ -69,6 +81,7 @@ scripts/
   02_tune_xgboost_caret.R
   03_evaluate_tuned_xgboost.R
   04_train_full_cv_nrounds_predict.R
+  05_export_portfolio_figures.R
 results/
   RESULTS_AND_INTERPRETATION.md
   submission_xgb_tuned.csv
