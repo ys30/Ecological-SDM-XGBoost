@@ -1,0 +1,38 @@
+name: Build SDM portfolio figures
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "data/train.csv"
+      - "scripts/05_export_portfolio_figures.R"
+      - ".github/workflows/build-sdm-figures.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  figures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::ggplot2
+            any::dplyr
+            any::tidyr
+      - name: Generate figures and summaries
+        run: Rscript scripts/05_export_portfolio_figures.R
+      - name: Commit generated results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/figures/ results/species_summary_recomputed.csv results/numeric_correlations.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate data-derived SDM portfolio figures"
+            git push
+          fi
