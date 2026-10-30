@@ -56,21 +56,39 @@ The historical gain-based feature-importance plot ranked **annual temperature, l
 
 For tables, methodology notes, figure inventory, and limitations, see [Results and interpretation](results/RESULTS_AND_INTERPRETATION.md).
 
-## Portfolio-ready figures
+## Exploratory analysis — generated from training data
 
-[![Build SDM portfolio figures](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-figures.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-figures.yml)
+The following figures are generated from the repository's labeled training CSV, rather than illustrative or simulated data.
 
-The [GitHub Actions workflow](.github/workflows/build-sdm-figures.yml) runs the figure script on changes to its inputs, and can also be started with **Run workflow**. It attempts to commit generated PNGs and CSV summaries back to the repository (requires Actions write permissions). Once the run succeeds, browse [generated figures](results/figures/) and [recomputed species summary](results/species_summary_recomputed.csv).
+### Class imbalance and species-specific occurrence
 
-A standalone [figure-export script](scripts/05_export_portfolio_figures.R) creates five data-derived PNGs (class balance, species counts, environmental histograms, faceted coordinate box plots, and numeric correlation heatmap), plus recalculated species counts and numeric correlations. **Generated files should be considered available only after a successful workflow run; the workflow has been configured, not yet verified as successful.** It avoids treating species identity as observed pairwise co-occurrence.
+![Presence and absence distribution](results/figures/01_class_balance.png)
 
-Run from the repository root:
+![Observed presence and absence by species](results/figures/02_species_counts.png)
+
+Only **8.0%** of labeled observations are presences. Per-species prevalence varies substantially, so the high overall accuracy of a presence classifier must be interpreted alongside minority-class recall. These counts describe **species-specific records**, not verified pairwise co-occurrence.
+
+### Environmental and geographic feature distributions
+
+![Environmental predictor distributions](results/figures/03_environmental_distributions.png)
+
+![Spatial coordinate distributions](results/figures/04_spatial_boxplots.png)
+
+The faceted plots use separate axes for predictors measured on different scales. Temperature scaling and projected coordinate reference system remain to be confirmed before assigning physical units.
+
+### Predictor correlations
+
+![Numeric predictor correlations](results/figures/05_predictor_correlations.png)
+
+The matrix includes continuous environmental and coordinate variables, excluding numeric codes for categorical attributes. High correlations between geographic coordinate representations should be considered when interpreting feature importance.
+
+**Reproducibility:** [R figure script](scripts/05_export_portfolio_figures.R) · [Automated GitHub workflow](.github/workflows/build-sdm-figures.yml) · [Species summary CSV](results/species_summary_recomputed.csv) · [Correlation CSV](results/numeric_correlations.csv).
+
+Run locally from the repository root:
 
 ```bash
 Rscript scripts/05_export_portfolio_figures.R
 ```
-
-After execution, the figures are saved under `results/figures/`. This step requires R and the `ggplot2`, `dplyr`, and `tidyr` packages. Validate the outputs before publishing ecological interpretations.
 
 ## Reproducible workflow
 
