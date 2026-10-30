@@ -141,6 +141,14 @@ The [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) holds out
 **Reproducible outputs:** [Metrics](results/plot_holdout_metrics.csv) · [Per-record predictions](results/plot_holdout_predictions.csv) · [Full feature importance](results/plot_holdout_feature_importance.csv) · [Evaluation script](scripts/06_evaluate_plot_holdout.R).
 
 
+## Geographic transfer stress test — longitude-block CV
+
+[![Geographic longitude-block CV](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml)
+
+The [geographic validation script](scripts/07_longitude_block_cv.R) assigns whole plots to five consecutive longitude bands, fits XGBoost on four bands, and evaluates on the unseen band. Coordinates are deliberately **excluded as model features**; the resulting performance reflects a distinct environmental/taxon feature set. Each band reports ROC AUC, average precision, log loss, recall, and prevalence, with per-record predictions saved for auditing.
+
+**Status:** Automated experiment configured; numerical results and maps/figures must not be reported until the [workflow](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml) succeeds and outputs are verified. This is a longitude-band extrapolation stress test, **not** full 2D spatial-block CV or independent external validation.
+
 ## Technical judgment & next steps
 
 - **Spatial leakage:** Records can share plots. Current code shows random/stratified validation; plot-grouped and spatially blocked holdouts are needed before claiming transfer to new geographic locations. A script filename mentioning spatial CV is not evidence that blocking was implemented.
