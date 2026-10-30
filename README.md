@@ -58,7 +58,11 @@ For tables, methodology notes, figure inventory, and limitations, see [Results a
 
 ## Portfolio-ready figures
 
-A standalone [figure-export script](scripts/05_export_portfolio_figures.R) creates five data-derived PNGs (class balance, species counts, environmental histograms, faceted coordinate box plots, and numeric correlation heatmap), plus recalculated species counts and numeric correlations. **The script is committed, but its PNG outputs have not yet been generated or checked in.** It avoids treating species identity as observed pairwise co-occurrence.
+[![Build SDM portfolio figures](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-figures.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-figures.yml)
+
+The [GitHub Actions workflow](.github/workflows/build-sdm-figures.yml) runs the figure script on changes to its inputs, and can also be started with **Run workflow**. It attempts to commit generated PNGs and CSV summaries back to the repository (requires Actions write permissions). Once the run succeeds, browse [generated figures](results/figures/) and [recomputed species summary](results/species_summary_recomputed.csv).
+
+A standalone [figure-export script](scripts/05_export_portfolio_figures.R) creates five data-derived PNGs (class balance, species counts, environmental histograms, faceted coordinate box plots, and numeric correlation heatmap), plus recalculated species counts and numeric correlations. **Generated files should be considered available only after a successful workflow run; the workflow has been configured, not yet verified as successful.** It avoids treating species identity as observed pairwise co-occurrence.
 
 Run from the repository root:
 
