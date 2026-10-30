@@ -1,0 +1,2 @@
+"model","train_rows","validation_rows","train_plots","validation_plots","best_nrounds","roc_auc","average_precision","log_loss","precision","recall","specificity","f1","tp","fp","tn","fn"
+"XGBoost_plot_grouped_holdout",7464,1872,933,234,500,0.937692124972055,0.627649971649243,0.165268637449009,0.720930232558139,0.369047619047619,0.985915492957746,0.488188976377953,62,24,1680,106
