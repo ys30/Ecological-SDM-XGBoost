@@ -186,13 +186,29 @@ The [matched comparison script](scripts/08_matched_protocol_comparison.R) evalua
 **Audit files:** [Protocol-level results](results/matched_protocol_metrics.csv) · [Summary](results/matched_protocol_summary.csv) · [Reproducible script](scripts/08_matched_protocol_comparison.R).
 
 
-## Probability calibration and decision-threshold sensitivity
+## Probability calibration and decision-threshold sensitivity — verified
 
 [![SDM calibration diagnostics](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-calibration.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-calibration.yml)
 
-The [calibration script](scripts/09_calibration_thresholds.R) analyzes the **existing plot-held-out predictions** without retraining. It computes the Brier score against a prevalence-only baseline, a 10-bin reliability diagram, and precision/recall/F1 across decision thresholds from 0.05 to 0.95.
+The [calibration script](scripts/09_calibration_thresholds.R) analyzes **1,872 existing plot-held-out predictions** without retraining. The observed prevalence is **8.97%**, while the mean predicted probability is **7.70%**. Brier score is **0.0498**, versus **0.0817** for a constant prediction equal to the validation prevalence (a descriptive benchmark, not an independently estimated deployment baseline). The highest predicted-risk decile has mean predicted probability **48.1%** versus **58.5%** observed presence, suggesting underprediction in this bin.
 
-**Status:** Workflow configured; calibration numbers and plots are pending verified execution. The threshold sweep is **exploratory**: selecting a threshold on this holdout and reporting its performance on the same holdout would be optimistically biased. Operational thresholds should be selected with separate validation data or nested cross-validation.
+![Plot-held-out probability calibration](results/figures/12_plot_holdout_calibration.png)
+
+The fixed holdout also supports an **exploratory** threshold sensitivity analysis:
+
+| Probability threshold | Precision | Recall | F1 | False negatives |
+|---|---:|---:|---:|---:|
+| 0.10 | 0.424 | 0.869 | 0.570 | 22 |
+| 0.20 | 0.498 | 0.720 | 0.589 | 47 |
+| 0.30 | 0.599 | 0.631 | 0.614 | 62 |
+| 0.50 | 0.721 | 0.369 | 0.488 | 106 |
+
+![Exploratory precision recall and F1 by threshold](results/figures/13_plot_holdout_thresholds.png)
+
+**Decision implication:** The default 0.50 threshold misses many observed occurrences; lower thresholds trade additional false positives for fewer missed presences. Among the **evaluated 0.05-step grid**, 0.30 gives the largest observed F1, **but this is not an independently validated optimal threshold**. Threshold selection and evaluation on the same holdout would bias performance upward. For deployment, choose thresholds on separate training-side validation data, then test once on an untouched holdout. Reliability-bin Wald intervals are descriptive and can be unreliable at very low event counts.
+
+**Audit files:** [Calibration summary](results/plot_holdout_calibration_summary.csv) · [Reliability bins](results/plot_holdout_calibration_bins.csv) · [Threshold sensitivity](results/plot_holdout_threshold_sensitivity.csv).
+
 
 ## Technical judgment & next steps
 
