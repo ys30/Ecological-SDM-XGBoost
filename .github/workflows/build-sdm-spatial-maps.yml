@@ -1,0 +1,58 @@
+name: SDM spatial holdout figures
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/10_spatial_holdout_maps.R"
+      - ".github/workflows/build-sdm-spatial-maps.yml"
+      - "results/plot_holdout_predictions.csv"
+permissions:
+  contents: write
+concurrency:
+  group: sdm-spatial-maps-publication
+  cancel-in-progress: false
+jobs:
+  maps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::ggplot2
+      - name: Build observed-coordinate maps
+        run: Rscript scripts/10_spatial_holdout_maps.R
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdm-spatial-holdout
+          path: |
+            results/spatial_holdout_audit.csv
+            results/figures/14_*.png
+            results/figures/15_*.png
+          if-no-files-found: warn
+      - name: Publish maps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/sdm-spatial
+          cp results/spatial_holdout_audit.csv results/figures/14_*.png results/figures/15_*.png /tmp/sdm-spatial/
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p results/figures
+            cp /tmp/sdm-spatial/*.csv results/
+            cp /tmp/sdm-spatial/*.png results/figures/
+            git add results/spatial_holdout_audit.csv results/figures/14_*.png results/figures/15_*.png
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Publish observed-coordinate spatial holdout figures"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
