@@ -38,7 +38,27 @@ params <- list(objective="binary:logistic", eval_metric="logloss",
 cv <- xgb.cv(params=params, data=xgb.DMatrix(x[tr,,drop=FALSE],label=y[tr]),
              nrounds=500, folds=folds, early_stopping_rounds=25,
              verbose=0)
+# XGBoost R releases differ in whether best_iteration is populated.
+# Prefer explicit best_iteration; otherwise use the minimum CV test logloss.
 best_round <- cv$best_iteration
+if (is.null(best_round) || length(best_round) != 1L ||
+    !is.finite(best_round) || best_round < 1) {
+  ev <- as.data.frame(cv$evaluation_log)
+  score_col <- grep("test.*logloss.*mean", names(ev), value = TRUE)
+  if (length(score_col) != 1L) {
+    stop("Cannot identify test logloss column in xgb.cv evaluation_log: ",
+         paste(names(ev), collapse = ", "))
+  }
+  scores <- as.numeric(ev[[score_col]])
+  if (!length(scores) || all(!is.finite(scores))) {
+    stop("Cross-validation produced no finite test logloss scores")
+  }
+  best_round <- which.min(replace(scores, !is.finite(scores), Inf))
+  if ("iter" %in% names(ev)) best_round <- as.integer(ev$iter[best_round])
+}
+best_round <- as.integer(best_round)
+stopifnot(length(best_round) == 1L, !is.na(best_round), best_round >= 1L)
+cat("Selected boosting rounds:", best_round, "\n")
 set.seed(44)
 fit <- xgb.train(params=params, data=xgb.DMatrix(x[tr,,drop=FALSE],label=y[tr]),
                  nrounds=best_round, verbose=0)
