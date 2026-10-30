@@ -1,0 +1,2 @@
+"folds","mean_roc_auc","sd_roc_auc","mean_average_precision","mean_log_loss","pooled_prevalence","n_missing_fold_auc"
+5,0.889535182494132,0.041511098854191,0.447421359825107,0.189524763272377,0.080012853470437,0
