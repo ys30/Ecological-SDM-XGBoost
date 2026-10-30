@@ -29,6 +29,18 @@ jobs:
             any::pROC
       - name: Evaluate plot-held-out model
         run: Rscript scripts/06_evaluate_plot_holdout.R
+      - name: Upload evaluation outputs for debugging
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdm-plot-holdout-evaluation
+          path: |
+            results/plot_holdout_*.csv
+            results/figures/06_*.png
+            results/figures/07_*.png
+            results/figures/08_*.png
+          if-no-files-found: warn
+          retention-days: 30
       - name: Publish metrics and figures
         run: |
           git config user.name "github-actions[bot]"
