@@ -1,0 +1,60 @@
+name: SDM 2D spatial block cross-validation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/11_spatial_2d_block_cv.R"
+      - ".github/workflows/evaluate-sdm-spatial-2d.yml"
+      - "data/train.csv"
+permissions:
+  contents: write
+concurrency:
+  group: sdm-spatial-2d-publication
+  cancel-in-progress: false
+jobs:
+  spatial-2d:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::xgboost
+            any::ggplot2
+            any::pROC
+      - name: Evaluate 2D spatial folds
+        run: Rscript scripts/11_spatial_2d_block_cv.R
+      - name: Upload spatial CV artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdm-spatial-2d-cv
+          path: |
+            results/spatial_2d_block_*.csv
+            results/figures/16_*.png
+            results/figures/17_*.png
+          if-no-files-found: warn
+      - name: Publish verified outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/sdm-2d
+          cp results/spatial_2d_block_*.csv results/figures/16_*.png results/figures/17_*.png /tmp/sdm-2d/
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p results/figures
+            cp /tmp/sdm-2d/*.csv results/
+            cp /tmp/sdm-2d/*.png results/figures/
+            git add results/spatial_2d_block_*.csv results/figures/16_*.png results/figures/17_*.png
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Publish 2D spatial-block validation outputs"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
