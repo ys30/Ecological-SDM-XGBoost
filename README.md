@@ -186,6 +186,14 @@ The [matched comparison script](scripts/08_matched_protocol_comparison.R) evalua
 **Audit files:** [Protocol-level results](results/matched_protocol_metrics.csv) · [Summary](results/matched_protocol_summary.csv) · [Reproducible script](scripts/08_matched_protocol_comparison.R).
 
 
+## Probability calibration and decision-threshold sensitivity
+
+[![SDM calibration diagnostics](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-calibration.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-calibration.yml)
+
+The [calibration script](scripts/09_calibration_thresholds.R) analyzes the **existing plot-held-out predictions** without retraining. It computes the Brier score against a prevalence-only baseline, a 10-bin reliability diagram, and precision/recall/F1 across decision thresholds from 0.05 to 0.95.
+
+**Status:** Workflow configured; calibration numbers and plots are pending verified execution. The threshold sweep is **exploratory**: selecting a threshold on this holdout and reporting its performance on the same holdout would be optimistically biased. Operational thresholds should be selected with separate validation data or nested cross-validation.
+
 ## Technical judgment & next steps
 
 - **Spatial leakage:** Records can share plots. Current code shows random/stratified validation; plot-grouped and spatially blocked holdouts are needed before claiming transfer to new geographic locations. A script filename mentioning spatial CV is not evidence that blocking was implemented.
