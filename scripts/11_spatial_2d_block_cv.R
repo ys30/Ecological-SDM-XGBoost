@@ -33,6 +33,25 @@ for(i in seq_len(nrow(blocks))){
 plots$fold <- blocks$fold[match(plots$block,blocks$block)]
 fold <- plots$fold[match(d$plot,plots$plot)]
 stopifnot(!anyNA(fold),length(unique(fold))==5L)
+# Fail fast if the spatial assignment violates block/plot integrity.
+stopifnot(!anyDuplicated(plots$plot))
+stopifnot(all(vapply(split(plots$fold,plots$block),
+                     function(z) length(unique(z))==1L,logical(1))))
+stopifnot(all(table(factor(fold,levels=1:5))>0))
+# Fold diagnostics are exported even before fitting models.
+fold_diagnostics <- do.call(rbind,lapply(1:5,function(k){
+  idx <- which(fold==k)
+  data.frame(fold=k,rows=length(idx),plots=length(unique(d$plot[idx])),
+    spatial_blocks=length(unique(plots$block[plots$fold==k])),
+    positive_rows=sum(d$pres.abs[idx]==1),
+    prevalence=mean(d$pres.abs[idx]),
+    longitude_min=min(d$long[idx]),longitude_max=max(d$long[idx]),
+    latitude_min=min(d$lat[idx]),latitude_max=max(d$lat[idx]))
+}))
+write.csv(fold_diagnostics,"results/spatial_2d_block_fold_diagnostics.csv",
+          row.names=FALSE)
+print(fold_diagnostics)
+
 # Fixed, matched predictors and hyperparameters to the longitude-band study.
 for(nm in c("Species","disturb","soilfert")) d[[nm]] <- factor(d[[nm]])
 x <- model.matrix(~ . - 1,data=d[,c("rainann","soildepth","tempann","topo",
