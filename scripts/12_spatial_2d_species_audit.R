@@ -43,7 +43,7 @@ g <- ggplot(metrics,aes(reorder(Species,average_precision),average_precision))+
  theme_minimal(base_size=12)
 ggsave("results/figures/18_spatial_2d_species_ap.png",g,width=9,height=6,dpi=160)
 g2 <- ggplot(metrics,aes(reorder(Species,recall),recall))+
- geom_col(fill="#347d72")+coord_flip()+coord_cartesian(ylim=c(0,1))+
+ geom_col(fill="#347d72")+coord_flip(ylim=c(0,1))+
  labs(title="Species-level recall at 0.50 threshold",
       subtitle="Out-of-fold 2D spatial-block predictions; not threshold optimized",
       x="Species",y="Recall")+
