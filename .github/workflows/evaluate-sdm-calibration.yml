@@ -1,0 +1,59 @@
+name: SDM calibration and threshold diagnostics
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/09_calibration_thresholds.R"
+      - ".github/workflows/evaluate-sdm-calibration.yml"
+      - "results/plot_holdout_predictions.csv"
+permissions:
+  contents: write
+concurrency:
+  group: sdm-calibration-publication
+  cancel-in-progress: false
+jobs:
+  calibrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::ggplot2
+      - name: Run diagnostics
+        run: Rscript scripts/09_calibration_thresholds.R
+      - name: Upload diagnostic outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdm-calibration-diagnostics
+          path: |
+            results/plot_holdout_calibration_*.csv
+            results/plot_holdout_threshold_sensitivity.csv
+            results/figures/12_*.png
+            results/figures/13_*.png
+          if-no-files-found: warn
+      - name: Publish results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/sdm-cal
+          cp results/plot_holdout_calibration_*.csv results/plot_holdout_threshold_sensitivity.csv results/figures/12_*.png results/figures/13_*.png /tmp/sdm-cal/
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p results/figures
+            cp /tmp/sdm-cal/*.csv results/
+            cp /tmp/sdm-cal/*.png results/figures/
+            git add results/plot_holdout_calibration_*.csv results/plot_holdout_threshold_sensitivity.csv results/figures/12_*.png results/figures/13_*.png
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Publish SDM calibration and threshold diagnostics"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
