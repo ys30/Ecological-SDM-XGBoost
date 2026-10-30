@@ -226,6 +226,14 @@ The [spatial audit script](scripts/10_spatial_holdout_maps.R) joins plot-held-ou
 
 **Data integrity:** These are observed-location point maps, **not** interpolated habitat suitability surfaces or predictions over unsampled territory. No basemap boundaries or land-cover data are inferred. [Download the row-level spatial audit CSV](results/spatial_holdout_audit.csv) to trace plotted predictions to coordinates, species, and actual occurrence labels.
 
+## Two-dimensional spatial-block cross-validation
+
+[![2D spatial-block CV](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-spatial-2d.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-spatial-2d.yml)
+
+The [2D spatial-block script](scripts/11_spatial_2d_block_cv.R) builds a 4 × 4 quantile grid from observed plot longitude/latitude, assigns **whole grid cells** to five deterministic folds, and evaluates geographic transfer using the same environmental/taxon features and fixed 300-round XGBoost configuration as the longitude-band benchmark. Fold assignments and individual out-of-fold predictions are exported for auditing.
+
+**Status:** Automated workflow configured; numerical results and two figures are pending verified publication. This quantile-grid design is not a metric-distance buffered spatial CV; some training and validation grid cells may be adjacent. The 2D folds and longitude-band folds differ in composition, so their metrics should be interpreted descriptively.
+
 ## Technical judgment & next steps
 
 - **Spatial leakage:** Records can share plots. Current code shows random/stratified validation; plot-grouped and spatially blocked holdouts are needed before claiming transfer to new geographic locations. A script filename mentioning spatial CV is not evidence that blocking was implemented.
