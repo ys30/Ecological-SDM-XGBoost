@@ -35,6 +35,10 @@ results/
   submission_xgb_tuned.csv
 ```
 
+## Results and findings
+
+See **[Results and interpretation](results/RESULTS_AND_INTERPRETATION.md)** for dataset summaries, the eight-species table, historical validation metrics (AUC 0.9396; log loss 0.1693, **not yet independently reproduced**), model settings, figure inventory, and important spatial-validation and reproducibility limitations. Presence prevalence in the training data is approximately **8.0%**, so class-sensitive evaluation is essential.
+
 ## What this repository demonstrates
 
 - Environmental and ecological data preprocessing
