@@ -210,6 +210,22 @@ The fixed holdout also supports an **exploratory** threshold sensitivity analysi
 **Audit files:** [Calibration summary](results/plot_holdout_calibration_summary.csv) · [Reliability bins](results/plot_holdout_calibration_bins.csv) · [Threshold sensitivity](results/plot_holdout_threshold_sensitivity.csv).
 
 
+## Spatially explicit predictions and error audit
+
+[![SDM spatial holdout maps](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-spatial-maps.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-spatial-maps.yml)
+
+The [spatial audit script](scripts/10_spatial_holdout_maps.R) joins plot-held-out model predictions back to the original, observed coordinates and species identities. Each predicted record is checked against its original occurrence label and plot ID. Maps facet the eight species separately rather than treating different taxa as interchangeable observations.
+
+**Predicted presence probabilities at observed held-out plots:**
+
+![Species-specific held-out presence probabilities](results/figures/14_spatial_predicted_presence.png)
+
+**Spatial classification errors at the fixed 0.50 threshold:**
+
+![Species-specific spatial prediction errors](results/figures/15_spatial_holdout_errors.png)
+
+**Data integrity:** These are observed-location point maps, **not** interpolated habitat suitability surfaces or predictions over unsampled territory. No basemap boundaries or land-cover data are inferred. [Download the row-level spatial audit CSV](results/spatial_holdout_audit.csv) to trace plotted predictions to coordinates, species, and actual occurrence labels.
+
 ## Technical judgment & next steps
 
 - **Spatial leakage:** Records can share plots. Current code shows random/stratified validation; plot-grouped and spatially blocked holdouts are needed before claiming transfer to new geographic locations. A script filename mentioning spatial CV is not evidence that blocking was implemented.
