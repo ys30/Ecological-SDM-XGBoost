@@ -112,13 +112,34 @@ results/
 
 Run the numbered scripts from the repository root with the packages used in each script installed. The code covers exploratory analysis, baseline fitting, feature-set comparisons, tuning, validation, and probability export. **Historical results are not yet accompanied by a complete saved, machine-readable validation benchmark**, so exact numerical reproduction remains a work item.
 
-## New experiment: plot-grouped holdout evaluation
+## Plot-grouped holdout evaluation — verified results
 
 [![Evaluate SDM plot-held-out XGBoost](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-xgboost.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-xgboost.yml)
 
-A new [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) partitions the data by **plot ID**, so no plot occurs in both model fitting and held-out evaluation. Boosting rounds are selected with **plot-grouped internal cross-validation**, followed by evaluation on previously unseen plots. This is a separate experiment from the historical random-split validation and is **not equivalent to geographic-block extrapolation**.
+The [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) holds out entire plot IDs (234 plots; 1,872 observations), while fitting on 933 distinct plots (7,464 observations). Internal five-fold CV also groups by plot, selecting 500 boosting rounds. **This evaluates unseen plots, not geographic-block extrapolation**, and is a separate experiment from historical random-split results.
 
-Once the workflow successfully publishes its output, review [plot-held-out metrics](results/plot_holdout_metrics.csv), [validation predictions](results/plot_holdout_predictions.csv), and [feature importance](results/plot_holdout_feature_importance.csv). The corresponding ROC, precision–recall, and importance PNGs are written to `results/figures/06_*`, `07_*`, and `08_*`. **Do not treat these outputs as available or report their values until the workflow completes successfully.**
+| Metric | Plot-held-out XGBoost |
+|---|---:|
+| ROC AUC | **0.9377** |
+| Average precision (PR-AUC, stepwise) | **0.6276** |
+| Log loss | **0.1653** |
+| Precision at threshold 0.5 | 0.7209 |
+| Recall at threshold 0.5 | 0.3690 |
+| F1 at threshold 0.5 | 0.4882 |
+| Specificity at threshold 0.5 | 0.9859 |
+| True positives / false positives | 62 / 24 |
+| True negatives / false negatives | 1,680 / 106 |
+
+![ROC curve on held-out plots](results/figures/06_plot_holdout_roc.png)
+
+![Precision–recall curve on held-out plots](results/figures/07_plot_holdout_pr.png)
+
+![XGBoost gain feature importance](results/figures/08_plot_holdout_feature_importance.png)
+
+**Interpretation.** Despite strong ranking performance, the default 0.5 threshold misses 106 of 168 held-out presences (recall 36.9%). Threshold selection should therefore reflect ecological costs of missed presences versus false positives, using separate calibration or validation data. The top gain-ranked predictors are annual temperature (27.5%), *Angophora costata* identity (10.9%), *Eucalyptus fastigata* identity (9.8%), longitude (9.7%), and latitude (9.0%). Gain indicates contribution to model splits, **not causal ecological effects**.
+
+**Reproducible outputs:** [Metrics](results/plot_holdout_metrics.csv) · [Per-record predictions](results/plot_holdout_predictions.csv) · [Full feature importance](results/plot_holdout_feature_importance.csv) · [Evaluation script](scripts/06_evaluate_plot_holdout.R).
+
 
 ## Technical judgment & next steps
 
