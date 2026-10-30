@@ -1,6 +1,6 @@
 # Results and interpretation
 
-This page separates **historical reported results** from values independently reproducible from the committed scripts. The repository currently contains prediction output, but not a committed machine-readable model-comparison table or validation log. Consequently, historical metrics below are **provisional**, not independently verified against saved evaluation output.
+This page separates **historical reported results** from values independently reproducible from the committed scripts. The repository currently contains prediction output, but not a committed machine-readable model-comparison table or validation log. Research manuscript drafts do provide numerical results and embedded plots. Consequently, historical metrics below are **provisional**, not independently verified against saved evaluation output.
 
 ## Data and exploratory results
 
@@ -24,6 +24,51 @@ This page separates **historical reported results** from values independently re
 | Eucalyptus campanulata | 109 | 1,167 | −0.104 |
 
 **Important validation issue:** The correlations above are transcribed from a historical console table and should **not** be used for ecological inference until recalculated. The committed EDA script assigns correlations using an order-dependent vector; additionally, a binary species dummy's association with the target should be checked against the corresponding species prevalence. For example, the very low prevalence of *E. carnea* cannot be interpreted as strong positive co-occurrence on the basis of this table alone. The species column represents the identity of the observation; the dataset does not by itself establish pairwise co-occurrence within a plot.
+
+## Documented validation results (from project research notes)
+
+The following figures are **reported validation results** in the supplied research documents, not newly executed benchmarks. Different tables may correspond to different feature sets and model configurations; do not merge them into one experiment.
+
+### Algorithm comparison
+
+| Algorithm | Validation log loss ↓ | Validation ROC AUC ↑ |
+|---|---:|---:|
+| Logistic regression | 0.2569 | 0.7882 |
+| Random forest | 0.2271 | 0.9343 |
+| XGBoost (initial comparison) | **0.1891** | **0.9369** |
+
+### XGBoost feature-set comparison
+
+| Feature set | Validation log loss ↓ | Validation ROC AUC ↑ |
+|---|---:|---:|
+| Environmental + species identity + easting/northing | 0.1737 | 0.9351 |
+| Environmental + species identity + latitude/longitude | **0.1693** | **0.9396** |
+| Environmental only | 0.3119 | 0.5239 |
+| Easting/northing only | 0.3066 | 0.5253 |
+| Latitude/longitude only | 0.3053 | 0.5394 |
+
+**Comparison caveat:** The environmental-only model also excludes species identity, so the difference from the full models does not isolate the contribution of coordinates. These are validation rather than independently held-out test scores.
+
+### Reported classification metrics for tuned XGBoost
+
+| Metric | Reported value |
+|---|---:|
+| Accuracy | 93.25% |
+| Balanced accuracy | 70.65% |
+| Sensitivity (presence recall) | 43.11% |
+| Specificity (absence recall) | 98.17% |
+| Cohen's kappa | 0.4992 |
+| McNemar test | p < 0.001 |
+
+These metrics are from the historical manuscript draft. The exact alignment of this confusion-matrix evaluation with the best feature-set experiment remains to be verified. The high specificity combined with moderate sensitivity highlights missed presences despite high overall accuracy. Neither log loss nor these metrics alone demonstrates probability calibration.
+
+### Reported feature importance
+
+The manuscript's gain-based XGBoost feature-importance figure ranks **annual temperature (`tempann`)** first, followed by **latitude**, **longitude**, **annual rainfall (`rainann`)**, and species indicators including *Angophora costata* and *Eucalyptus fastigata*. This is model importance, not a causal effect estimate.
+
+### Additional XGBoost implementation found in the analysis history
+
+A separate XGBoost script encodes `Species` as an integer using the levels of the training data, combines longitude, latitude, disturbance, rainfall, soil depth, soil fertility, temperature, topography, easting, northing and encoded species identity, and trains `binary:logistic` with **eta = 0.03, max_depth = 5, subsample = 0.8, colsample_bytree = 0.8, nrounds = 500**. It exports `submission_xgb_features.csv` and includes code to save `feature_importance.png` and generate a DALEX species partial-dependence profile. No numerical validation metric is established for this separate run. Integer-encoding a nominal species category imposes an arbitrary order in tree splits; one-hot encoding is generally preferable for this analysis. The DALEX example refers to `final_model`, which must be defined consistently before running.
 
 ## Model comparison and selected XGBoost
 
