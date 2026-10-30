@@ -141,13 +141,30 @@ The [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) holds out
 **Reproducible outputs:** [Metrics](results/plot_holdout_metrics.csv) · [Per-record predictions](results/plot_holdout_predictions.csv) · [Full feature importance](results/plot_holdout_feature_importance.csv) · [Evaluation script](scripts/06_evaluate_plot_holdout.R).
 
 
-## Geographic transfer stress test — longitude-block CV
+## Geographic transfer stress test — verified longitude-block CV
 
 [![Geographic longitude-block CV](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml)
 
-The [geographic validation script](scripts/07_longitude_block_cv.R) assigns whole plots to five consecutive longitude bands, fits XGBoost on four bands, and evaluates on the unseen band. Coordinates are deliberately **excluded as model features**; the resulting performance reflects a distinct environmental/taxon feature set. Each band reports ROC AUC, average precision, log loss, recall, and prevalence, with per-record predictions saved for auditing.
+The [geographic validation script](scripts/07_longitude_block_cv.R) partitions whole plots into five consecutive, non-overlapping longitude bands and evaluates each held-out band. Geographic coordinates are **excluded from predictors**, leaving environmental and species information. The model uses a fixed 300-round boosting budget for each fold; this is a distinct feature set and tuning protocol from the plot-held-out experiment.
 
-**Status:** Automated experiment configured; numerical results and maps/figures must not be reported until the [workflow](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml) succeeds and outputs are verified. This is a longitude-band extrapolation stress test, **not** full 2D spatial-block CV or independent external validation.
+**Five-fold results (unweighted fold averages):** mean ROC AUC **0.8895** (SD 0.0415); mean average precision **0.4474**; mean log loss **0.1895**. The overall observed presence rate is **8.0%**.
+
+| Held-out longitude band | ROC AUC | Average precision | Recall at 0.5 | Presence rate |
+|---|---:|---:|---:|---:|
+| 1 | 0.8370 | 0.2808 | 0.4021 | 5.20% |
+| 2 | 0.9374 | 0.5535 | 0.1304 | 8.64% |
+| 3 | 0.9160 | 0.5473 | 0.2252 | 8.07% |
+| 4 | 0.8999 | 0.4714 | 0.1325 | 8.91% |
+| 5 | 0.8573 | 0.3842 | 0.4709 | 9.19% |
+
+![ROC AUC across held-out longitude bands](results/figures/09_longitude_block_cv_auc.png)
+
+![Average precision and baseline prevalence by geographic band](results/figures/10_longitude_block_cv_ap.png)
+
+**Interpretation:** Ranking quality remains substantial in each band, but positive-class recall at a 0.5 threshold varies from **13.0% to 47.1%**. This heterogeneity is important for ecological decisions where missed occurrences carry costs. Mean ROC AUC is lower than the separate plot-held-out experiment (0.8895 vs 0.9377), but **the difference cannot be attributed solely to geographic extrapolation** because predictors and training protocols differ. Longitude bands also do not provide full two-dimensional spatial blocking or independent external validation.
+
+**Audit files:** [Per-fold metrics](results/longitude_block_cv_metrics.csv) · [Summary](results/longitude_block_cv_summary.csv) · [Out-of-fold predictions](results/longitude_block_cv_predictions.csv).
+
 
 ## Technical judgment & next steps
 
