@@ -11,11 +11,18 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: sdm-figure-publication
+  cancel-in-progress: false
+
 jobs:
   figures:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
@@ -31,8 +38,28 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results/figures/ results/species_summary_recomputed.csv results/numeric_correlations.csv
-          if ! git diff --cached --quiet; then
+          # Keep generated files separately, then replay them onto the latest main.
+          mkdir -p /tmp/sdm-output
+          cp -R results/figures /tmp/sdm-output/
+          cp results/species_summary_recomputed.csv results/numeric_correlations.csv /tmp/sdm-output/
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p results/figures
+            cp -R /tmp/sdm-output/figures/. results/figures/
+            cp /tmp/sdm-output/*.csv results/
+            git add results/figures/ results/species_summary_recomputed.csv results/numeric_correlations.csv
+            if git diff --cached --quiet; then
+              echo "Generated results already up to date."
+              exit 0
+            fi
             git commit -m "Generate data-derived SDM portfolio figures"
-            git push
-          fi
+            if git push origin HEAD:main; then
+              echo "Published generated results."
+              exit 0
+            fi
+            echo "Concurrent update detected (attempt ${attempt}); retrying."
+            sleep 3
+          done
+          echo "Could not publish generated results after retries." >&2
+          exit 1
