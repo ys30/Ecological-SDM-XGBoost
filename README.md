@@ -166,13 +166,25 @@ The [geographic validation script](scripts/07_longitude_block_cv.R) partitions w
 **Audit files:** [Per-fold metrics](results/longitude_block_cv_metrics.csv) · [Summary](results/longitude_block_cv_summary.csv) · [Out-of-fold predictions](results/longitude_block_cv_predictions.csv).
 
 
-## Matched-feature protocol comparison
+## Matched-feature validation comparison — verified
 
 [![Matched protocol comparison](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-protocols.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-protocols.yml)
 
-To reduce confounding from different feature sets and boosting configurations, the [matched comparison script](scripts/08_matched_protocol_comparison.R) fits the **same environmental/taxon predictors** with **the same fixed 300-round XGBoost settings** under two evaluation protocols: one random plot-level holdout and five longitude-band holdouts. Neither protocol uses geographic coordinates as predictors.
+The [matched comparison script](scripts/08_matched_protocol_comparison.R) evaluates **identical environmental/taxon features** (without longitude/latitude), XGBoost parameters, and a fixed 300 boosting rounds using one random plot-level holdout and five longitude-band holdouts.
 
-**Pending automated execution:** [Per-fold metrics](results/matched_protocol_metrics.csv), [summary](results/matched_protocol_summary.csv), and the comparison chart will be linked after output verification. This comparison still differs in training/validation proportions (80/20 vs four of five geographic bands), and a single random plot holdout does not characterize split-to-split uncertainty.
+| Metric | Random plot holdout (one split) | Longitude-band CV (mean of five bands) |
+|---|---:|---:|
+| ROC AUC | **0.9289** | **0.8895** |
+| Average precision | **0.5767** | **0.4474** |
+| Log loss | **0.1790** | **0.1895** |
+| Recall at threshold 0.5 | **0.3214** | **0.2722** |
+
+![Matched protocol comparison](results/figures/11_matched_protocol_comparison.png)
+
+**Interpretation:** The geographic-band mean ROC AUC is 0.0393 lower, and average precision is 0.1292 lower, than the single random plot holdout. This supports geographic transfer as a relevant robustness concern. However, the single random split has unmeasured sampling variability; fold averages are not a paired experiment or a formal significance test, and training sets are not identical. Average precision also depends on positive-class prevalence.
+
+**Audit files:** [Protocol-level results](results/matched_protocol_metrics.csv) · [Summary](results/matched_protocol_summary.csv) · [Reproducible script](scripts/08_matched_protocol_comparison.R).
+
 
 ## Technical judgment & next steps
 
