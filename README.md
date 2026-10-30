@@ -4,6 +4,33 @@
 
 [**Results & technical interpretation**](results/RESULTS_AND_INTERPRETATION.md) · [**Portfolio**](https://ys30.github.io/)
 
+## Recruiter quick scan | Project highlights
+
+**Business/research problem:** Predict native tree-species occurrence from environmental and geographic data while testing whether model performance transfers to unseen locations.
+
+**What I delivered:** An end-to-end R/XGBoost analysis of **9,336 labeled records across 1,167 plots and 8 species**, with automated model evaluation, class-imbalance diagnostics, spatial cross-validation, probability calibration, and geographic error visualization.
+
+**Verified outcomes:** **0.9377 ROC AUC** on a plot-grouped holdout (coordinates included); **0.8895** mean ROC AUC under five longitude-band folds; **0.9072** under five 2D spatial-block folds. The latter two use the same environmental/taxon predictors and fixed 300-round configuration. These designs are not a paired significance test.
+
+**Practical insight:** Despite strong discrimination, the plot-grouped model identifies only **36.9% of presences** at a 0.50 threshold. I explicitly evaluated this sensitivity trade-off instead of reporting accuracy alone.
+
+**Skills demonstrated:** R · XGBoost · environmental data processing · geographic cross-validation · imbalanced classification · ROC/PR analysis · probability calibration · reproducible GitHub Actions.
+
+**Explore the evidence:** [Plot-held-out metrics](results/plot_holdout_metrics.csv) · [Spatial CV results](results/spatial_2d_block_cv_summary.csv) · [Calibration analysis](results/plot_holdout_calibration_summary.csv) · [Detailed methods and limitations](results/RESULTS_AND_INTERPRETATION.md).
+
+<details>
+<summary><strong>Representative figures (expand)</strong></summary>
+
+**Model performance:** ![ROC on plot-held-out records](results/figures/06_plot_holdout_roc.png)
+
+**Geographic robustness:** ![2D spatial-block assignments](results/figures/16_spatial_2d_block_assignments.png)
+
+**Spatial errors:** ![Held-out classification errors](results/figures/15_spatial_holdout_errors.png)
+
+</details>
+
+---
+
 ## At a glance — reproducible evidence
 
 **9,336 labeled species–plot records · 1,167 plots · 8 tree species · 8.0% observed presences.** The central question is how well ecological occurrence models generalize when validation separates plots or geographic regions.
