@@ -26,6 +26,10 @@ Across 23 identical species–fold evaluations, the mean within-fold AUC differe
 
 Because one species contributed only three evaluable folds while the others contributed five, we also averaged paired differences with equal weight per species rather than per species–fold. The equal-species AUC differences were +0.0394 (XGBoost minus Bayesian), +0.0267 (MaxEnt minus Bayesian), and +0.0127 (XGBoost minus MaxEnt); the corresponding AP differences were +0.0549, +0.0302, and +0.0248. All contrasts retained their sign under this reweighting. This deterministic sensitivity analysis does not establish inferential significance; see [weighting sensitivity details](MATCHED_MODEL_WEIGHTING_SENSITIVITY.md).
 
+## Spatial-fold ranking heterogeneity
+
+Across 23 eligible matched species–fold comparisons, XGBoost ranked first in ROC AUC on 14 folds, MaxEnt on seven and Bayesian on two; the corresponding AP first-place counts were 13, seven and three. Rankings varied across spatial folds within species: for *Eucalyptus fastigata*, AUC wins were split Bayesian two, MaxEnt one and XGBoost two. Thus, species-mean model rankings should not be interpreted as consistent dominance in every held-out region. See [fold-level ranking audit](MATCHED_MODEL_FOLD_HETEROGENEITY.md). These counts are descriptive and do not imply independent trials.
+
 ## Bayesian convergence confirmation
 
 The original Bayesian fit used two chains and 1,200 iterations per chain (600 warmup). Independent confirmation fits used four chains and 2,000 iterations per chain (1,000 warmup). Across all five confirmation folds, all 175 parameter–fold diagnostic rows passed R-hat <= 1.01 and bulk/tail ESS >= 400. Twenty chains had zero divergences and zero treedepth-limit hits; minimum BFMI was 0.645. See `results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md`.
