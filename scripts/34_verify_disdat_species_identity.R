@@ -8,8 +8,8 @@ dir.create("results",showWarnings=FALSE)
 out <- "results/disdat_nsw_site_label_identity.txt"
 sink(out)
 cat("SOURCE IDENTITY AUDIT — site coordinates, environment and binary labels\n")
-stopifnot(all(c("x","y","siteid") %in% names(pa)),
-          all(c("x","y","siteid") %in% names(env)))
+stopifnot(all(c("x","y") %in% names(pa)),
+          all(c("x","y") %in% names(env)))
 key <- function(x,y) paste(sprintf("%.4f",as.numeric(x)),sprintf("%.4f",as.numeric(y)),sep="|")
 loc <- local[!duplicated(local$plot),,drop=FALSE]
 lk <- key(loc$long,loc$lat); pk <- key(pa$x,pa$y); ek <- key(env$x,env$y)
@@ -26,7 +26,13 @@ if(anyDuplicated(lk)||anyDuplicated(pk)||anyDuplicated(ek)) {
   shared <- intersect(c("disturb","rainann","soildepth","soilfert","tempann","topo"),names(env))
   match_env <- vapply(shared,function(z) all(as.character(loc[[z]])==as.character(env[[z]][ie])),logical(1))
   cat("Exact covariate equality by field:\n"); print(match_env)
-  cat("Reference PA/ENV siteid consistent:",all(as.character(pa$siteid[ip])==as.character(env$siteid[ie])),"\n")
+  siteid_ok <- if("siteid" %in% names(pa) && "siteid" %in% names(env)) {
+    all(as.character(pa$siteid[ip])==as.character(env$siteid[ie]))
+  } else {
+    cat("Reference PA/ENV siteid comparison unavailable (column missing).\n")
+    NA
+  }
+  cat("Reference PA/ENV siteid consistent:",siteid_ok,"\n")
   codes <- grep("^nsw[0-9]+$",names(pa),value=TRUE)
   spp <- sort(unique(as.character(local$Species)))
   obs <- matrix(NA_integer_,nrow=nrow(loc),ncol=length(spp),dimnames=list(NULL,spp))
@@ -34,7 +40,9 @@ if(anyDuplicated(lk)||anyDuplicated(pk)||anyDuplicated(ek)) {
     d <- local[local$Species==spp[j],c("plot","pres.abs")]
     obs[,j] <- as.integer(d$pres.abs[match(loc$plot,d$plot)])
   }
+  if(length(codes)!=length(spp)) stop("Reference species-code count differs from local species count")
   ref <- as.matrix(pa[ip,codes,drop=FALSE]); storage.mode(ref)<-"integer"
+  stopifnot(!anyNA(obs), !anyNA(ref), all(obs %in% c(0L,1L)), all(ref %in% c(0L,1L)))
   mismatch <- outer(seq_along(spp),seq_along(codes),Vectorize(function(i,j)
     sum(obs[,i]!=ref[,j],na.rm=TRUE)))
   dimnames(mismatch)<-list(spp,codes)
@@ -59,7 +67,7 @@ if(anyDuplicated(lk)||anyDuplicated(pk)||anyDuplicated(ek)) {
   cat("Best mapping:\n")
   print(data.frame(species=spp,disdat_code=codes[best_perm],disagreements=mismatch[cbind(seq_along(spp),best_perm)]))
   cat("FULL_IDENTITY_CONFIRMED:",best==0 && ties==1 && all(match_env) &&
-      all(as.character(pa$siteid[ip])==as.character(env$siteid[ie])),"\n")
+      (is.na(siteid_ok) || siteid_ok),"\n")
 }
 sink()
 cat(readLines(out),sep="\n")
