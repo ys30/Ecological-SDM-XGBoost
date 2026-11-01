@@ -1,0 +1,31 @@
+name: Generate enhanced SDM publication figures
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/40_generate_publication_diagnostics.py'
+      - 'results/spatial_2d_block_assignments.csv'
+      - 'results/matched_bayesian_maxent_xgboost_folds.csv'
+      - '.github/workflows/generate-enhanced-sdm-figures.yml'
+permissions:
+  contents: read
+jobs:
+  figures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install matplotlib
+      - name: Generate and verify figure files
+        run: |
+          python scripts/40_generate_publication_diagnostics.py
+          test -s results/figures/40_spatial_holdout_map.svg
+          test -s results/figures/41_matched_fold_performance.svg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-sdm-publication-figures
+          path: |
+            results/figures/40_spatial_holdout_map.svg
+            results/figures/41_matched_fold_performance.svg
