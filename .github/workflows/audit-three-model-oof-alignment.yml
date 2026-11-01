@@ -1,0 +1,19 @@
+name: Audit three-model spatial held-out alignment
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/36_audit_three_model_oof_alignment.py'
+      - 'results/bayes_spatial_cv_predictions.csv'
+      - 'results/maxent_spatial_2d_predictions.csv'
+      - 'results/spatial_2d_block_cv_predictions.csv'
+      - '.github/workflows/audit-three-model-oof-alignment.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact held-out record and species alignment
+        run: python3 scripts/36_audit_three_model_oof_alignment.py
