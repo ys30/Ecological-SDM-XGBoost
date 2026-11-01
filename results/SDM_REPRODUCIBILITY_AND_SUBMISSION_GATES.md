@@ -33,8 +33,8 @@ Minimum evidence required for a reproducible final benchmark:
 
 ## Still open: original-source metadata
 
-- Survey collection year(s) and geographic coverage: confirm from the original source, not inferred from GitHub file timestamps.
-- Dataset license and any redistribution conditions for `data/train.csv`: check the `disdat` package metadata and original provider.
+- Survey collection year(s) and geographic coverage: **collection dates still open**. The NSW open-forest survey identity and coordinates are verified, but `disdat` publication dates (2023-02-07 for 1.0-1; 2026-04-28 for 1.1-0) are software-release dates, **not field-survey dates**. Confirm survey years from original OSF/NCEAS metadata.
+- Dataset license and any redistribution conditions for `data/train.csv`: **partially verified**. CRAN lists the `disdat` R package under **GPL (>= 3)** (https://CRAN.R-project.org/package=disdat), but the upstream `rspatial/disdat` GitHub repository separately displays **LGPL-3.0** (https://github.com/rspatial/disdat). Package/software licensing is **not sufficient to establish the licensing or redistribution rights of each original NSW survey record**. Confirm original NCEAS/OSF dataset terms before asserting a data license or distributing an extracted table under a chosen license.
 - Environmental raster/source datasets and measurement units: document per variable from original metadata.
 - Data Availability: state precisely that the present work **reuses the published survey evaluation presence–absence records for internal spatial CV**; it does not perform a new external validation using the original presence-only/background training split.
 
@@ -43,3 +43,10 @@ Minimum evidence required for a reproducible final benchmark:
 The observed model rankings and rare-species retrieval counts are descriptive; five spatial folds are not five independent datasets, and no statistical significance is implied. Top-25 within each fold screens 125 plots overall, not 25. The three rare species are Bayesian-only retrieval analyses, not part of the five-species matched benchmark.
 
 **Decision:** The source-identity gate is closed. The computational reproducibility and original metadata gates remain open. Do not label the manuscript submission-ready until those checks and authorship/declarations are completed.
+
+## Primary package and upstream metadata checked (2026-11-01)
+
+- CRAN package index: https://CRAN.R-project.org/package=disdat — GPL (>= 3), latest published package metadata; this is **software/package** licensing.
+- Upstream GitHub: https://github.com/rspatial/disdat — repository displays LGPL-3.0, reinforcing the need to distinguish repositories, packages and underlying datasets.
+- Elith et al. (2020) is the dataset description and recommended dataset citation, DOI https://doi.org/10.17161/bi.v15i2.13384; Valavi et al. (2023) remains relevant to spatially separated SDM benchmarking.
+- `disdat` modeling vignette: https://cran.r-project.org/web/packages/disdat/vignettes/modeling.html — source records were also released on OSF, including additional raster and metadata files. Original OSF terms and survey-year documentation still require inspection.
