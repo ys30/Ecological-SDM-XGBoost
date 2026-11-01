@@ -1,0 +1,35 @@
+name: Refresh anonymous PNG figures
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/42_refresh_anonymous_png.py'
+      - 'results/figures/22_three_model_*.svg'
+      - 'results/figures/23_three_model_*_publication.svg'
+permissions:
+  contents: write
+concurrency:
+  group: anonymous-figure-publish
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install cairosvg
+      - run: python scripts/42_refresh_anonymous_png.py
+      - name: Commit refreshed anonymous PNG previews
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/figures/22_three_model_*.png results/figures/23_three_model_*_publication.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh anonymous three-model PNG figures"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
