@@ -6,9 +6,9 @@ The source-of-truth [fold audit](SPECIES_SPATIAL_FOLD_PRESENCE_AUDIT.md) covers 
 
 | Species | Total positives | Positive counts in folds 1–5 | AUC-evaluable folds | Minimum positive count among evaluable folds |
 |---|---:|---|---:|---:|
-| *Corymbia gummifera* | 8 | 4, 1, 3, 0, 0 | 3/5 | 1 |
-| *Corymbia intermedia* | 18 | 9, 0, 9, 0, 0 | 2/5 | 9 |
-| *Eucalyptus carnea* | 6 | 0, 1, 0, 0, 5 | 2/5 | 1 |
+| *nsw19* | 8 | 4, 1, 3, 0, 0 | 3/5 | 1 |
+| *nsw20* | 18 | 9, 0, 9, 0, 0 | 2/5 | 9 |
+| *nsw22* | 6 | 0, 1, 0, 0, 5 | 2/5 | 1 |
 
 AUC is mathematically undefined when a test fold contains zero presences. When a fold has one presence, its AUC is defined but highly discrete and unstable. Neither a zero-positive fold nor a one-positive fold supports a robust ranking of competing algorithms. The 23 eligible fold comparisons in the main five-species benchmark should remain separate from these exploratory rare-species cases.
 
