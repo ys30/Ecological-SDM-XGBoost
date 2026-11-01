@@ -38,6 +38,25 @@ if(length(shared)>=4L) {
   cat("Cannot compare environmental signatures: fewer than four matching fields.\n")
 }
 
+# Stronger row-level checks: match geographic sites and all shared covariates.
+# A shared environmental signature can recur at distinct plots, so never use
+# that test alone to declare source identity.
+if (all(c("x", "y") %in% names(env))) {
+  loc <- local[!duplicated(local$plot), , drop=FALSE]
+  local_xy <- paste(round(loc$long, 4), round(loc$lat, 4), sep="|")
+  ref_xy <- paste(round(env$x, 4), round(env$y, 4), sep="|")
+  cat("Rounded geographic coordinate matches:", sum(local_xy %in% ref_xy),
+      "of", nrow(loc), "\\n")
+  if (length(shared) >= 4L) {
+    local_full <- paste(local_xy, sig(loc[,shared,drop=FALSE]), sep="|")
+    ref_full <- paste(ref_xy, sig(env[,shared,drop=FALSE]), sep="|")
+    cat("Coordinate plus environmental matches:", sum(local_full %in% ref_full),
+        "of", nrow(loc), "\\n")
+  }
+} else {
+  cat("No x/y coordinate columns in reference env; coordinate match unavailable.\\n")
+}
+
 # The disdat presence/absence table is WIDE (one column per species), whereas
 # this repository is LONG (one row per species per plot). Report this explicitly.
 cat("Reference PA is wide format; local input is long format.\n")
