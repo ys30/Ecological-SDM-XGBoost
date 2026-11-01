@@ -37,7 +37,7 @@ jobs:
           test -n "$RUN_ONE" && test -n "$RUN_REMAINING"
           gh run download "$RUN_ONE" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-one' --dir downloaded
           gh run download "$RUN_REMAINING" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-*' --dir downloaded
-          find downloaded -type f -name '*.csv' -exec cp {} downloaded/ \;
+          find downloaded -mindepth 2 -type f -name '*.csv' -exec cp {} downloaded/ \;
       - name: Check required fold outputs
         run: |
           for k in 1 2 3 4 5; do
@@ -64,5 +64,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results/bayes_spatial_cv_metrics.csv results/bayes_spatial_cv_predictions.csv
+          cp downloaded/bayes_spatial_fold_*_diagnostics.csv results/
+          git add results/bayes_spatial_cv_metrics.csv results/bayes_spatial_cv_predictions.csv results/bayes_spatial_fold_*_diagnostics.csv
           git diff --cached --quiet || (git commit -m "Publish Bayesian five-fold spatial CV results" && git push)
