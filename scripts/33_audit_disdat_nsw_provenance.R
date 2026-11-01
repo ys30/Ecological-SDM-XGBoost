@@ -44,10 +44,25 @@ if(length(shared)>=4L) {
 loc <- local[!duplicated(local$plot), , drop=FALSE]
 ref_lon <- intersect(c("long","longitude","lon"),names(env))
 ref_lat <- intersect(c("lat","latitude"),names(env))
+# disdat NSW x/y are geographic longitude/latitude in WGS84.
+if(length(ref_lon)==0 && length(ref_lat)==0 &&
+   all(c("x","y") %in% names(env))) {
+  crs_txt <- tryCatch(as.character(disdat::disCRS("NSW")),error=function(e) "")
+  if(grepl("longlat",crs_txt,fixed=TRUE)) {
+    ref_lon <- "x"
+    ref_lat <- "y"
+    cat("Reference x/y interpreted as WGS84 longitude/latitude using disCRS.\\n")
+  }
+}
 if (length(ref_lon)>0 && length(ref_lat)>0) {
   local_xy <- paste(round(loc$long,4),round(loc$lat,4),sep="|")
   ref_xy <- paste(round(env[[ref_lon[1]]],4),round(env[[ref_lat[1]]],4),sep="|")
   cat("Geographic coordinate matches:",sum(local_xy %in% ref_xy),"of",nrow(loc),"\n")
+  if(length(shared)>=4L) {
+    local_joint <- paste(local_xy,sig(loc[,shared,drop=FALSE]),sep="|")
+    ref_joint <- paste(ref_xy,sig(env[,shared,drop=FALSE]),sep="|")
+    cat("Joint coordinate-and-environment matches:",sum(local_joint %in% ref_joint),"of",nrow(loc),"\n")
+  }
 } else {
   cat("Geographic coordinate match not attempted: no verified lon/lat columns.\n")
   cat("Reference x/y, if present, require CRS verification before comparison.\n")
