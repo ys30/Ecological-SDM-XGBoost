@@ -297,6 +297,16 @@ The [2D spatial-block script](scripts/11_spatial_2d_block_cv.R) uses a **4 × 4 
 **Audit files:** [Fold metrics](results/spatial_2d_block_cv_metrics.csv) · [Summary](results/spatial_2d_block_cv_summary.csv) · [Fold diagnostics](results/spatial_2d_block_fold_diagnostics.csv) · [Plot/block assignments](results/spatial_2d_block_assignments.csv) · [Out-of-fold predictions](results/spatial_2d_block_cv_predictions.csv).
 
 
+## MaxEnt presence–background extension — implementation added, results pending
+
+[MaxEnt source](scripts/13_maxent_spatial_2d_cv.R) · [GitHub Actions workflow](.github/workflows/evaluate-sdm-maxent.yml)
+
+A complementary **R `maxnet`** model has been added for ecological method comparison. It fits a separate linear/quadratic MaxEnt model per species, using training-fold detections as presences and training-fold surveyed non-detections as an **approximation to background**. The evaluation uses the same existing plot-level 2D spatial fold assignments and reports per-species ROC AUC and average precision when both classes and adequate training presences are available.
+
+**Important caveats:** Survey non-detections are not independently sampled landscape background. The MaxEnt cloglog output is treated as a **relative suitability score**, not a calibrated probability of occurrence. Sparse species/folds are flagged rather than silently scored. Per-species MaxEnt scores must not be compared directly to the pooled multi-species XGBoost AUC without matching the evaluation target, records, and aggregation.
+
+**Status:** Script and CI workflow committed; no MaxEnt performance metric is claimed until GitHub Actions completes and generated outputs are checked. Intended outputs: `results/maxent_spatial_2d_species_folds.csv`, `results/maxent_spatial_2d_species_summary.csv`, and `results/figures/20_maxent_spatial_2d_auc.png`.
+
 ## Scientific limitations and reproducibility audit
 
 - **Validation unit and spatial dependence:** The new holdout and spatial CV protocols separate plot IDs; longitude bands and 2D grid cells are implemented and audited. The 2D design uses latitude/longitude quantiles and may place training cells adjacent to validation cells. Neither spatial design is a distance-buffered test or an independent external dataset.
