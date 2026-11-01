@@ -16,7 +16,8 @@ cat("Reference PA dimensions:", paste(dim(pa),collapse=" x "), "\n")
 cat("Reference ENV dimensions:", paste(dim(env),collapse=" x "), "\n")
 cat("PA column names:", paste(names(pa),collapse=", "), "\n")
 cat("ENV column names:", paste(names(env),collapse=", "), "\n")
-cat("NSW CRS from disdat:", as.character(disdat::disCRS("NSW", format="EPSG")), "\n")
+cat("NSW CRS from disdat (if available):\n")
+tryCatch(print(disdat::disCRS("NSW")), error=function(e) cat("CRS lookup unavailable:",conditionMessage(e),"\n"))
 cat("PA first 3 records:\n"); print(utils::head(pa,3))
 cat("ENV first 3 records:\n"); print(utils::head(env,3))
 cat("Local first 3 records:\n"); print(utils::head(local,3))
@@ -38,25 +39,19 @@ if(length(shared)>=4L) {
   cat("Cannot compare environmental signatures: fewer than four matching fields.\n")
 }
 
-# Stronger row-level checks: match geographic sites and all shared covariates.
-# A shared environmental signature can recur at distinct plots, so never use
-# that test alone to declare source identity.
-if (all(c("x", "y") %in% names(env))) {
-  loc <- local[!duplicated(local$plot), , drop=FALSE]
-  local_xy <- paste(round(loc$long, 4), round(loc$lat, 4), sep="|")
-  ref_xy <- paste(round(env$x, 4), round(env$y, 4), sep="|")
-  cat("Rounded geographic coordinate matches:", sum(local_xy %in% ref_xy),
-      "of", nrow(loc), "\\n")
-  if (length(shared) >= 4L) {
-    local_full <- paste(local_xy, sig(loc[,shared,drop=FALSE]), sep="|")
-    ref_full <- paste(ref_xy, sig(env[,shared,drop=FALSE]), sep="|")
-    cat("Coordinate plus environmental matches:", sum(local_full %in% ref_full),
-        "of", nrow(loc), "\\n")
-  }
+# Compare coordinate values only when the reference columns can be identified.
+# Reference x/y may be projected metres rather than longitude/latitude.
+loc <- local[!duplicated(local$plot), , drop=FALSE]
+ref_lon <- intersect(c("long","longitude","lon"),names(env))
+ref_lat <- intersect(c("lat","latitude"),names(env))
+if (length(ref_lon)>0 && length(ref_lat)>0) {
+  local_xy <- paste(round(loc$long,4),round(loc$lat,4),sep="|")
+  ref_xy <- paste(round(env[[ref_lon[1]]],4),round(env[[ref_lat[1]]],4),sep="|")
+  cat("Geographic coordinate matches:",sum(local_xy %in% ref_xy),"of",nrow(loc),"\n")
 } else {
-  cat("No x/y coordinate columns in reference env; coordinate match unavailable.\\n")
+  cat("Geographic coordinate match not attempted: no verified lon/lat columns.\n")
+  cat("Reference x/y, if present, require CRS verification before comparison.\n")
 }
-
 # The disdat presence/absence table is WIDE (one column per species), whereas
 # this repository is LONG (one row per species per plot). Report this explicitly.
 cat("Reference PA is wide format; local input is long format.\n")
