@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild publication PNG previews from anonymous SVGs; no model fitting."""
+"""Rebuild public PNG previews from anonymous SVGs; no model fitting or numerical changes."""
 from pathlib import Path
 import cairosvg
 
