@@ -4,11 +4,11 @@ This audit examines **which model ranked first within each eligible species–fo
 
 | Species | Eligible folds | Bayesian AUC wins | MaxEnt AUC wins | XGBoost AUC wins | Bayesian AP wins | MaxEnt AP wins | XGBoost AP wins |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| *Angophora costata* | 5 | 0 | 1 | 4 | 0 | 0 | 5 |
-| *Eucalyptus blakelyi* | 3 | 0 | 2 | 1 | 0 | 2 | 1 |
-| *Eucalyptus campanulata* | 5 | 0 | 2 | 3 | 0 | 1 | 4 |
-| *Eucalyptus fastigata* | 5 | 2 | 1 | 2 | 2 | 2 | 1 |
-| *Eucalyptus nova-anglica* | 5 | 0 | 1 | 4 | 1 | 2 | 2 |
+| *nsw18* | 5 | 0 | 1 | 4 | 0 | 0 | 5 |
+| *nsw21* | 3 | 0 | 2 | 1 | 0 | 2 | 1 |
+| *nsw24* | 5 | 0 | 2 | 3 | 0 | 1 | 4 |
+| *nsw23* | 5 | 2 | 1 | 2 | 2 | 2 | 1 |
+| *nsw25* | 5 | 0 | 1 | 4 | 1 | 2 | 2 |
 | **Total** | **23** | **2** | **7** | **14** | **3** | **7** | **13** |
 
 ## Implications
