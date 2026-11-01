@@ -1,0 +1,42 @@
+name: Bayesian hierarchical SDM remaining spatial folds
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/15_bayes_hierarchical_spatial.R'
+      - '.github/workflows/evaluate-sdm-bayesian-remaining.yml'
+permissions:
+  contents: read
+jobs:
+  spatial-fold:
+    strategy:
+      fail-fast: false
+      matrix:
+        fold: [2, 3, 4, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+            any::pROC
+      - name: Verify Boost headers
+        run: Rscript -e 'stopifnot(nzchar(system.file("include",package="BH")))'
+      - name: Fit Bayesian spatial fold
+        run: Rscript scripts/15_bayes_hierarchical_spatial.R ${{ matrix.fold }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayesian-spatial-fold-${{ matrix.fold }}
+          path: |
+            results/bayes_spatial_cv_*.csv
+            results/bayes_spatial_fold_*_diagnostics.csv
