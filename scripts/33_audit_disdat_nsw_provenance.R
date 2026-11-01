@@ -37,5 +37,13 @@ if(length(shared)>=4L) {
 } else {
   cat("Cannot compare environmental signatures: fewer than four matching fields.\n")
 }
+
+# The disdat presence/absence table is WIDE (one column per species), whereas
+# this repository is LONG (one row per species per plot). Report this explicitly.
+cat("Reference PA is wide format; local input is long format.\n")
+cat("Reference PA candidate species columns:",
+    paste(setdiff(names(pa),c("group","site","x","y","long","lat")),collapse=", "), "\n")
+cat("Local observed binary presences:",sum(local$pres.abs==1),"\n")
+cat("Local rows per plot unique values:",paste(unique(as.integer(table(local$plot))),collapse=", "), "\n")
 sink()
 cat(readLines("results/disdat_nsw_open_forest_provenance_check.txt"),sep="\n")
