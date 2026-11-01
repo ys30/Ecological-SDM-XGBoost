@@ -49,6 +49,8 @@ The exact-record matched comparison covers **five evaluable species and 23 speci
 
 **Manuscript drafts:** [Results and interpretation](results/THREE_MODEL_MANUSCRIPT_RESULTS.md) · [Methods and Discussion](results/THREE_MODEL_METHODS_AND_DISCUSSION.md). These drafts distinguish original-fit matched predictions from confirmed-fit convergence and fold-level metrics.
 
+**Publication-style matched figures:** [AUC SVG](results/figures/23_three_model_auc_publication.svg) · [AP SVG](results/figures/23_three_model_ap_publication.svg) · [R regeneration script](scripts/23_three_model_publication_figures.R). The earlier figures remain available below.
+
 **Matched three-model visualizations:**
 
 ![Matched three-model species-level ROC AUC](results/figures/22_three_model_auc.svg)
