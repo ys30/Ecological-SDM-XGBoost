@@ -29,7 +29,7 @@ Survey collection year(s) and dataset-level redistribution conditions remain unv
 
 **Methods:** We evaluated XGBoost, species-specific MaxEnt and a hierarchical Bayesian occurrence model using five two-dimensional spatial holdout folds. The dataset comprised 9,336 binary species–plot records for eight tree species at 1,167 plots. The matched three-model benchmark included five species with 23 eligible species–fold comparisons. For three rarer species, a separate Bayesian-only analysis assessed out-of-fold probability errors and presence retrieval at fixed per-fold survey budgets.
 
-**Results:** XGBoost achieved the highest species-mean ROC AUC for three of five evaluable species, and MaxEnt for two. Across the 23 matched species–fold comparisons, the descriptive mean AUC differences were +0.0406 (XGBoost minus Bayesian), +0.0255 (MaxEnt minus Bayesian) and +0.0151 (XGBoost minus MaxEnt). Model rankings varied by species and spatial fold. Independent longer-chain Bayesian fits passed convergence and sampler diagnostic thresholds across all five folds. In a distinct rare-species analysis, Bayesian within-fold prioritization of 25 plots per fold (125/1,167 plots total) retrieved 17 of 18 observed *Corymbia intermedia* presences, compared with 1.91 expected under geographically stratified random selection; findings for other rare species were more variable.
+**Results:** XGBoost achieved the highest species-mean ROC AUC for three of five evaluable species, and MaxEnt for two. Across the 23 matched species–fold comparisons, the descriptive mean AUC differences were +0.0406 (XGBoost minus Bayesian), +0.0255 (MaxEnt minus Bayesian) and +0.0151 (XGBoost minus MaxEnt). Model rankings varied by species and spatial fold. Independent longer-chain Bayesian fits passed convergence and sampler diagnostic thresholds across all five folds. In a distinct rare-species analysis, Bayesian within-fold prioritization of 25 plots per fold (125/1,167 plots total) retrieved 17 of 18 observed *nsw20* presences, compared with 1.91 expected under geographically stratified random selection; findings for other rare species were more variable.
 
 **Conclusions:** Geographic holdouts reveal meaningful species- and region-dependent variation in algorithm performance. Sparse-species survey prioritization is a promising exploratory application, but the present evidence does not establish model superiority, prospective survey gains or external geographic generalizability.
 
@@ -65,23 +65,23 @@ The original Bayesian fits used two chains, 1,200 iterations per chain and 600 w
 
 ### 2.5 Sparse-species probability scoring and retrieval
 
-For *Corymbia gummifera*, *C. intermedia* and *Eucalyptus carnea*, original-fit Bayesian out-of-fold probabilities were evaluated using Brier score and Bernoulli log loss. A baseline predicted each held-out fold using the species prevalence estimated from the other four training folds only. Presence retrieval was evaluated in two different ways: a pooled ranking of all 1,167 plots per species and a geographically stratified ranking allocating k plots separately to each of five spatial folds. For the latter, k=10, 25 or 50 screens 5k plots overall. The expected number of presences under random within-fold selection was calculated as Σ_f kP_f/N_f, with P_f observed positives and N_f plots in fold f. This random reference is an analytical expectation, not a fitted model, significance test or independent prospective survey.
+For *nsw19*, *C. intermedia* and *nsw22*, original-fit Bayesian out-of-fold probabilities were evaluated using Brier score and Bernoulli log loss. A baseline predicted each held-out fold using the species prevalence estimated from the other four training folds only. Presence retrieval was evaluated in two different ways: a pooled ranking of all 1,167 plots per species and a geographically stratified ranking allocating k plots separately to each of five spatial folds. For the latter, k=10, 25 or 50 screens 5k plots overall. The expected number of presences under random within-fold selection was calculated as Σ_f kP_f/N_f, with P_f observed positives and N_f plots in fold f. This random reference is an analytical expectation, not a fitted model, significance test or independent prospective survey.
 
 ## 3. Results
 
 ### 3.1 Species prevalence and benchmark eligibility
 
-Three sparse species were omitted from the five-species matched ranking because positives were geographically uneven: *C. gummifera* had eight presences across three folds (4, 1 and 3), *C. intermedia* had 18 across two folds (9 and 9), and *E. carnea* had six across two folds (1 and 5). Zero-positive folds cannot yield ROC AUC, and one-positive folds provide fragile estimates. *Eucalyptus blakelyi* contributed three eligible folds rather than five.
+Three sparse species were omitted from the five-species matched ranking because positives were geographically uneven: *C. gummifera* had eight presences across three folds (4, 1 and 3), *C. intermedia* had 18 across two folds (9 and 9), and *E. carnea* had six across two folds (1 and 5). Zero-positive folds cannot yield ROC AUC, and one-positive folds provide fragile estimates. *nsw21* contributed three eligible folds rather than five.
 
 ### 3.2 Matched three-model performance
 
 | Species | Folds | Bayesian AUC | MaxEnt AUC | XGBoost AUC | Bayesian AP | MaxEnt AP | XGBoost AP |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| *Angophora costata* | 5 | 0.7912 | 0.8219 | 0.8645 | 0.4036 | 0.4618 | 0.5536 |
-| *Eucalyptus blakelyi* | 3 | 0.7289 | 0.7693 | 0.7550 | 0.0997 | 0.1352 | 0.1391 |
-| *Eucalyptus campanulata* | 5 | 0.7119 | 0.7597 | 0.8085 | 0.1658 | 0.2126 | 0.3078 |
-| *Eucalyptus fastigata* | 5 | 0.8084 | 0.8136 | 0.7909 | 0.5384 | 0.5374 | 0.4728 |
-| *Eucalyptus nova-anglica* | 5 | 0.7520 | 0.7613 | 0.7705 | 0.1381 | 0.1494 | 0.1469 |
+| *nsw18* | 5 | 0.7912 | 0.8219 | 0.8645 | 0.4036 | 0.4618 | 0.5536 |
+| *nsw21* | 3 | 0.7289 | 0.7693 | 0.7550 | 0.0997 | 0.1352 | 0.1391 |
+| *nsw24* | 5 | 0.7119 | 0.7597 | 0.8085 | 0.1658 | 0.2126 | 0.3078 |
+| *nsw23* | 5 | 0.8084 | 0.8136 | 0.7909 | 0.5384 | 0.5374 | 0.4728 |
+| *nsw25* | 5 | 0.7520 | 0.7613 | 0.7705 | 0.1381 | 0.1494 | 0.1469 |
 
 XGBoost led species-mean AUC for three species and MaxEnt for two. AP rankings were not identical to AUC rankings, including for *E. blakelyi* and *E. nova-anglica*. Across 23 matched cells, mean AUC differences were +0.0406 for XGBoost versus Bayesian, +0.0255 for MaxEnt versus Bayesian and +0.0151 for XGBoost versus MaxEnt. Corresponding mean AP differences were +0.0563, +0.0297 and +0.0266. Equal-species weighting preserved the direction of the AUC differences (+0.0394, +0.0267 and +0.0127). No inferential significance is claimed.
 
@@ -133,7 +133,7 @@ A common spatial-holdout evaluation framework revealed heterogeneity in the disc
 
 ## Figures and supplementary materials
 
-- **Figure 1:** [Matched species-level ROC AUC](figures/23_three_model_auc_publication.svg). Mean ROC AUC across eligible held-out spatial folds for each of five tree species, comparing the original-fit hierarchical Bayesian model, MaxEnt and XGBoost on matched observations. Each species has five eligible folds except *Eucalyptus blakelyi* (three); the number of observed presences shown beside each species is summed over its eligible held-out folds. Bars represent descriptive fold means, **not** confidence intervals or uncertainty bounds. The plotted values were checked against the committed species-level CSV and SVG labels/widths (60/60 numerical SVG checks passed).
+- **Figure 1:** [Matched species-level ROC AUC](figures/23_three_model_auc_publication.svg). Mean ROC AUC across eligible held-out spatial folds for each of five tree species, comparing the original-fit hierarchical Bayesian model, MaxEnt and XGBoost on matched observations. Each species has five eligible folds except *nsw21* (three); the number of observed presences shown beside each species is summed over its eligible held-out folds. Bars represent descriptive fold means, **not** confidence intervals or uncertainty bounds. The plotted values were checked against the committed species-level CSV and SVG labels/widths (60/60 numerical SVG checks passed).
 - **Figure 2:** [Matched species-level average precision](figures/23_three_model_ap_publication.svg). Mean average precision across exactly the same eligible species–fold combinations and held-out observations as Figure 1. Model colors and species ordering are identical to Figure 1. Bars represent descriptive fold means, **not** confidence intervals. The original-fit Bayesian out-of-fold predictions were used; long-chain Bayesian convergence confirmation is a separate diagnostic and is not substituted for these original predictions.
 - **Supplementary Figure S1:** [Rare-species within-fold retrieval and random expected recall](figures/24_rare_species_retrieval_publication.svg). Three rare species, 10/25/50 plots selected separately within each of five folds; original Bayesian predictions.
 - **Supplementary Table S1:** [Matched species–fold scores](matched_bayesian_maxent_xgboost_folds.csv).
