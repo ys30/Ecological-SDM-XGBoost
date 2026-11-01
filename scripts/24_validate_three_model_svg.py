@@ -2,7 +2,6 @@
 """Check that publication SVG labels and bar widths match the committed CSV."""
 import csv
 import pathlib
-import re
 import xml.etree.ElementTree as ET
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -19,7 +18,9 @@ for metric in ("auc", "ap"):
     ns = {"s": "http://www.w3.org/2000/svg"}
     rects = [e for e in tree.findall(".//s:rect", ns)
              if e.attrib.get("fill", "").lower() in
-             {"#4b78a8", "#e0a458", "#50a08b"}]
+             {"#4b78a8", "#e0a458", "#50a08b"}
+             and e.attrib.get("x") == "330"
+             and e.attrib.get("height") == "16"]
     assert len(rects) == 15, (metric, len(rects))
     texts = [e.text or "" for e in tree.findall(".//s:text", ns)]
     for i, row in enumerate(rows):
