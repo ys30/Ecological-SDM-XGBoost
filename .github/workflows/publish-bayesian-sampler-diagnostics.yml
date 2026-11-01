@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: 'Optional successful Bayesian smoke-test run ID; blank selects latest success'
+        description: 'Optional successful fold-one run ID; blank selects latest success'
         required: false
         type: string
   push:
@@ -44,12 +44,33 @@ jobs:
           assert required.issubset(rows[0]), "Missing sampler diagnostic columns"
           for row in rows: print(row)
           PY
+      - name: Download remaining folds sampler diagnostics if available
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          REMAINING="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow evaluate-sdm-bayesian-remaining.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          if [[ "$REMAINING" =~ ^[0-9]+$ ]]; then
+            mkdir -p remaining
+            gh run download "$REMAINING" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-*' --dir remaining
+            for k in 2 3 4 5; do
+              FILE="$(find remaining -type f -name "bayes_spatial_fold_${k}_sampler_diagnostics.csv" -print -quit)"
+              if [ -n "$FILE" ]; then
+                cp "$FILE" "results/bayes_spatial_fold_${k}_sampler_diagnostics.csv"
+                echo "Recovered fold $k"
+              else
+                echo "Fold $k sampler diagnostics absent from existing artifacts"
+              fi
+            done
+          else
+            echo "No successful remaining-fold run available"
+          fi
       - name: Commit audit CSV
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results/bayes_spatial_fold_1_sampler_diagnostics.csv
+          git add results/bayes_spatial_fold_*_sampler_diagnostics.csv
           if ! git diff --cached --quiet; then
             git commit -m "Publish verified fold-one Stan sampler diagnostics"
             git pull --rebase origin main
