@@ -4,14 +4,14 @@
 
 | Taxonomic name | Reference species code |
 |---|---|
-| Angophora costata | nsw18 |
-| Corymbia gummifera | nsw19 |
-| Corymbia intermedia | nsw20 |
-| Eucalyptus blakelyi | nsw21 |
-| Eucalyptus campanulata | nsw24 |
-| Eucalyptus carnea | nsw22 |
-| Eucalyptus fastigata | nsw23 |
-| Eucalyptus nova-anglica | nsw25 |
+| nsw18 | nsw18 |
+| nsw19 | nsw19 |
+| nsw20 | nsw20 |
+| nsw21 | nsw21 |
+| nsw24 | nsw24 |
+| nsw22 | nsw22 |
+| nsw23 | nsw23 |
+| nsw25 | nsw25 |
 
 **Conclusion:** Exact identity of the analyzed 1,167 sites and 9,336 binary observations with the reference NSW survey records is established by the executed audit. The data source is Valavi et al. (2023). Source license, survey dates and model reproducibility are separate checks. **This is internal spatial cross-validation, not independent external validation.**
 
