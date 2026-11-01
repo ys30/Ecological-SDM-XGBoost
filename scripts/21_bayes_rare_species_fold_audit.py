@@ -3,7 +3,7 @@ import csv, statistics
 from pathlib import Path
 source=Path("results/bayes_spatial_cv_predictions.csv")
 with source.open(newline="") as f: rows=list(csv.DictReader(f))
-rare={"Corymbia.gummifera","Corymbia.intermedia","Eucalyptus.carnea"}
+rare={"nsw19","nsw20","nsw22"}
 out=[]
 for species in sorted(rare):
     for fold in sorted({int(r["fold"]) for r in rows}):
