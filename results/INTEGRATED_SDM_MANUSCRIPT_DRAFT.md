@@ -12,6 +12,10 @@ Two independently completed GitHub Actions runs ([41286199826](https://github.co
 
 A completed independent identity audit ([GitHub Actions run 41287426532](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41287426532), artifact `nsw-disdat-site-label-identity`) matched **1,167/1,167 plot coordinates** in both reference PA and ENV tables, confirmed exact equality for **all six environmental variables**, verified consistent reference site IDs, and found a **unique eight-species code mapping with zero mismatches across all 9,336 binary observations** (`FULL_IDENTITY_CONFIRMED: TRUE`). Thus the analytical table is confirmed to correspond to the `disdat` NSW open-forest survey records sourced from Valavi et al. (2023). This analysis performs **internal spatial cross-validation on those survey observations**, not independent external validation on a separately collected survey. The source license and survey collection dates remain to be checked against original documentation.
 
+## Numerical result verification
+
+The saved out-of-fold predictions for Bayesian, MaxEnt and XGBoost were independently checked against the matched-fold performance table using [`scripts/37_validate_three_model_matched_metrics.py`](../scripts/37_validate_three_model_matched_metrics.py). The automated [GitHub Actions run 41288740752](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41288740752) **passed**, reproducing the 138 reported AUC/AP values across 23 eligible species–fold comparisons. This is a consistency audit of archived predictions and reported results, **not** an independent retraining of the models or external validation.
+
 ## Abstract
 
 **Background:** Species distribution models can achieve strong discrimination under conventional cross-validation while transferring less reliably to geographically distinct observations. Sparse species create additional challenges for comparative evaluation and survey prioritization.
