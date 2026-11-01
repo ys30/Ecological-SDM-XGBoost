@@ -47,7 +47,7 @@ The exact-record matched comparison covers **five evaluable species and 23 speci
 | *Eucalyptus fastigata* | 0.8084 | **0.8136** | 0.7909 |
 | *Eucalyptus nova-anglica* | 0.7520 | 0.7613 | **0.7705** |
 
-**Manuscript results draft:** [Three-model spatial benchmark — Results and interpretation](results/THREE_MODEL_MANUSCRIPT_RESULTS.md). This draft separates original-fit matched predictions from confirmed-fit convergence and fold-level metrics.
+**Manuscript drafts:** [Results and interpretation](results/THREE_MODEL_MANUSCRIPT_RESULTS.md) · [Methods and Discussion](results/THREE_MODEL_METHODS_AND_DISCUSSION.md). These drafts distinguish original-fit matched predictions from confirmed-fit convergence and fold-level metrics.
 
 **Matched three-model visualizations:**
 
