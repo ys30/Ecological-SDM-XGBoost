@@ -4,9 +4,9 @@ The source is `results/bayes_spatial_cv_predictions.csv`, containing out-of-fold
 
 | Species | Bayesian Brier ↓ | Train-fold prevalence Brier ↓ | Bayesian log loss ↓ | Train-fold prevalence log loss ↓ |
 |---|---:|---:|---:|---:|
-| *Corymbia gummifera* | 0.007294 | **0.006835** | **0.039273** | 0.043137 |
-| *Corymbia intermedia* | **0.012959** | 0.015385 | **0.045149** | 0.086924 |
-| *Eucalyptus carnea* | **0.005033** | 0.005154 | **0.026652** | 0.038934 |
+| *nsw19* | 0.007294 | **0.006835** | **0.039273** | 0.043137 |
+| *nsw20* | **0.012959** | 0.015385 | **0.045149** | 0.086924 |
+| *nsw22* | **0.005033** | 0.005154 | **0.026652** | 0.038934 |
 
 ## Presence retrieval in pooled out-of-fold rankings
 
@@ -14,9 +14,9 @@ Records are ranked by descending Bayesian out-of-fold probability within species
 
 | Species | Total presences | Top 10 | Top 25 | Top 50 | Top 100 |
 |---|---:|---:|---:|---:|---:|
-| *Corymbia gummifera* | 8 | 0 | 0 | 0 | 1 |
-| *Corymbia intermedia* | 18 | 4 | 7 | 13 | 18 |
-| *Eucalyptus carnea* | 6 | 1 | 1 | 2 | 3 |
+| *nsw19* | 8 | 0 | 0 | 0 | 1 |
+| *nsw20* | 18 | 4 | 7 | 13 | 18 |
+| *nsw22* | 6 | 1 | 1 | 2 | 3 |
 
 ## Interpretation
 
