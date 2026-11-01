@@ -1,3 +1,20 @@
+## Final identity verification — completed
+
+[GitHub Actions run 41287426532](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41287426532), artifact `nsw-disdat-site-label-identity`, source commit `f61c798`, completed successfully. The report records **1,167/1,167 geographic coordinate matches** against both PA and ENV tables, **all six environmental covariates exactly equal**, PA/ENV site IDs consistent, **zero binary-label disagreements across 9,336 records**, a **unique optimal species-code mapping**, and `FULL_IDENTITY_CONFIRMED: TRUE`.
+
+| Taxonomic name | Reference species code |
+|---|---|
+| Angophora costata | nsw18 |
+| Corymbia gummifera | nsw19 |
+| Corymbia intermedia | nsw20 |
+| Eucalyptus blakelyi | nsw21 |
+| Eucalyptus campanulata | nsw24 |
+| Eucalyptus carnea | nsw22 |
+| Eucalyptus fastigata | nsw23 |
+| Eucalyptus nova-anglica | nsw25 |
+
+**Conclusion:** Exact identity of the analyzed 1,167 sites and 9,336 binary observations with the reference NSW survey records is established by the executed audit. The data source is Valavi et al. (2023). Source license, survey dates and model reproducibility are separate checks. **This is internal spatial cross-validation, not independent external validation.**
+
 # Empirical NSW disdat provenance verification — GitHub Actions evidence
 
 ## Verified execution
