@@ -23,6 +23,20 @@ Records are ranked by descending Bayesian out-of-fold probability within species
 - *C. intermedia* exhibits meaningful descriptive enrichment of presences among high-probability plots, but its 18 presences occur in only two spatial folds. The pooled top-k ranking could reflect fold-level shifts, and should not be presented as an independent external-region test.
 - *C. gummifera* has very weak high-priority retrieval in these pooled predictions; its Bayesian Brier score is worse than the training-fold prevalence baseline despite lower log loss.
 - *E. carnea* has only six presences, so one additional correctly retrieved plot substantially changes top-k recall.
-- These descriptive results use no significance tests or confidence intervals. A strong follow-up would report fold-specific top-k counts and compare against a training-only prevalence baseline on the same records.
+- These descriptive results use no significance tests or confidence intervals. Fold-specific top-k counts and a stratified random-selection reference are now available below; a matched three-algorithm rare-species analysis remains outstanding.
 
 **Scoring definition:** Brier is mean squared probability error. Log loss is the negative mean Bernoulli log likelihood, clipping probabilities only at 1e-12 for numerical stability. The baseline for a held-out fold is calculated as the positive count in the other four folds divided by their plot count; the held-out fold is never used to set its baseline. The top-k values use existing out-of-fold Bayesian probabilities without selecting k to optimize results.
+
+## Spatial-fold-local retrieval with a fixed regional budget
+
+Unlike the pooled ranking above, the fold-local analysis allocates **k plots to each of five geographic folds**. At k=25, the model screens 125/1,167 plots and captures 3/8 *C. gummifera*, 17/18 *C. intermedia*, and 4/6 *E. carnea* presences. The expected captures under simple random selection of 25 plots in each fold are 0.849, 1.911, and 0.643, giving descriptive enrichment factors of 3.53, 8.90, and 6.22 respectively. The random expected value is calculated analytically as Σ_f (25 × presences_f / n_f); folds with zero observed presences still consume their allocated survey budget.
+
+The two strategies **must not be compared as though they had the same survey cost**: pooled Top 25 screens 25 plots total, whereas fold-local Top 25 screens 125. They also encode different spatial-allocation policies. The fold-local findings describe retrospective out-of-fold rankings, not independently validated prospective survey performance.
+
+| Species | Fold-local Top 10 (50 plots total) | Fold-local Top 25 (125 total) | Fold-local Top 50 (250 total) |
+|---|---:|---:|---:|
+| *C. gummifera* | 1/8 | 3/8 | 6/8 |
+| *C. intermedia* | 9/18 | 17/18 | 18/18 |
+| *E. carnea* | 2/6 | 4/6 | 6/6 |
+
+**Files:** [per-fold capture and recall](bayesian_rare_species_within_fold_retrieval.csv), [random expectations and enrichment](bayesian_rare_species_random_baseline.csv), [Supplementary Figure S1](figures/24_rare_species_retrieval_publication.svg), [reproducibility audit](RARE_SPECIES_RETRIEVAL_REPRODUCIBILITY_AUDIT.md).
