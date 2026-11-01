@@ -1,0 +1,54 @@
+name: Evaluate MaxEnt spatial-block baseline
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/13_maxent_spatial_2d_cv.R"
+      - ".github/workflows/evaluate-sdm-maxent.yml"
+permissions:
+  contents: write
+jobs:
+  maxent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::maxnet
+            any::pROC
+            any::ggplot2
+      - run: Rscript scripts/13_maxent_spatial_2d_cv.R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maxent-spatial-validation
+          path: |
+            results/maxent_spatial_2d_*.csv
+            results/figures/20_maxent_*.png
+      - name: Publish computed outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/maxent
+          cp results/maxent_spatial_2d_*.csv /tmp/maxent/
+          cp results/figures/20_maxent_*.png /tmp/maxent/ 2>/dev/null || true
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p results/figures
+            cp /tmp/maxent/*.csv results/
+            cp /tmp/maxent/*.png results/figures/ 2>/dev/null || true
+            git add results/maxent_spatial_2d_*.csv
+            git add results/figures/20_maxent_*.png 2>/dev/null || true
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Publish computed MaxEnt spatial validation outputs"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
