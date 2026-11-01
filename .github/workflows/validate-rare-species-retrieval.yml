@@ -1,0 +1,29 @@
+name: Validate rare-species spatial-fold retrieval
+
+on:
+  push:
+    paths:
+      - 'results/bayes_spatial_cv_predictions.csv'
+      - 'results/bayesian_rare_species_within_fold_retrieval.csv'
+      - 'scripts/27_rare_species_within_fold_retrieval.py'
+      - '.github/workflows/validate-rare-species-retrieval.yml'
+  pull_request:
+    paths:
+      - 'results/bayes_spatial_cv_predictions.csv'
+      - 'results/bayesian_rare_species_within_fold_retrieval.csv'
+      - 'scripts/27_rare_species_within_fold_retrieval.py'
+      - '.github/workflows/validate-rare-species-retrieval.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Regenerate and verify held-out retrieval table
+        run: |
+          python scripts/27_rare_species_within_fold_retrieval.py
+          git diff --exit-code -- results/bayesian_rare_species_within_fold_retrieval.csv
