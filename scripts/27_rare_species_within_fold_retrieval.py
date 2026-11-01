@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "results/bayes_spatial_cv_predictions.csv"
 OUTPUT = ROOT / "results/bayesian_rare_species_within_fold_retrieval.csv"
-RARE = ("Corymbia.gummifera", "Corymbia.intermedia", "Eucalyptus.carnea")
+RARE = ("nsw19", "nsw20", "nsw22")
 K = (10, 25, 50)
 
 def main():
