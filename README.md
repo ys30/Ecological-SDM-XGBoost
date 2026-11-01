@@ -1,4 +1,4 @@
-# Ecological Species Distribution Modeling | R, XGBoost & Spatial Analytics
+# Ecological Species Distribution Modeling | XGBoost, MaxEnt & Spatial Validation
 
 **Environmental data science portfolio project** · Predicting native tree species presence across forest plots in New South Wales, Australia.
 
@@ -8,15 +8,15 @@
 
 **Business/research problem:** Predict native tree-species occurrence from environmental and geographic data while testing whether model performance transfers to unseen locations.
 
-**What I delivered:** An end-to-end R/XGBoost analysis of **9,336 labeled records across 1,167 plots and 8 species**, with automated model evaluation, class-imbalance diagnostics, spatial cross-validation, probability calibration, and geographic error visualization.
+**What I delivered:** An end-to-end R-based XGBoost and species-specific MaxEnt analysis of **9,336 labeled records across 1,167 plots and 8 species**, with automated model evaluation, class-imbalance diagnostics, spatial cross-validation, probability calibration, and geographic error visualization.
 
 **Verified outcomes:** **0.9377 ROC AUC** on a plot-grouped holdout (coordinates included); **0.8895** mean ROC AUC under five longitude-band folds; **0.9072** under five 2D spatial-block folds. The latter two use the same environmental/taxon predictors and fixed 300-round configuration. These designs are not a paired significance test.
 
-**Practical insight:** Despite strong discrimination, the plot-grouped model identifies only **36.9% of presences** at a 0.50 threshold. I explicitly evaluated this sensitivity trade-off instead of reporting accuracy alone.
+**MaxEnt benchmark:** Species-specific MaxEnt (R `maxnet`) was evaluated on the same held-out spatial-fold records as XGBoost for **5 estimable species and 23 species–fold combinations**. XGBoost had higher mean ROC AUC for 3 species; MaxEnt for 2. Three rare species could not be scored reliably. [Matched benchmark CSV](results/matched_maxent_xgboost_species_summary.csv) · [Comparison figure](results/figures/21_matched_maxent_xgboost_auc.png). These are descriptive comparisons, not significance tests.\n\n**Practical insight:** Despite strong discrimination, the plot-grouped model identifies only **36.9% of presences** at a 0.50 threshold. I explicitly evaluated this sensitivity trade-off instead of reporting accuracy alone.
 
-**Skills demonstrated:** R · XGBoost · environmental data processing · geographic cross-validation · imbalanced classification · ROC/PR analysis · probability calibration · reproducible GitHub Actions.
+**Skills demonstrated:** R · XGBoost · MaxEnt / maxnet · environmental data processing · geographic cross-validation · imbalanced classification · ROC/PR analysis · probability calibration · reproducible GitHub Actions.
 
-**Explore the evidence:** [Plot-held-out metrics](results/plot_holdout_metrics.csv) · [Spatial CV results](results/spatial_2d_block_cv_summary.csv) · [Calibration analysis](results/plot_holdout_calibration_summary.csv) · [Detailed methods and limitations](results/RESULTS_AND_INTERPRETATION.md).
+**Explore the evidence:** [Matched XGBoost–MaxEnt results](results/matched_maxent_xgboost_species_summary.csv) · [Plot-held-out metrics](results/plot_holdout_metrics.csv) · [Spatial CV results](results/spatial_2d_block_cv_summary.csv) · [Calibration analysis](results/plot_holdout_calibration_summary.csv) · [Detailed methods and limitations](results/RESULTS_AND_INTERPRETATION.md).
 
 <details>
 <summary><strong>Representative figures (expand)</strong></summary>
@@ -25,7 +25,7 @@
 
 **Geographic robustness:** ![2D spatial-block assignments](results/figures/16_spatial_2d_block_assignments.png)
 
-**Spatial errors:** ![Held-out classification errors](results/figures/15_spatial_holdout_errors.png)
+**Spatial errors:** ![Held-out classification errors](results/figures/15_spatial_holdout_errors.png)\n\n**Model comparison:** ![Matched MaxEnt versus XGBoost spatial-fold AUC differences](results/figures/21_matched_maxent_xgboost_auc.png)
 
 </details>
 
@@ -315,6 +315,26 @@ The R `maxnet` baseline fits separate linear/quadratic MaxEnt models for eight s
 **Coverage:** 23 of 40 species–fold evaluations produced valid scores; 17 were flagged as insufficient positive records. These are means over available folds, not an eight-species pooled benchmark. Species-specific prevalence affects average precision, and incomplete fold coverage for *E. blakelyi* limits comparisons.
 
 **Next benchmark:** Recompute XGBoost on the same species, held-out plots, and eligible folds, then compare species-level ROC AUC and average precision on matched validation records. The pooled XGBoost 2D spatial-block AUC of 0.9072 is **not directly comparable** to these per-species MaxEnt means. Do not interpret any difference as a statistically tested model advantage.
+
+## Matched MaxEnt versus XGBoost — verified spatial-fold benchmark
+
+[![Matched MaxEnt–XGBoost workflow](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-maxent.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-maxent.yml)
+
+Using existing out-of-fold predictions, both methods were scored on **identical species, spatial folds, and validation records**. The benchmark covers 5 estimable species and 23 valid species–fold combinations; three sparse species lacked sufficient positives for MaxEnt evaluation. Differences below are XGBoost minus MaxEnt, averaged over eligible folds per species.
+
+| Species | Valid folds | MaxEnt AUC | XGBoost AUC | AUC difference |
+|---|---:|---:|---:|---:|
+| *Angophora costata* | 5 | 0.8219 | 0.8645 | +0.0426 |
+| *Eucalyptus blakelyi* | 3 | 0.7693 | 0.7550 | −0.0143 |
+| *Eucalyptus campanulata* | 5 | 0.7597 | 0.8085 | +0.0488 |
+| *Eucalyptus fastigata* | 5 | 0.8136 | 0.7909 | −0.0226 |
+| *Eucalyptus nova-anglica* | 5 | 0.7613 | 0.7705 | +0.0091 |
+
+![Matched XGBoost minus MaxEnt ROC AUC by species](results/figures/21_matched_maxent_xgboost_auc.png)
+
+**Interpretation:** Neither model dominates across species. MaxEnt uses species-specific environmental-only linear/quadratic features and surveyed non-detections as a background proxy; XGBoost uses environmental and taxon predictors in a pooled classifier. The matched validation rows improve metric comparability but do not equalize training objectives, feature sets, or model complexity. Fold results are not independent evidence of statistical significance, and relative suitability scores are not calibrated occurrence probabilities.
+
+**Reproducibility:** [Matched per-fold metrics](results/matched_maxent_xgboost_species_folds.csv) · [Species summary](results/matched_maxent_xgboost_species_summary.csv) · [R comparison script](scripts/14_matched_maxent_xgboost.R).
 
 ## Scientific limitations and reproducibility audit
 
