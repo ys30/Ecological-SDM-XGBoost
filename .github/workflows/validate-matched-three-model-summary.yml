@@ -1,0 +1,31 @@
+name: Validate matched three-model species summary
+
+on:
+  push:
+    paths:
+      - 'scripts/31_validate_matched_three_model_summary.py'
+      - 'results/matched_bayesian_maxent_xgboost_folds.csv'
+      - 'results/matched_bayesian_maxent_xgboost_species.csv'
+      - '.github/workflows/validate-matched-three-model-summary.yml'
+  pull_request:
+    paths:
+      - 'scripts/31_validate_matched_three_model_summary.py'
+      - 'results/matched_bayesian_maxent_xgboost_folds.csv'
+      - 'results/matched_bayesian_maxent_xgboost_species.csv'
+      - '.github/workflows/validate-matched-three-model-summary.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recompute all species means and sample totals
+        run: python scripts/31_validate_matched_three_model_summary.py
