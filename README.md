@@ -47,6 +47,8 @@ The exact-record matched comparison covers **five evaluable species and 23 speci
 | *Eucalyptus fastigata* | 0.8084 | **0.8136** | 0.7909 |
 | *Eucalyptus nova-anglica* | 0.7520 | 0.7613 | **0.7705** |
 
+**Rare-species survey prioritization (exploratory):** A Bayesian out-of-fold ranking within each of five spatial folds recovered **17/18 *Corymbia intermedia* presences** among the top 25 plots per fold (125/1,167 plots screened overall), versus **1.91 expected captures** under fold-stratified random selection. The other two rare species had only 8 and 6 presences, and the apparent gains are highly sample-sensitive. These are descriptive original-fit Bayesian results, not a three-model matched comparison or external field validation. [Supplementary Figure S1](results/figures/24_rare_species_retrieval_publication.svg) · [Fold-specific retrieval](results/bayesian_rare_species_within_fold_retrieval.csv) · [Random baseline](results/bayesian_rare_species_random_baseline.csv) · [Interpretation](results/BAYESIAN_RARE_SPECIES_BASELINE_AND_RETRIEVAL.md).
+
 **Manuscript drafts:** [Results and interpretation](results/THREE_MODEL_MANUSCRIPT_RESULTS.md) · [Methods and Discussion](results/THREE_MODEL_METHODS_AND_DISCUSSION.md). These drafts distinguish original-fit matched predictions from confirmed-fit convergence and fold-level metrics.
 
 **Publication-style matched figures:** [AUC SVG](results/figures/23_three_model_auc_publication.svg) · [AP SVG](results/figures/23_three_model_ap_publication.svg) · [R regeneration script](scripts/23_three_model_publication_figures.R). The earlier figures remain available below.
