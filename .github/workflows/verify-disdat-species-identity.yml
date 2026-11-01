@@ -1,0 +1,30 @@
+name: Verify disdat NSW site and species-label identity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/34_verify_disdat_species_identity.R'
+      - '.github/workflows/verify-disdat-species-identity.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::disdat
+      - name: Compare site and species labels against disdat
+        run: Rscript scripts/34_verify_disdat_species_identity.R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nsw-disdat-site-label-identity
+          path: results/disdat_nsw_site_label_identity.txt
+          if-no-files-found: warn
