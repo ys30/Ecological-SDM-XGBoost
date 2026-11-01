@@ -50,7 +50,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results/bayes_spatial_fold_${{ matrix.fold }}_diagnostics_confirm.csv results/bayes_spatial_fold_${{ matrix.fold }}_sampler_diagnostics_confirm.csv results/bayes_spatial_fold_${{ matrix.fold }}_confirmation_status.txt
+          git add results/bayes_spatial_fold_${{ matrix.fold }}_diagnostics_confirm.csv results/bayes_spatial_fold_${{ matrix.fold }}_sampler_diagnostics_confirm.csv results/bayes_spatial_fold_${{ matrix.fold }}_confirmation_status.txt results/bayes_spatial_cv_metrics_folds_${{ matrix.fold }}_confirm.csv
           if ! git diff --cached --quiet; then
             git commit -m "Publish Bayesian fold ${{ matrix.fold }} convergence confirmation"
             for attempt in 1 2 3 4 5; do
