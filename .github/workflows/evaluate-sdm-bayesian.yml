@@ -1,6 +1,10 @@
 name: Bayesian hierarchical SDM spatial smoke test
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/15_bayes_hierarchical_spatial.R'
+      - '.github/workflows/evaluate-sdm-bayesian.yml'
 permissions:
   contents: read
 jobs:
