@@ -20,4 +20,6 @@ Confirmation configuration: 4 chains per fold, 2,000 iterations per chain, 1,000
 
 **Fold-level performance reconciliation:** `results/bayesian_five_fold_confirmed_metrics.csv` contains all five four-chain fold-level AUC/AP/logloss results. These have already been reconciled against the original metrics in `results/BAYESIAN_LONG_CHAIN_METRIC_RECONCILIATION.md`: maximum absolute AUC difference < 0.00033. The historical confirmation artifacts do not include four-chain per-record held-out predictions, so matched three-model figures remain based on original predictions. Do not claim per-record agreement or four-chain-derived three-model matched metrics.
 
-Next: audit the published fold-level reconciliation with an automated validation script and CI, without rerunning MCMC.
+**Automated verification:** GitHub Actions [Validate Bayesian four-chain metric stability, run 41356374575](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41356374575) succeeded using `scripts/39_validate_bayesian_confirmation_metrics.py`. Maximum absolute original-vs-confirmed changes across five folds: AUC 0.0003276484, AP 0.0013288474, logloss 0.0001763619. This CI verifies archived fold-level metrics only, not long-chain per-record predictions.
+
+Next: update private manuscript Bayesian robustness wording using the confirmed diagnostics and fold-level metric stability; keep original three-model matched comparisons clearly labeled.
