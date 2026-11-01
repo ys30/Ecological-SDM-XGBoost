@@ -30,11 +30,16 @@ jobs:
           TRIGGER_RUN: ${{ github.event.workflow_run.id }}
         run: |
           mkdir -p downloaded
+          RUN_ONE="${RUN_ONE##*/}"
+          RUN_REMAINING="${RUN_REMAINING##*/}"
+          RUN_ONE="${RUN_ONE%%\?*}"
+          RUN_REMAINING="${RUN_REMAINING%%\?*}"
           if [ -z "$RUN_REMAINING" ]; then RUN_REMAINING="$TRIGGER_RUN"; fi
           if [ -z "$RUN_ONE" ]; then
             RUN_ONE="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow evaluate-sdm-bayesian.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
           fi
-          test -n "$RUN_ONE" && test -n "$RUN_REMAINING"
+          [[ "$RUN_ONE" =~ ^[0-9]+$ ]] && [[ "$RUN_REMAINING" =~ ^[0-9]+$ ]] || { echo "Invalid workflow run IDs"; exit 1; }
+          echo "Downloading Fold 1 from run $RUN_ONE and Folds 2-5 from run $RUN_REMAINING"
           gh run download "$RUN_ONE" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-one' --dir downloaded
           gh run download "$RUN_REMAINING" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-*' --dir downloaded
           find downloaded -mindepth 2 -type f -name '*.csv' -exec cp {} downloaded/ \;
