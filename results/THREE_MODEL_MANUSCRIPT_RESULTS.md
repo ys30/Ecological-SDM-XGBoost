@@ -22,6 +22,10 @@ XGBoost has the largest mean AUC for three of five evaluable species; MaxEnt for
 
 Across 23 identical species–fold evaluations, the mean within-fold AUC difference was +0.0406 for XGBoost minus Bayesian, +0.0255 for MaxEnt minus Bayesian, and +0.0151 for XGBoost minus MaxEnt. Corresponding mean AP differences were +0.0563, +0.0297, and +0.0266. XGBoost exceeded Bayesian on AUC in 17/23 matched combinations, MaxEnt exceeded Bayesian in 18/23, and XGBoost exceeded MaxEnt in 14/23. These comparisons are **descriptive**: the folds are dependent, and the results must not be interpreted as confidence intervals or significance tests. Full species-specific differences are provided in [the paired-differences audit](MATCHED_MODEL_PAIRED_DIFFERENCES.md).
 
+## Weighting sensitivity
+
+Because one species contributed only three evaluable folds while the others contributed five, we also averaged paired differences with equal weight per species rather than per species–fold. The equal-species AUC differences were +0.0394 (XGBoost minus Bayesian), +0.0267 (MaxEnt minus Bayesian), and +0.0127 (XGBoost minus MaxEnt); the corresponding AP differences were +0.0549, +0.0302, and +0.0248. All contrasts retained their sign under this reweighting. This deterministic sensitivity analysis does not establish inferential significance; see [weighting sensitivity details](MATCHED_MODEL_WEIGHTING_SENSITIVITY.md).
+
 ## Bayesian convergence confirmation
 
 The original Bayesian fit used two chains and 1,200 iterations per chain (600 warmup). Independent confirmation fits used four chains and 2,000 iterations per chain (1,000 warmup). Across all five confirmation folds, all 175 parameter–fold diagnostic rows passed R-hat <= 1.01 and bulk/tail ESS >= 400. Twenty chains had zero divergences and zero treedepth-limit hits; minimum BFMI was 0.645. See `results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md`.
