@@ -1,0 +1,41 @@
+name: Confirm Bayesian spatial convergence folds 2 and 5
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/confirm-bayesian-spatial-folds.yml'
+permissions:
+  contents: read
+jobs:
+  confirm:
+    strategy:
+      fail-fast: false
+      matrix:
+        fold: [2, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+            any::pROC
+      - name: Confirmatory four-chain refit
+        run: Rscript scripts/15_bayes_hierarchical_spatial.R ${{ matrix.fold }} --confirm
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayesian-confirm-fold-${{ matrix.fold }}
+          path: |
+            results/bayes_spatial_fold_${{ matrix.fold }}_diagnostics_confirm.csv
+            results/bayes_spatial_fold_${{ matrix.fold }}_sampler_diagnostics_confirm.csv
+            results/bayes_spatial_cv_metrics_folds_${{ matrix.fold }}_confirm.csv
+            results/bayes_spatial_cv_predictions_folds_${{ matrix.fold }}_confirm.csv
