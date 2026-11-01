@@ -7,16 +7,16 @@ Source: the five published `results/bayes_spatial_fold_{1..5}_diagnostics.csv` f
 | 1 | lp__ | 1.00341 | 319.71 | ESS |
 | 2 | lp__ | 1.00738 | 328.91 | ESS |
 | 2 | sd_species__z_rainann | 1.01453 | 350.83 | R-hat + ESS |
-| 2 | r_species[Eucalyptus.carnea,z_rainann] | 1.01117 | 492.64 | R-hat |
+| 2 | r_species[nsw22,z_rainann] | 1.01117 | 492.64 | R-hat |
 | 3 | lp__ | 1.00612 | 190.99 | ESS |
 | 3 | sd_species__z_rainann | 1.00324 | 337.76 | ESS |
 | 4 | lp__ | 1.00572 | 266.84 | ESS |
-| 4 | r_species[Eucalyptus.fastigata,Intercept] | 0.99952 | 391.87 | ESS |
+| 4 | r_species[nsw23,Intercept] | 0.99952 | 391.87 | ESS |
 | 5 | lp__ | 1.00269 | 340.80 | ESS |
 | 5 | b_z_tempann | 1.00942 | 351.92 | ESS |
-| 5 | r_species[Eucalyptus.campanulata,z_tempann] | 1.00989 | 362.22 | ESS |
-| 5 | r_species[Eucalyptus.fastigata,z_tempann] | 1.00751 | 369.03 | ESS |
-| 5 | r_species[Angophora.costata,z_tempann] | 1.00807 | 373.34 | ESS |
+| 5 | r_species[nsw24,z_tempann] | 1.00989 | 362.22 | ESS |
+| 5 | r_species[nsw23,z_tempann] | 1.00751 | 369.03 | ESS |
+| 5 | r_species[nsw18,z_tempann] | 1.00807 | 373.34 | ESS |
 | 5 | b_z_topo | 1.01110 | 1075.71 | R-hat |
 
 **Counts:** 14 unique flagged rows; 3 rows have R-hat > 1.01; 12 rows have bulk ESS < 400. One row violates both criteria.
