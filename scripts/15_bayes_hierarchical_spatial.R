@@ -14,7 +14,12 @@ priors <- c(prior(normal(-2.5,2),class="Intercept"),
             prior(exponential(2),class="sd"))
 dir.create("results",showWarnings=FALSE)
 args <- commandArgs(trailingOnly=TRUE)
-folds <- if(length(args)) as.integer(args) else 1:5
+folds <- if(length(args)) as.integer(args[!grepl("^--",args)]) else 1:5
+confirm <- "--confirm" %in% args
+nchains <- if(confirm) 4L else 2L
+niter <- if(confirm) 2000L else 1200L
+nwarmup <- if(confirm) 1000L else 600L
+suffix <- if(confirm) "_confirm" else ""
 stopifnot(length(folds)>0,all(!is.na(folds)),all(folds %in% 1:5))
 metrics <- list(); predictions <- list()
 for(k in folds) {
@@ -28,12 +33,12 @@ for(k in folds) {
    te[[paste0("z_",nm)]] <- (te[[nm]]-mu)/sig
  }
  fit <- brm(formula,data=tr,family=bernoulli(),prior=priors,
-   chains=2,iter=1200,warmup=600,cores=2,seed=2026+k,
+   chains=nchains,iter=niter,warmup=nwarmup,cores=nchains,seed=2026+k,
    refresh=0,control=list(adapt_delta=0.95))
  diag <- posterior::summarise_draws(posterior::as_draws_array(fit), "rhat", "ess_bulk", "ess_tail")
  # Stan sampler diagnostics are necessary beyond R-hat and effective sample size.
  sampler <- rstan::get_sampler_params(fit$fit,inc_warmup=FALSE)
- stopifnot(length(sampler)==2L)
+ stopifnot(length(sampler)==nchains)
  chain_diag <- lapply(seq_along(sampler),function(i) {
    x <- sampler[[i]]
    stopifnot(all(c("divergent__","treedepth__","energy__") %in% colnames(x)))
@@ -44,9 +49,9 @@ for(k in folds) {
      max_treedepth_observed=max(x[,"treedepth__"]),
      treedepth_at_limit=sum(x[,"treedepth__"]>=10),bfmi=bfmi)
  })
- write.csv(do.call(rbind,chain_diag),sprintf("results/bayes_spatial_fold_%d_sampler_diagnostics.csv",k),row.names=FALSE)
- write.csv(as.data.frame(diag),sprintf("results/bayes_spatial_fold_%d_diagnostics.csv",k),row.names=FALSE)
- saveRDS(fit,sprintf("results/bayes_spatial_fold_%d.rds",k))
+ write.csv(do.call(rbind,chain_diag),sprintf("results/bayes_spatial_fold_%d_sampler_diagnostics%s.csv",k,suffix),row.names=FALSE)
+ write.csv(as.data.frame(diag),sprintf("results/bayes_spatial_fold_%d_diagnostics%s.csv",k,suffix),row.names=FALSE)
+ saveRDS(fit,sprintf("results/bayes_spatial_fold_%d%s.rds",k,suffix))
  pdraw <- posterior_epred(fit,newdata=te,allow_new_levels=TRUE)
  p <- colMeans(pdraw)
  auc <- if(length(unique(te$pres.abs))==2)
@@ -63,5 +68,5 @@ for(k in folds) {
    lower_95=apply(pdraw,2,quantile,.025),
    upper_95=apply(pdraw,2,quantile,.975))
 }
-write.csv(do.call(rbind,metrics),sprintf("results/bayes_spatial_cv_metrics_folds_%s.csv",paste(folds,collapse="-")),row.names=FALSE)
-write.csv(do.call(rbind,predictions),sprintf("results/bayes_spatial_cv_predictions_folds_%s.csv",paste(folds,collapse="-")),row.names=FALSE)
+write.csv(do.call(rbind,metrics),sprintf("results/bayes_spatial_cv_metrics_folds_%s%s.csv",paste(folds,collapse="-"),suffix),row.names=FALSE)
+write.csv(do.call(rbind,predictions),sprintf("results/bayes_spatial_cv_predictions_folds_%s%s.csv",paste(folds,collapse="-")),row.names=FALSE)
