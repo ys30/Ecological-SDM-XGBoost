@@ -1,0 +1,51 @@
+name: Recover completed Bayesian confirmation diagnostics
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/recover-bayesian-confirm-artifacts.yml'
+permissions:
+  actions: read
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download saved diagnostic artifacts from failed confirmation run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p recovered
+          for k in 2 5; do
+            gh run download 41273525325 --repo "$GITHUB_REPOSITORY" --name "bayesian-confirm-fold-$k" --dir "recovered/fold-$k"
+            for kind in diagnostics sampler_diagnostics; do
+              src="recovered/fold-$k/bayes_spatial_fold_${k}_${kind}_confirm.csv"
+              test -s "$src" || { echo "Missing $src"; exit 1; }
+              cp "$src" "results/bayes_spatial_fold_${k}_${kind}_confirm.csv"
+            done
+            src="recovered/fold-$k/bayes_spatial_cv_metrics_folds_${k}_confirm.csv"
+            test -s "$src" && cp "$src" "results/" || true
+          done
+          python - <<'PY'
+          import csv
+          for k in (2,5):
+              p=f"results/bayes_spatial_fold_{k}_sampler_diagnostics_confirm.csv"
+              rows=list(csv.DictReader(open(p)))
+              assert len(rows)==4, f"Fold {k}: expected four chains"
+              assert all(int(r["post_warmup_draws"])==1000 for r in rows)
+              print("Fold",k,"sampler rows",rows)
+          PY
+      - name: Publish recovered confirmatory diagnostics
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/bayes_spatial_fold_{2,5}_*confirm.csv results/bayes_spatial_cv_metrics_folds_{2,5}_confirm.csv 2>/dev/null || git add results/*confirm.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Recover completed four-chain Bayesian confirmation diagnostics"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
