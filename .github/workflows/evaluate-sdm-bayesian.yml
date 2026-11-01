@@ -6,7 +6,7 @@ on:
       - 'scripts/15_bayes_hierarchical_spatial.R'
       - '.github/workflows/evaluate-sdm-bayesian.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   bayes-fold-one:
     runs-on: ubuntu-latest
@@ -38,3 +38,14 @@ jobs:
             results/bayes_spatial_cv_*.csv
             results/bayes_spatial_fold_1_diagnostics.csv
             results/bayes_spatial_fold_1_sampler_diagnostics.csv
+      - name: Publish fold-one sampler diagnostics
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/bayes_spatial_fold_1_sampler_diagnostics.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish fold-one Stan sampler diagnostics"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
