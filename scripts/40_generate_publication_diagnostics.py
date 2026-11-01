@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Create publication candidate maps and matched-fold diagnostics from committed CSVs.
-Only anonymized species identifiers are displayed.
+Public figure labels are generic Species A–E; source CSVs retain original keys.
 """
 import csv
 from collections import Counter
@@ -40,6 +40,7 @@ models = [("Bayesian", "bayesian"), ("MaxEnt", "maxent"), ("XGBoost", "xgboost")
 fig, axes = plt.subplots(1, 2, figsize=(12, 6), sharey=True)
 for ax, metric in zip(axes, ["auc", "ap"]):
     labels = sorted({r["species"] for r in folds})
+    public_labels = [f"Species {chr(65+i)}" for i in range(len(labels))]
     for i, species in enumerate(labels):
         sub = [r for r in folds if r["species"] == species]
         for j, (name, key) in enumerate(models):
@@ -49,7 +50,7 @@ for ax, metric in zip(axes, ["auc", "ap"]):
             ax.scatter(sum(xs)/len(xs), i+(j-1)*.22, s=75, color=colors[j], marker="|", linewidths=2)
     ax.set_xlim(0, 1)
     ax.set_xlabel("ROC AUC" if metric == "auc" else "Average precision")
-    ax.set_yticks(range(len(labels)), labels)
+    ax.set_yticks(range(len(labels)), public_labels)
     ax.grid(axis="x", alpha=.2)
 axes[0].invert_yaxis()
 fig.suptitle("Matched held-out fold performance: points = folds; ticks = fold means")
