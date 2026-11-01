@@ -30,7 +30,20 @@ for(k in folds) {
  fit <- brm(formula,data=tr,family=bernoulli(),prior=priors,
    chains=2,iter=1200,warmup=600,cores=2,seed=2026+k,
    refresh=0,control=list(adapt_delta=0.95))
- diag <- posterior::summarise_draws(posterior::as_draws_array(fit), "rhat", "ess_bulk")
+ diag <- posterior::summarise_draws(posterior::as_draws_array(fit), "rhat", "ess_bulk", "ess_tail")
+ # Stan sampler diagnostics are necessary beyond R-hat and effective sample size.
+ sampler <- rstan::get_sampler_params(fit$fit,inc_warmup=FALSE)
+ stopifnot(length(sampler)==2L)
+ chain_diag <- lapply(seq_along(sampler),function(i) {
+   x <- sampler[[i]]
+   stopifnot(all(c("divergent__","treedepth__","energy__") %in% colnames(x)))
+   e <- x[,"energy__"]
+   bfmi <- mean(diff(e)^2)/stats::var(e)
+   data.frame(chain=i,post_warmup_draws=nrow(x),divergences=sum(x[,"divergent__"]),
+     max_treedepth_observed=max(x[,"treedepth__"]),
+     treedepth_at_limit=sum(x[,"treedepth__"]>=10),bfmi=bfmi)
+ })
+ write.csv(do.call(rbind,chain_diag),sprintf("results/bayes_spatial_fold_%d_sampler_diagnostics.csv",k),row.names=FALSE)
  write.csv(as.data.frame(diag),sprintf("results/bayes_spatial_fold_%d_diagnostics.csv",k),row.names=FALSE)
  saveRDS(fit,sprintf("results/bayes_spatial_fold_%d.rds",k))
  pdraw <- posterior_epred(fit,newdata=te,allow_new_levels=TRUE)
