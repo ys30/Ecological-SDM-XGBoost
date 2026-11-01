@@ -52,6 +52,26 @@ if (length(ref_lon)>0 && length(ref_lat)>0) {
   cat("Geographic coordinate match not attempted: no verified lon/lat columns.\n")
   cat("Reference x/y, if present, require CRS verification before comparison.\n")
 }
+# Additional evidence: compare species-level occurrence totals if PA contains
+# identically named binary response columns. Totals are a screening check,
+# not proof that individual sites or labels are identical.
+local_species <- sort(unique(as.character(local$Species)))
+candidate_cols <- intersect(local_species,names(pa))
+cat("Exact species-name columns in reference PA:",
+    paste(candidate_cols,collapse=", "), "\n")
+if(length(candidate_cols)>0L) {
+  for(sp in candidate_cols) {
+    vals <- suppressWarnings(as.numeric(as.character(pa[[sp]])))
+    if(all(is.na(vals) | vals %in% c(0,1))) {
+      cat("Species",sp,"local positives",sum(local$pres.abs[local$Species==sp]==1),
+          "reference positives",sum(vals==1,na.rm=TRUE),"\n")
+    } else {
+      cat("Species",sp,"reference values not safely interpretable as binary; skipped\n")
+    }
+  }
+}
+cat("IMPORTANT: No claim of exact dataset identity without matched sites AND labels.\n")
+
 # The disdat presence/absence table is WIDE (one column per species), whereas
 # this repository is LONG (one row per species per plot). Report this explicitly.
 cat("Reference PA is wide format; local input is long format.\n")
