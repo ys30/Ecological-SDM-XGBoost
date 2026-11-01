@@ -1,0 +1,27 @@
+name: Validate rare-species publication figure
+
+on:
+  push:
+    paths:
+      - 'results/bayesian_rare_species_random_baseline.csv'
+      - 'results/figures/24_rare_species_retrieval_publication.svg'
+      - 'scripts/29_validate_rare_species_retrieval_svg.py'
+      - '.github/workflows/validate-rare-species-figure.yml'
+  pull_request:
+    paths:
+      - 'results/bayesian_rare_species_random_baseline.csv'
+      - 'results/figures/24_rare_species_retrieval_publication.svg'
+      - 'scripts/29_validate_rare_species_retrieval_svg.py'
+      - '.github/workflows/validate-rare-species-figure.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Audit SVG bar heights against CSV
+        run: python scripts/29_validate_rare_species_retrieval_svg.py
