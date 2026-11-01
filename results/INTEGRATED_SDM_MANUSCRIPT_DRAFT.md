@@ -16,6 +16,13 @@ A completed independent identity audit ([GitHub Actions run 41287426532](https:/
 
 The saved out-of-fold predictions for Bayesian, MaxEnt and XGBoost were independently checked against the matched-fold performance table using [`scripts/37_validate_three_model_matched_metrics.py`](../scripts/37_validate_three_model_matched_metrics.py). The automated [GitHub Actions run 41288740752](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41288740752) **passed**, reproducing the 138 reported AUC/AP values across 23 eligible species–fold comparisons. This is a consistency audit of archived predictions and reported results, **not** an independent retraining of the models or external validation.
 
+
+## Data identity and disclosure policy (submission gate)
+
+The public `disdat` NSW open-forest presence–absence dataset uses anonymized species codes (`nsw18`–`nsw25`). Elith et al. (2020) state that permission for release covered **anonymized species identities**. The current repository additionally contains real taxonomic names and an internally derived code correspondence. Numerical equivalence of occurrence labels does **not** establish authorization to publicly disclose species identities. Until the original data provider confirms otherwise, the submission manuscript and public-facing figures/tables should use the anonymized `nsw` identifiers; keep any real-name mapping out of public appendices. This is an editorial disclosure safeguard, not a modification of model predictions or scores. Existing public files with real names require a separate coordinated remediation; merely changing this paragraph does not resolve their disclosure risk.
+
+Survey collection year(s) and dataset-level redistribution conditions remain unverified. Software package and article licenses must not be presented as evidence of permission to disclose the underlying survey's original taxonomic identities. See [reproducibility and submission gates](SDM_REPRODUCIBILITY_AND_SUBMISSION_GATES.md).
+
 ## Abstract
 
 **Background:** Species distribution models can achieve strong discrimination under conventional cross-validation while transferring less reliably to geographically distinct observations. Sparse species create additional challenges for comparative evaluation and survey prioritization.
