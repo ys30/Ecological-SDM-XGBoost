@@ -15,9 +15,15 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
             any::brms
             any::posterior
             any::pROC
+      - name: Verify Stan compilation dependencies
+        run: |
+          Rscript -e 'stopifnot(requireNamespace("BH",quietly=TRUE),requireNamespace("rstan",quietly=TRUE),requireNamespace("brms",quietly=TRUE)); cat("BH:",as.character(packageVersion("BH")),"\\n"); cat("BH include:",system.file("include",package="BH"),"\\n"); stopifnot(nzchar(system.file("include",package="BH")))'
       - name: Run one held-out spatial fold
         run: Rscript scripts/15_bayes_hierarchical_spatial.R 1
       - uses: actions/upload-artifact@v4
