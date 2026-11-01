@@ -6,6 +6,14 @@ Updated 2026-11-01. This document distinguishes completed source verification fr
 
 [Run 41287426532](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41287426532) verified 1,167/1,167 site coordinates in reference PA/ENV, all six environmental fields, a unique eight-species mapping, and zero disagreements among 9,336 binary labels. This establishes the identity of the working dataset as the NSW open-forest survey records in `disdat`, attributed to Valavi et al. (2023).
 
+## Bayesian computation: implementation verified, historical runtime pending
+
+The committed [Bayesian fitting script](../scripts/15_bayes_hierarchical_spatial.R) explicitly loads `brms`, calls `brms::brm` through `brm(...)` with Bernoulli-logit likelihood and partial-pooling species effects, and calls `posterior::summarise_draws` and `rstan::get_sampler_params` for posterior and Stan sampler diagnostics. The original mode specifies two chains, 1,200 iterations per chain and 600 warmup; the `--confirm` mode specifies four chains, 2,000 iterations and 1,000 warmup. Five spatial folds are fitted separately with seeds `2026 + fold`.
+
+The [saved convergence audit](BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md) documents 175/175 parameter-fold checks meeting its R-hat and ESS thresholds, with zero divergent transitions and zero treedepth-limit hits across 20 confirmation chains, and minimum BFMI 0.645. These are **repository-reported diagnostic results**, not a new independent rerun performed during this review.
+
+**Important distinction:** `capture-sdm-environment.yml` explicitly installs only `xgboost`, `maxnet`, `pROC` and `ggplot2`; `scripts/32_capture_sdm_environment.R` checks availability of `brms`, `rstan` and `posterior` but does not install them. This separate inventory workflow is **not the Bayesian training environment**. Missing explicit installation in the inventory workflow is **not evidence that the historical Bayesian fits lacked these packages or were fabricated**. The actual historical Bayesian training runtime, package versions and end-to-end reproducibility are still unverified.
+
 ## Still open: computational reproducibility
 
 The repository's `scripts/32_capture_sdm_environment.R` and `capture-sdm-environment.yml` produce a **current CI environment inventory** for R, xgboost, maxnet, pROC and ggplot2. The workflow does **not** install brms, rstan or posterior; missing versions are expected and must not be described as a complete Bayesian runtime record. Even when all packages are present, a newly captured version is **not evidence of the version used for the historical model results**.
