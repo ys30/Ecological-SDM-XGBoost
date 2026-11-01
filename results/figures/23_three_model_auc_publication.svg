@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="625" viewBox="0 0 1100 625">
+<rect width="1100" height="625" fill="white"/>
+<text x="45" y="43" font-family="Arial" font-size="24" font-weight="bold" fill="#202b38">Matched spatial CV — ROC AUC</text>
+<text x="45" y="68" font-family="Arial" font-size="13" fill="#555">Five eligible species · 23 matched species-fold evaluations · original-fit Bayesian predictions</text>
+<line x1="330" y1="99" x2="330" y2="544" stroke="#e7eaf0"/>
+<text x="330" y="565" text-anchor="middle" font-family="Arial" font-size="12" fill="#555">0.0</text>
+<line x1="460" y1="99" x2="460" y2="544" stroke="#e7eaf0"/>
+<text x="460" y="565" text-anchor="middle" font-family="Arial" font-size="12" fill="#555">0.2</text>
+<line x1="590" y1="99" x2="590" y2="544" stroke="#e7eaf0"/>
+<text x="590" y="565" text-anchor="middle" font-family="Arial" font-size="12" fill="#555">0.4</text>
+<line x1="720" y1="99" x2="720" y2="544" stroke="#e7eaf0"/>
+<text x="720" y="565" text-anchor="middle" font-family="Arial" font-size="12" fill="#555">0.6</text>
+<line x1="850" y1="99" x2="850" y2="544" stroke="#e7eaf0"/>
+<text x="850" y="565" text-anchor="middle" font-family="Arial" font-size="12" fill="#555">0.8</text>
+<line x1="980" y1="99" x2="980" y2="544" stroke="#e7eaf0"/>
+<text x="980" y="565" text-anchor="middle" font-family="Arial" font-size="12" fill="#555">1.0</text>
+<text x="24" y="136" font-family="Arial" font-style="italic" font-size="14" fill="#27313d">Angophora costata</text>
+<text x="24" y="154" font-family="Arial" font-size="11" fill="#687585">5 folds · 244 presences</text>
+<rect x="330" y="104" width="514.25" height="16" fill="#4B78A8"/>
+<text x="852.25" y="116" font-family="Arial" font-size="11" fill="#25303d">0.791</text>
+<rect x="330" y="124" width="534.25" height="16" fill="#E0A458"/>
+<text x="872.25" y="136" font-family="Arial" font-size="11" fill="#25303d">0.822</text>
+<rect x="330" y="144" width="561.94" height="16" fill="#50A08B"/>
+<text x="899.94" y="156" font-family="Arial" font-size="11" fill="#25303d">0.865</text>
+<text x="24" y="221" font-family="Arial" font-style="italic" font-size="14" fill="#27313d">Eucalyptus blakelyi</text>
+<text x="24" y="239" font-family="Arial" font-size="11" fill="#687585">3 folds · 39 presences</text>
+<rect x="330" y="189" width="473.78" height="16" fill="#4B78A8"/>
+<text x="811.78" y="201" font-family="Arial" font-size="11" fill="#25303d">0.729</text>
+<rect x="330" y="209" width="500.08" height="16" fill="#E0A458"/>
+<text x="838.08" y="221" font-family="Arial" font-size="11" fill="#25303d">0.769</text>
+<rect x="330" y="229" width="490.77" height="16" fill="#50A08B"/>
+<text x="828.77" y="241" font-family="Arial" font-size="11" fill="#25303d">0.755</text>
+<text x="24" y="306" font-family="Arial" font-style="italic" font-size="14" fill="#27313d">Eucalyptus campanulata</text>
+<text x="24" y="324" font-family="Arial" font-size="11" fill="#687585">5 folds · 109 presences</text>
+<rect x="330" y="274" width="462.71" height="16" fill="#4B78A8"/>
+<text x="800.71" y="286" font-family="Arial" font-size="11" fill="#25303d">0.712</text>
+<rect x="330" y="294" width="493.79" height="16" fill="#E0A458"/>
+<text x="831.79" y="306" font-family="Arial" font-size="11" fill="#25303d">0.760</text>
+<rect x="330" y="314" width="525.54" height="16" fill="#50A08B"/>
+<text x="863.54" y="326" font-family="Arial" font-size="11" fill="#25303d">0.809</text>
+<text x="24" y="391" font-family="Arial" font-style="italic" font-size="14" fill="#27313d">Eucalyptus fastigata</text>
+<text x="24" y="409" font-family="Arial" font-size="11" fill="#687585">5 folds · 270 presences</text>
+<rect x="330" y="359" width="525.45" height="16" fill="#4B78A8"/>
+<text x="863.45" y="371" font-family="Arial" font-size="11" fill="#25303d">0.808</text>
+<rect x="330" y="379" width="528.81" height="16" fill="#E0A458"/>
+<text x="866.81" y="391" font-family="Arial" font-size="11" fill="#25303d">0.814</text>
+<rect x="330" y="399" width="514.11" height="16" fill="#50A08B"/>
+<text x="852.11" y="411" font-family="Arial" font-size="11" fill="#25303d">0.791</text>
+<text x="24" y="476" font-family="Arial" font-style="italic" font-size="14" fill="#27313d">Eucalyptus nova-anglica</text>
+<text x="24" y="494" font-family="Arial" font-size="11" fill="#687585">5 folds · 53 presences</text>
+<rect x="330" y="444" width="488.80" height="16" fill="#4B78A8"/>
+<text x="826.80" y="456" font-family="Arial" font-size="11" fill="#25303d">0.752</text>
+<rect x="330" y="464" width="494.87" height="16" fill="#E0A458"/>
+<text x="832.87" y="476" font-family="Arial" font-size="11" fill="#25303d">0.761</text>
+<rect x="330" y="484" width="500.80" height="16" fill="#50A08B"/>
+<text x="838.80" y="496" font-family="Arial" font-size="11" fill="#25303d">0.770</text>
+<text x="650" y="598" text-anchor="middle" font-family="Arial" font-size="13" fill="#344055">ROC AUC (0–1)</text>
+<rect x="340" y="80" width="15" height="12" fill="#4B78A8"/>
+<text x="362" y="91" font-family="Arial" font-size="12" fill="#344055">Bayesian</text>
+<rect x="495" y="80" width="15" height="12" fill="#E0A458"/>
+<text x="517" y="91" font-family="Arial" font-size="12" fill="#344055">MaxEnt</text>
+<rect x="650" y="80" width="15" height="12" fill="#50A08B"/>
+<text x="672" y="91" font-family="Arial" font-size="12" fill="#344055">XGBoost</text>
+</svg>
