@@ -4,9 +4,9 @@ This audit summarizes **held-out predictions**, not training-fit uncertainty. So
 
 | Species | Positive records / 1,167 | Mean predicted presence | Mean 95% posterior interval width | Mean width among positives | Mean width among negatives |
 |---|---:|---:|---:|---:|---:|
-| *Corymbia gummifera* | 8 | 0.0104 | 0.0253 | 0.0387 | 0.0252 |
-| *Corymbia intermedia* | 18 | 0.0187 | 0.0279 | 0.3115 | 0.0235 |
-| *Eucalyptus carnea* | 6 | 0.0041 | 0.0126 | 0.0738 | See CSV |
+| *nsw19* | 8 | 0.0104 | 0.0253 | 0.0387 | 0.0252 |
+| *nsw20* | 18 | 0.0187 | 0.0279 | 0.3115 | 0.0235 |
+| *nsw22* | 6 | 0.0041 | 0.0126 | 0.0738 | See CSV |
 
 ## Interpretation
 
@@ -28,8 +28,8 @@ The [fold-level audit CSV](bayes_rare_species_fold_uncertainty.csv) gives held-o
 
 | Species | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 |
 |---|---:|---:|---:|---:|---:|
-| *Corymbia gummifera* | 4 | 1 | 3 | 0 | 0 |
-| *Corymbia intermedia* | 9 | 0 | 9 | 0 | 0 |
-| *Eucalyptus carnea* | 0 | 1 | 0 | 0 | 5 |
+| *nsw19* | 4 | 1 | 3 | 0 | 0 |
+| *nsw20* | 9 | 0 | 9 | 0 | 0 |
+| *nsw22* | 0 | 1 | 0 | 0 | 5 |
 
 For *C. intermedia*, mean posterior interval widths **among positive held-out records** are 0.4620 in fold 1 and 0.1611 in fold 3. These differences are descriptive and may reflect spatial variation, covariate composition, or sparse sampling; they do **not** establish a causal geographic effect. Fold-level discrimination is undefined where there are no positives. A plot-level spatial map would require joining fold IDs with verified plot coordinates, not treating fold labels as locations.
