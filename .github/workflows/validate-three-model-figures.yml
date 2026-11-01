@@ -1,0 +1,19 @@
+name: Validate three-model publication figures
+on:
+  push:
+    paths:
+      - 'results/matched_bayesian_maxent_xgboost_species.csv'
+      - 'results/figures/23_three_model_*_publication.svg'
+      - 'scripts/24_validate_three_model_svg.py'
+      - '.github/workflows/validate-three-model-figures.yml'
+  workflow_dispatch:
+jobs:
+  audit-svg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check all species, model values, and bar widths
+        run: python scripts/24_validate_three_model_svg.py
