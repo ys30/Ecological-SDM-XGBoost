@@ -2,7 +2,9 @@
 
 **Status:** Integrated manuscript draft; not yet journal-submission ready. Author list, affiliations, study-area description, data provenance, literature citations and final hyperparameter audit require author verification.
 
-**Foundational methods references:** The spatial-validation rationale follows Roberts et al. (2017) and Valavi et al. (2019); the algorithmic context follows Phillips et al. (2006) for MaxEnt and Chen and Guestrin (2016) for XGBoost. The project implements its own geographic quantile-grid fold assignment rather than invoking the `blockCV` R package. [Verified citations and DOIs](VERIFIED_METHODS_REFERENCES.md).
+**Foundational methods references:** The Bayesian hierarchical implementation is contextualized by Bürkner (2017); average precision is reported alongside ROC AUC given rare positives (Saito & Rehmsmeier, 2015); `maxnet` and cloglog background are documented by Phillips et al. (2017). Valavi et al. (2023) provide a NSW dataset provenance lead, but exact identity of the present input table is not yet confirmed.
+
+**Additional foundational methods references:** The spatial-validation rationale follows Roberts et al. (2017) and Valavi et al. (2019); the algorithmic context follows Phillips et al. (2006) for MaxEnt and Chen and Guestrin (2016) for XGBoost. The project implements its own geographic quantile-grid fold assignment rather than invoking the `blockCV` R package. [Verified citations and DOIs](VERIFIED_METHODS_REFERENCES.md).
 
 ## Abstract
 
@@ -139,6 +141,16 @@ The manuscript claims have been mapped to their source files in the [pre-submiss
 
 
 ## References (verified foundational sources)
+
+Bürkner, P.-C. (2017). brms: An R package for Bayesian multilevel models using Stan. *Journal of Statistical Software*, 80(1), 1–28. https://doi.org/10.18637/jss.v080.i01
+
+Saito, T., & Rehmsmeier, M. (2015). The precision-recall plot is more informative than the ROC plot when evaluating binary classifiers on imbalanced datasets. *PLOS ONE*, 10(3), e0118432. https://doi.org/10.1371/journal.pone.0118432
+
+Phillips, S. J., Anderson, R. P., Dudík, M., Schapire, R. E., & Blair, M. E. (2017). Opening the black box: An open-source release of Maxent. *Ecography*, 40(7), 887–893. https://doi.org/10.1111/ecog.03049
+
+Valavi, R., Elith, J., Lahoz-Monfort, J. J., & Guillera-Arroita, G. (2023). Flexible species distribution modelling methods perform well on spatially separated testing data. *Global Ecology and Biogeography*, 32, 369–383. https://doi.org/10.1111/geb.13639
+
+
 
 Roberts, D. R., et al. (2017). Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. *Ecography*, 40(8), 913–929. https://doi.org/10.1111/ecog.02881
 
