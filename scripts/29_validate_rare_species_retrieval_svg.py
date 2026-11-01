@@ -8,12 +8,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "results/bayesian_rare_species_random_baseline.csv"
 FIGURE = ROOT / "results/figures/24_rare_species_retrieval_publication.svg"
-COLORS = {"Corymbia.gummifera": "#286e99",
-          "Corymbia.intermedia": "#a04e7b",
-          "Eucalyptus.carnea": "#32866c"}
-PANEL_X = {"Corymbia.gummifera": 60,
-           "Corymbia.intermedia": 415,
-           "Eucalyptus.carnea": 770}
+COLORS = {"nsw19": "#286e99",
+          "nsw20": "#a04e7b",
+          "nsw22": "#32866c"}
+PANEL_X = {"nsw19": 60,
+           "nsw20": 415,
+           "nsw22": 770}
 NS = {"svg": "http://www.w3.org/2000/svg"}
 
 def main():
