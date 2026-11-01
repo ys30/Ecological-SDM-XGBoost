@@ -1,0 +1,57 @@
+name: Publish existing Bayesian sampler diagnostics artifact
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Optional successful Bayesian smoke-test run ID; blank selects latest success'
+        required: false
+        type: string
+  push:
+    paths:
+      - '.github/workflows/publish-bayesian-sampler-diagnostics.yml'
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download existing fold-one artifact without refitting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_RUN: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          RUN_ID="$REQUESTED_RUN"
+          if [ -z "$RUN_ID" ]; then
+            RUN_ID="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow evaluate-sdm-bayesian.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          fi
+          [[ "$RUN_ID" =~ ^[0-9]+$ ]] || { echo "Invalid run ID: $RUN_ID"; exit 1; }
+          mkdir -p downloaded
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name bayesian-spatial-fold-one --dir downloaded
+          find downloaded -name '*sampler_diagnostics.csv' -print
+          FILE="$(find downloaded -type f -name 'bayes_spatial_fold_1_sampler_diagnostics.csv' -print -quit)"
+          test -n "$FILE" || { echo "Sampler diagnostics missing from artifact $RUN_ID"; exit 1; }
+          cp "$FILE" results/bayes_spatial_fold_1_sampler_diagnostics.csv
+          python - <<'PY'
+          import csv
+          p="results/bayes_spatial_fold_1_sampler_diagnostics.csv"
+          rows=list(csv.DictReader(open(p)))
+          assert len(rows)==2, "Expected two chains"
+          required={"chain","post_warmup_draws","divergences","max_treedepth_observed","treedepth_at_limit","bfmi"}
+          assert required.issubset(rows[0]), "Missing sampler diagnostic columns"
+          for row in rows: print(row)
+          PY
+      - name: Commit audit CSV
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/bayes_spatial_fold_1_sampler_diagnostics.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish verified fold-one Stan sampler diagnostics"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
