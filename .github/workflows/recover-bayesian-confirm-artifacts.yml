@@ -20,7 +20,12 @@ jobs:
           set -euo pipefail
           mkdir -p recovered
           for k in 2 5; do
-            gh run download 41273525325 --repo "$GITHUB_REPOSITORY" --name "bayesian-confirm-fold-$k" --dir "recovered/fold-$k"
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts" --paginate --jq '.artifacts[] | select(.workflow_run.id == 41273525325) | [.id,.name] | @tsv' > recovered/artifact_index.tsv
+            ARTIFACT_ID="$(awk -F '\\t' -v name="bayesian-confirm-fold-$k" '$2 == name {print $1; exit}' recovered/artifact_index.tsv)"
+            test -n "$ARTIFACT_ID" || { echo "Missing artifact for fold $k"; exit 1; }
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > "recovered/fold-$k.zip"
+            mkdir -p "recovered/fold-$k"
+            unzip -o "recovered/fold-$k.zip" -d "recovered/fold-$k"
             for kind in diagnostics sampler_diagnostics; do
               src="recovered/fold-$k/bayes_spatial_fold_${k}_${kind}_confirm.csv"
               test -s "$src" || { echo "Missing $src"; exit 1; }
