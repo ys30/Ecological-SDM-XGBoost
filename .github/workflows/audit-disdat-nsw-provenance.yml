@@ -1,0 +1,33 @@
+name: Audit NSW source data against disdat
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/33_audit_disdat_nsw_provenance.R'
+      - '.github/workflows/audit-disdat-nsw-provenance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::disdat
+      - name: Compare local plots with NSW open-forest tree survey
+        run: Rscript scripts/33_audit_disdat_nsw_provenance.R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nsw-disdat-provenance-audit
+          path: results/disdat_nsw_open_forest_provenance_check.txt
+          if-no-files-found: warn
