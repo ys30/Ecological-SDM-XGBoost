@@ -40,3 +40,4 @@ jobs:
           path: |
             results/bayes_spatial_cv_*.csv
             results/bayes_spatial_fold_*_diagnostics.csv
+            results/bayes_spatial_fold_*_sampler_diagnostics.csv
