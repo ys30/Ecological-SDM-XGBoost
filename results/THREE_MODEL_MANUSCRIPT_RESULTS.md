@@ -4,7 +4,7 @@
 
 The analysis includes 9,336 species–plot binary records, representing eight tree species across 1,167 plots. The three-model matched evaluation compares Bayesian hierarchical partial pooling, species-specific MaxEnt (`maxnet`), and XGBoost on identical held-out observations for the five species with evaluable spatial folds. Three very rare species lack sufficient evaluable folds and are excluded from this matched ranking. The matched dataset contains 23 species–fold evaluations. The comparison is descriptive; these results do not constitute a paired significance test.
 
-The [species-by-fold presence audit](SPECIES_SPATIAL_FOLD_PRESENCE_AUDIT.md) confirms that *Corymbia gummifera* has 8 presences distributed across three folds (4/1/3), *Corymbia intermedia* has 18 across two folds (9/9), and *Eucalyptus carnea* has six across two folds (1/5). Two folds for *Eucalyptus blakelyi* have no positives, leaving three evaluable folds. Zero-positive held-out folds cannot yield defined ROC AUC; rare-species exclusion from the matched benchmark is a separate eligibility choice, not evidence that all their folds are unscorable.
+The [species-by-fold presence audit](SPECIES_SPATIAL_FOLD_PRESENCE_AUDIT.md) confirms that *nsw19* has 8 presences distributed across three folds (4/1/3), *nsw20* has 18 across two folds (9/9), and *nsw22* has six across two folds (1/5). Two folds for *nsw21* have no positives, leaving three evaluable folds. Zero-positive held-out folds cannot yield defined ROC AUC; rare-species exclusion from the matched benchmark is a separate eligibility choice, not evidence that all their folds are unscorable.
 
 ## Matched species-level performance
 
@@ -12,11 +12,11 @@ Values are reproduced from `results/matched_bayesian_maxent_xgboost_species.csv`
 
 | Species | Eligible folds | Positives | Bayesian AUC | MaxEnt AUC | XGBoost AUC | Bayesian AP | MaxEnt AP | XGBoost AP |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| *Angophora costata* | 5 | 244 | 0.7912 | 0.8219 | **0.8645** | 0.4036 | 0.4618 | **0.5536** |
-| *Eucalyptus blakelyi* | 3 | 39 | 0.7289 | **0.7693** | 0.7550 | 0.0997 | 0.1352 | **0.1391** |
-| *Eucalyptus campanulata* | 5 | 109 | 0.7119 | 0.7597 | **0.8085** | 0.1658 | 0.2126 | **0.3078** |
-| *Eucalyptus fastigata* | 5 | 270 | 0.8084 | **0.8136** | 0.7909 | **0.5384** | 0.5374 | 0.4728 |
-| *Eucalyptus nova-anglica* | 5 | 53 | 0.7520 | 0.7613 | **0.7705** | 0.1381 | **0.1494** | 0.1469 |
+| *nsw18* | 5 | 244 | 0.7912 | 0.8219 | **0.8645** | 0.4036 | 0.4618 | **0.5536** |
+| *nsw21* | 3 | 39 | 0.7289 | **0.7693** | 0.7550 | 0.0997 | 0.1352 | **0.1391** |
+| *nsw24* | 5 | 109 | 0.7119 | 0.7597 | **0.8085** | 0.1658 | 0.2126 | **0.3078** |
+| *nsw23* | 5 | 270 | 0.8084 | **0.8136** | 0.7909 | **0.5384** | 0.5374 | 0.4728 |
+| *nsw25* | 5 | 53 | 0.7520 | 0.7613 | **0.7705** | 0.1381 | **0.1494** | 0.1469 |
 
 XGBoost has the largest mean AUC for three of five evaluable species; MaxEnt for two; Bayesian for none. Average precision yields a different ranking for some species, underscoring the importance of evaluating minority-class detection alongside ROC AUC. The differences should not be described as statistically significant without appropriate uncertainty estimates.
 
@@ -30,7 +30,7 @@ Because one species contributed only three evaluable folds while the others cont
 
 ## Spatial-fold ranking heterogeneity
 
-Across 23 eligible matched species–fold comparisons, XGBoost ranked first in ROC AUC on 14 folds, MaxEnt on seven and Bayesian on two; the corresponding AP first-place counts were 13, seven and three. Rankings varied across spatial folds within species: for *Eucalyptus fastigata*, AUC wins were split Bayesian two, MaxEnt one and XGBoost two. Thus, species-mean model rankings should not be interpreted as consistent dominance in every held-out region. See [fold-level ranking audit](MATCHED_MODEL_FOLD_HETEROGENEITY.md). These counts are descriptive and do not imply independent trials.
+Across 23 eligible matched species–fold comparisons, XGBoost ranked first in ROC AUC on 14 folds, MaxEnt on seven and Bayesian on two; the corresponding AP first-place counts were 13, seven and three. Rankings varied across spatial folds within species: for *nsw23*, AUC wins were split Bayesian two, MaxEnt one and XGBoost two. Thus, species-mean model rankings should not be interpreted as consistent dominance in every held-out region. See [fold-level ranking audit](MATCHED_MODEL_FOLD_HETEROGENEITY.md). These counts are descriptive and do not imply independent trials.
 
 ## Bayesian convergence confirmation
 
@@ -56,9 +56,9 @@ Using existing original-fit Bayesian out-of-fold probabilities, we evaluated wit
 
 | Species | Observed presences | Top-25-per-fold captured | Random expected captures | Descriptive enrichment |
 |---|---:|---:|---:|---:|
-| *Corymbia gummifera* | 8 | 3 | 0.849 | 3.53× |
-| *Corymbia intermedia* | 18 | 17 | 1.911 | 8.90× |
-| *Eucalyptus carnea* | 6 | 4 | 0.643 | 6.22× |
+| *nsw19* | 8 | 3 | 0.849 | 3.53× |
+| *nsw20* | 18 | 17 | 1.911 | 8.90× |
+| *nsw22* | 6 | 4 | 0.643 | 6.22× |
 
 For *C. intermedia*, the model retrieved eight of nine presences in fold 1 and all nine in fold 3 among the top 25 plots in each fold. These descriptive results suggest possible value for prioritizing limited surveys, but performance is heterogeneous and based on very few positive cases. Zero-presence folds remain included in the survey budget; they are not silently discarded. The random baseline represents an expected count, not a p-value, uncertainty interval or alternative fitted model. Importantly, pooled across-fold rankings and fold-local rankings address different deployment strategies and must not be conflated.
 
