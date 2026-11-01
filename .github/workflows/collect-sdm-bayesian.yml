@@ -1,5 +1,8 @@
 name: Collect Bayesian spatial CV artifacts
 on:
+  workflow_run:
+    workflows: ['Bayesian hierarchical SDM remaining spatial folds']
+    types: [completed]
   workflow_dispatch:
     inputs:
       fold_one_run_id:
@@ -15,6 +18,7 @@ permissions:
   contents: write
 jobs:
   collect:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,10 +27,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_ONE: ${{ inputs.fold_one_run_id }}
           RUN_REMAINING: ${{ inputs.remaining_run_id }}
+          TRIGGER_RUN: ${{ github.event.workflow_run.id }}
         run: |
           mkdir -p downloaded
+          if [ -z "$RUN_REMAINING" ]; then RUN_REMAINING="$TRIGGER_RUN"; fi
+          if [ -z "$RUN_ONE" ]; then
+            RUN_ONE="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow evaluate-sdm-bayesian.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          fi
+          test -n "$RUN_ONE" && test -n "$RUN_REMAINING"
           gh run download "$RUN_ONE" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-one' --dir downloaded
-          gh run download "$RUN_REMAINING" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-[2-5]' --dir downloaded
+          gh run download "$RUN_REMAINING" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-*' --dir downloaded
           find downloaded -type f -name '*.csv' -exec cp {} downloaded/ \;
       - name: Check required fold outputs
         run: |
