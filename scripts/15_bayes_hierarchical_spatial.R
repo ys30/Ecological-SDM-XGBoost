@@ -39,6 +39,7 @@ for(k in folds) {
    stopifnot(all(c("divergent__","treedepth__","energy__") %in% colnames(x)))
    e <- x[,"energy__"]
    bfmi <- mean(diff(e)^2)/stats::var(e)
+   stopifnot(is.finite(bfmi))
    data.frame(chain=i,post_warmup_draws=nrow(x),divergences=sum(x[,"divergent__"]),
      max_treedepth_observed=max(x[,"treedepth__"]),
      treedepth_at_limit=sum(x[,"treedepth__"]>=10),bfmi=bfmi)
