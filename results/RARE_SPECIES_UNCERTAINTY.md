@@ -21,3 +21,15 @@ The intervals summarize posterior uncertainty in predicted probabilities; they s
 1. Inspect per-fold positive counts and uncertainty to detect geographic concentration.
 2. Audit interval calibration and observed-vs-predicted probabilities by species, with explicit small-sample caveats.
 3. Export Stan sampler divergences, treedepth and BFMI in future Bayesian fits before making convergence claims.
+
+## Spatial-fold concentration (verified)
+
+The [fold-level audit CSV](bayes_rare_species_fold_uncertainty.csv) gives held-out positive counts by fold (1–5):
+
+| Species | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 |
+|---|---:|---:|---:|---:|---:|
+| *Corymbia gummifera* | 4 | 1 | 3 | 0 | 0 |
+| *Corymbia intermedia* | 9 | 0 | 9 | 0 | 0 |
+| *Eucalyptus carnea* | 0 | 1 | 0 | 0 | 5 |
+
+For *C. intermedia*, mean posterior interval widths **among positive held-out records** are 0.4620 in fold 1 and 0.1611 in fold 3. These differences are descriptive and may reflect spatial variation, covariate composition, or sparse sampling; they do **not** establish a causal geographic effect. Fold-level discrimination is undefined where there are no positives. A plot-level spatial map would require joining fold IDs with verified plot coordinates, not treating fold labels as locations.
