@@ -70,3 +70,4 @@ jobs:
             results/bayes_spatial_fold_*_sampler_diagnostics_confirm.csv
             results/bayes_spatial_fold_*_confirmation_status.txt
             results/bayes_spatial_cv_metrics_*_confirm.csv
+            results/bayes_spatial_cv_predictions_*_confirm.csv
