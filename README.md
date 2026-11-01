@@ -31,6 +31,28 @@
 
 ---
 
+## Research extension — matched Bayesian / MaxEnt / XGBoost spatial benchmark
+
+**Status:** Three-model benchmark CSVs and five-fold Bayesian MCMC diagnostic audit have been generated. Bayesian results are exploratory and are **not** included in the recruiter headline scores.
+
+The Bayesian hierarchical partial-pooling model completed five held-out 2D spatial folds on 9,336 species–plot records. Its unweighted fold means were **ROC AUC 0.8933**, **average precision 0.3632**, and **log loss 0.1988**. These pooled-record metrics must **not** be directly ranked against the species-level MaxEnt benchmark.
+
+The exact-record matched comparison covers **five evaluable species and 23 species–fold combinations**, using the same held-out observations for all three models. Species-level AUC results (unweighted means over eligible folds):
+
+| Species | Bayesian | MaxEnt | XGBoost |
+|---|---:|---:|---:|
+| *Angophora costata* | 0.7912 | 0.8219 | **0.8645** |
+| *Eucalyptus blakelyi* | 0.7289 | **0.7693** | 0.7550 |
+| *Eucalyptus campanulata* | 0.7119 | 0.7597 | **0.8085** |
+| *Eucalyptus fastigata* | 0.8084 | **0.8136** | 0.7909 |
+| *Eucalyptus nova-anglica* | 0.7520 | 0.7613 | **0.7705** |
+
+**Convergence limitations:** Across five folds, the maximum R-hat values range from 1.0053 to 1.0145; three parameter-fold diagnostics exceed 1.01. Minimum bulk ESS ranges from 191 to 341, with 12 parameter-fold diagnostics below 400. Divergent transitions, treedepth and BFMI have not yet been audited, so full MCMC convergence is **not claimed**. Sparse species without evaluable positive/negative held-out folds are excluded from the matched AUC table; partial pooling does not make their test metrics identifiable.
+
+**Evidence:** [Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Bayesian five-fold metrics](results/bayes_spatial_cv_metrics.csv) · [MCMC audit](results/bayes_mcmc_diagnostics_summary.csv) · [Three-model plot data](results/matched_three_model_plot_data.csv).
+
+---
+
 ## At a glance — reproducible evidence
 
 **9,336 labeled species–plot records · 1,167 plots · 8 tree species · 8.0% observed presences.** The central question is how well ecological occurrence models generalize when validation separates plots or geographic regions.
