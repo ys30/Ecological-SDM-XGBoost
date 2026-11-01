@@ -1,0 +1,29 @@
+name: Validate rare-species random baseline
+
+on:
+  push:
+    paths:
+      - 'results/bayesian_rare_species_within_fold_retrieval.csv'
+      - 'results/bayesian_rare_species_random_baseline.csv'
+      - 'scripts/28_rare_species_random_baseline.py'
+      - '.github/workflows/validate-rare-species-random-baseline.yml'
+  pull_request:
+    paths:
+      - 'results/bayesian_rare_species_within_fold_retrieval.csv'
+      - 'results/bayesian_rare_species_random_baseline.csv'
+      - 'scripts/28_rare_species_random_baseline.py'
+      - '.github/workflows/validate-rare-species-random-baseline.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Regenerate and verify random-baseline table
+        run: |
+          python scripts/28_rare_species_random_baseline.py
+          git diff --exit-code -- results/bayesian_rare_species_random_baseline.csv
