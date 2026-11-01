@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 REQUIRED = {"id", "plot", "species", "fold"}
 PREDICTION_FIELDS = {"mean_probability", "probability", "predicted_probability", "prediction", "pred", "prob", "p"}
-RARE = {"Corymbia.gummifera", "Corymbia.intermedia", "Eucalyptus.carnea"}
+RARE = {"nsw19", "nsw20", "nsw22"}
 
 def main():
     candidates = sorted(RESULTS.rglob("*pred*csv"))
