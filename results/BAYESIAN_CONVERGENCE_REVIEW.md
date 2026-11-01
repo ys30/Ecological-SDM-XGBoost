@@ -7,7 +7,7 @@ Source: the five published `results/bayes_spatial_fold_{1..5}_diagnostics.csv` f
 | Fold | Variable | R-hat | Bulk ESS |
 |---|---|---:|---:|
 | 2 | `sd_species__z_rainann` | 1.014528 | 350.83 |
-| 2 | `r_species[Eucalyptus.carnea,z_rainann]` | 1.011172 | 492.64 |
+| 2 | `r_species[nsw22,z_rainann]` | 1.011172 | 492.64 |
 | 5 | `b_z_topo` | 1.011098 | 1075.71 |
 
 ## Bulk ESS < 400 (12 records)
@@ -22,10 +22,10 @@ Source: the five published `results/bayes_spatial_fold_{1..5}_diagnostics.csv` f
 | 5 | `lp__` | 340.80 |
 | 2 | `sd_species__z_rainann` | 350.83 |
 | 5 | `b_z_tempann` | 351.92 |
-| 5 | `r_species[Eucalyptus.campanulata,z_tempann]` | 362.22 |
-| 5 | `r_species[Eucalyptus.fastigata,z_tempann]` | 369.03 |
-| 5 | `r_species[Angophora.costata,z_tempann]` | 373.34 |
-| 4 | `r_species[Eucalyptus.fastigata,Intercept]` | 391.87 |
+| 5 | `r_species[nsw24,z_tempann]` | 362.22 |
+| 5 | `r_species[nsw23,z_tempann]` | 369.03 |
+| 5 | `r_species[nsw18,z_tempann]` | 373.34 |
+| 4 | `r_species[nsw23,Intercept]` | 391.87 |
 
 The 12 low-ESS records consist of 5 log posterior `lp__`, 4 species-specific effects, 2 population-level effects, and 1 hierarchical standard deviation.
 
