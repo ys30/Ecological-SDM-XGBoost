@@ -32,6 +32,10 @@ The confirmed-fit fold AUCs are 0.8818, 0.9104, 0.8682, 0.9028, and 0.9037, resp
 
 The spatially held-out results indicate substantial species-to-species heterogeneity. The tree-based model performs best on AUC for three species, whereas the presence-only/background-based MaxEnt benchmark performs best for two. Bayesian partial pooling provides a coherent framework for shared effects and species-level uncertainty but does not automatically maximize discrimination on sparse held-out positives. The three rarest species cannot be ranked reliably using the available folds. Comparisons should be treated as exploratory because fold eligibility varies by species, the data are geographically restricted, and no independent external-region validation or inferential uncertainty on model differences is provided.
 
-**Figure references:** `results/figures/22_three_model_auc.svg` and `results/figures/22_three_model_ap.svg`.
+**Publication figures:** [ROC AUC](figures/23_three_model_auc_publication.svg) and [average precision](figures/23_three_model_ap_publication.svg). The earlier [AUC](figures/22_three_model_auc.svg) and [AP](figures/22_three_model_ap.svg) charts are retained for comparison.
+
+**Figure 1 caption (ROC AUC).** Mean held-out ROC AUC for Bayesian hierarchical, MaxEnt and XGBoost models on identical spatial-fold observations within five eligible species. Bars represent unweighted species-specific means of eligible fold scores (23 species–fold combinations total); annotations report eligible folds and positive observations. Values are descriptive, without confidence intervals or significance tests. Bayesian values use original-fit predictions.
+
+**Figure 2 caption (average precision).** Mean held-out average precision for the same matched species–fold combinations. Species differ in positive-class prevalence, and AP should be interpreted with this imbalance in mind. Bars are unweighted species-specific fold means, not confidence intervals. Bayesian values use original-fit predictions.
 
 **Reproducibility:** `results/matched_bayesian_maxent_xgboost_species.csv`, `results/matched_bayesian_maxent_xgboost_folds.csv`, `results/matched_three_model_plot_data.csv`, `results/bayesian_five_fold_confirmed_metrics.csv`, and the two historical Actions runs 41279140198 and 41277076588.
