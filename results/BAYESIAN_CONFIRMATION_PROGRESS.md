@@ -18,4 +18,6 @@ Confirmation configuration: 4 chains per fold, 2,000 iterations per chain, 1,000
 
 **Interpretation and provenance:** These are diagnostic-screening results for the archived four-chain confirmation fits, not proof of model validity. The original shorter two-chain runs have 3 R-hat flags and 12 bulk-ESS flags; those original runs produced the published out-of-fold predictions and matched model comparisons. Do not imply that four-chain confirmed predictions replaced the original predictions unless a separate prediction and metric comparison is completed. Four-chain confirmation does not establish ecological transferability or superiority over competing models.
 
-Next: verify whether four-chain confirmation out-of-fold predictions exist for all folds, and compare matched metrics against the original short-chain predictions before revising manuscript performance claims.
+**Fold-level performance reconciliation:** `results/bayesian_five_fold_confirmed_metrics.csv` contains all five four-chain fold-level AUC/AP/logloss results. These have already been reconciled against the original metrics in `results/BAYESIAN_LONG_CHAIN_METRIC_RECONCILIATION.md`: maximum absolute AUC difference < 0.00033. The historical confirmation artifacts do not include four-chain per-record held-out predictions, so matched three-model figures remain based on original predictions. Do not claim per-record agreement or four-chain-derived three-model matched metrics.
+
+Next: audit the published fold-level reconciliation with an automated validation script and CI, without rerunning MCMC.
