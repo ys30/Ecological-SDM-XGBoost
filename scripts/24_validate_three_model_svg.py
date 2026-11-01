@@ -19,9 +19,7 @@ for metric in ("auc", "ap"):
     ns = {"s": "http://www.w3.org/2000/svg"}
     rects = [e for e in tree.findall(".//s:rect", ns)
              if e.attrib.get("fill", "").lower() in
-             {"#4b78a8", "#e0a458", "#50a08b"} and
-             float(e.attrib.get("width", 0)) > 20]
-    # Very short bars (<20 px) are also allowed, but none occur in this dataset.
+             {"#4b78a8", "#e0a458", "#50a08b"}]
     assert len(rects) == 15, (metric, len(rects))
     texts = [e.text or "" for e in tree.findall(".//s:text", ns)]
     for i, row in enumerate(rows):
