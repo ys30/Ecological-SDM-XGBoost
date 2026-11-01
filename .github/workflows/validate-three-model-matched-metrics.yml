@@ -1,0 +1,20 @@
+name: Validate three-model matched metrics
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/37_validate_three_model_matched_metrics.py'
+      - 'results/bayes_spatial_cv_predictions.csv'
+      - 'results/maxent_spatial_2d_predictions.csv'
+      - 'results/spatial_2d_block_cv_predictions.csv'
+      - 'results/matched_bayesian_maxent_xgboost_folds.csv'
+      - '.github/workflows/validate-three-model-matched-metrics.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recalculate 138 matched ROC AUC and AP values
+        run: python3 scripts/37_validate_three_model_matched_metrics.py
