@@ -1,0 +1,52 @@
+name: Evaluate matched MaxEnt vs XGBoost spatial folds
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/14_matched_maxent_xgboost.R"
+      - ".github/workflows/evaluate-sdm-matched-maxent.yml"
+permissions:
+  contents: write
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::pROC
+            any::ggplot2
+      - run: Rscript scripts/14_matched_maxent_xgboost.R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: matched-maxent-xgboost
+          path: |
+            results/matched_maxent_xgboost_*.csv
+            results/figures/21_matched_maxent_xgboost_auc.png
+      - name: Publish results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/matched
+          cp results/matched_maxent_xgboost_*.csv /tmp/matched/
+          cp results/figures/21_matched_maxent_xgboost_auc.png /tmp/matched/
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p results/figures
+            cp /tmp/matched/*.csv results/
+            cp /tmp/matched/*.png results/figures/
+            git add results/matched_maxent_xgboost_*.csv results/figures/21_matched_maxent_xgboost_auc.png
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Publish matched species-fold benchmark"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
