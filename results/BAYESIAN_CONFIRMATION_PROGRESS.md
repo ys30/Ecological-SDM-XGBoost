@@ -1,15 +1,21 @@
-# Bayesian long-chain confirmation: verified progress
+# Bayesian four-chain confirmation: five-fold diagnostic audit
 
-Confirmation uses four chains, 2,000 iterations per chain, 1,000 warmup per chain. The following values were read directly from the published `results/bayes_spatial_fold_{k}_diagnostics_confirm.csv` and `results/bayes_spatial_fold_{k}_sampler_diagnostics_confirm.csv` files.
+All five archived confirmation diagnostic files are now present and were checked directly:
+`results/bayes_spatial_fold_{1..5}_diagnostics_confirm.csv` and
+`results/bayes_spatial_fold_{1..5}_sampler_diagnostics_confirm.csv`.
 
-| Fold | Parameters checked | Max R-hat | Min bulk ESS | Min tail ESS | Total divergences | Treedepth-limit hits | Min BFMI | Assessment |
+Confirmation configuration: 4 chains per fold, 2,000 iterations per chain, 1,000 warmup per chain.
+
+| Fold | Parameters | Max R-hat | Min bulk ESS | Min tail ESS | Divergences | Treedepth-limit hits | Min BFMI | Screening |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| 2 | 35 | 1.005731 | 1112.68 | 1368.01 | 0 | 0 | 0.8020 | Pass screening |
-| 3 | — | — | — | — | — | — | — | Confirmation CSV not yet published |
-| 5 | 35 | 1.004522 | 1008.98 | 1744.61 | 0 | 0 | 0.7356 | Pass screening |
+| 1 | 35 | 1.004643 | 959.01 | 1599.85 | 0 | 0 | 0.6449 | Pass |
+| 2 | 35 | 1.005731 | 1112.68 | 1368.01 | 0 | 0 | 0.8020 | Pass |
+| 3 | 35 | 1.005064 | 1068.78 | 1615.97 | 0 | 0 | 0.7577 | Pass |
+| 4 | 35 | 1.004493 | 871.31 | 1611.59 | 0 | 0 | 0.7156 | Pass |
+| 5 | 35 | 1.004522 | 1008.98 | 1744.61 | 0 | 0 | 0.7356 | Pass |
 
-Screening thresholds: R-hat <= 1.01, bulk/tail ESS >= 400, no divergent transitions or treedepth-limit hits, BFMI >= 0.3. These are diagnostic screening thresholds, not a guarantee of inferential validity.
+**Result:** all 175 parameter-fold diagnostics pass R-hat <= 1.01 and bulk/tail ESS >= 400. Across the 20 confirmed chains, no divergent transitions or treedepth-limit hits are reported; minimum chain BFMI is 0.6449, above the 0.3 screening threshold.
 
-Original short-chain runs for folds 1 and 4 had low bulk ESS in some parameters, so **full five-fold convergence has not been established**. Keep original cross-validation metrics and matched model comparisons separate from confirmation diagnostics unless confirmed predictions are explicitly regenerated and compared.
+**Interpretation and provenance:** These are diagnostic-screening results for the archived four-chain confirmation fits, not proof of model validity. The original shorter two-chain runs have 3 R-hat flags and 12 bulk-ESS flags; those original runs produced the published out-of-fold predictions and matched model comparisons. Do not imply that four-chain confirmed predictions replaced the original predictions unless a separate prediction and metric comparison is completed. Four-chain confirmation does not establish ecological transferability or superiority over competing models.
 
-Next: obtain fold 3 confirmation output, then decide whether to confirm folds 1 and 4 to complete a uniform five-fold four-chain analysis.
+Next: verify whether four-chain confirmation out-of-fold predictions exist for all folds, and compare matched metrics against the original short-chain predictions before revising manuscript performance claims.
