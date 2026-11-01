@@ -1,0 +1,18 @@
+name: Validate three-model publication figure data
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/38_validate_three_model_figure_data.py'
+      - 'results/matched_bayesian_maxent_xgboost_species.csv'
+      - 'results/matched_three_model_plot_data.csv'
+      - '.github/workflows/validate-three-model-figure-data.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit 15 figure rows and 30 plotted metric values
+        run: python3 scripts/38_validate_three_model_figure_data.py
