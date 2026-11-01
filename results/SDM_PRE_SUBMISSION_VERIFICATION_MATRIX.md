@@ -29,3 +29,7 @@
 ## Recommended manuscript gate
 
 The integrated manuscript is structurally complete (Abstract–Conclusions and supplementary references) but should remain labeled **draft** until the open provenance, exact algorithm configuration, literature and author declaration items above are resolved. Publication claims must not be strengthened solely because scripts or CI workflows exist.
+
+## Critical dataset-split provenance risk
+
+The `disdat` reference manual describes NSW `disPa('NSW','ot')` and `disEnv('NSW','ot')` as **evaluation (presence–absence) survey records**, separate from presence-only/background model-training records (`disPo` and `disBg`). The present repository has 1,167 plots × eight species with binary labels, resembling the evaluation-data structure. If exact record identity is confirmed, the manuscript must disclose that its spatial CV is an **internal reanalysis of the published evaluation survey**, not an untouched evaluation of models trained on the package's prescribed presence-only/background training split. This is not necessarily invalid for a self-contained comparative study, but it changes the scientific question and limits claims of external validation. The source identity remains unconfirmed until the `scripts/33_audit_disdat_nsw_provenance.R` comparison report is inspected. Reference: [disdat package manual](https://cran.r-universe.dev/disdat/doc/manual.html); [Elith et al. (2020), DOI:10.17161/bi.v15i2.13384](https://doi.org/10.17161/bi.v15i2.13384).
