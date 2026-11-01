@@ -126,8 +126,8 @@ A common spatial-holdout evaluation framework revealed heterogeneity in the disc
 
 ## Figures and supplementary materials
 
-- **Figure 1:** [Matched species-level ROC AUC](figures/23_three_model_auc_publication.svg). Five species, eligible spatial folds, original Bayesian predictions; no uncertainty intervals.
-- **Figure 2:** [Matched species-level average precision](figures/23_three_model_ap_publication.svg). Same observations and folds as Figure 1.
+- **Figure 1:** [Matched species-level ROC AUC](figures/23_three_model_auc_publication.svg). Mean ROC AUC across eligible held-out spatial folds for each of five tree species, comparing the original-fit hierarchical Bayesian model, MaxEnt and XGBoost on matched observations. Each species has five eligible folds except *Eucalyptus blakelyi* (three); the number of observed presences shown beside each species is summed over its eligible held-out folds. Bars represent descriptive fold means, **not** confidence intervals or uncertainty bounds. The plotted values were checked against the committed species-level CSV and SVG labels/widths (60/60 numerical SVG checks passed).
+- **Figure 2:** [Matched species-level average precision](figures/23_three_model_ap_publication.svg). Mean average precision across exactly the same eligible species–fold combinations and held-out observations as Figure 1. Model colors and species ordering are identical to Figure 1. Bars represent descriptive fold means, **not** confidence intervals. The original-fit Bayesian out-of-fold predictions were used; long-chain Bayesian convergence confirmation is a separate diagnostic and is not substituted for these original predictions.
 - **Supplementary Figure S1:** [Rare-species within-fold retrieval and random expected recall](figures/24_rare_species_retrieval_publication.svg). Three rare species, 10/25/50 plots selected separately within each of five folds; original Bayesian predictions.
 - **Supplementary Table S1:** [Matched species–fold scores](matched_bayesian_maxent_xgboost_folds.csv).
 - **Supplementary Table S2:** [Rare-species fold-level retrieval](bayesian_rare_species_within_fold_retrieval.csv).
