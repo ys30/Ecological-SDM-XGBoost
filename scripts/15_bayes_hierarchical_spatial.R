@@ -69,4 +69,4 @@ for(k in folds) {
    upper_95=apply(pdraw,2,quantile,.975))
 }
 write.csv(do.call(rbind,metrics),sprintf("results/bayes_spatial_cv_metrics_folds_%s%s.csv",paste(folds,collapse="-"),suffix),row.names=FALSE)
-write.csv(do.call(rbind,predictions),sprintf("results/bayes_spatial_cv_predictions_folds_%s%s.csv",paste(folds,collapse="-")),row.names=FALSE)
+write.csv(do.call(rbind,predictions),sprintf("results/bayes_spatial_cv_predictions_folds_%s%s.csv",paste(folds,collapse="-"),suffix),row.names=FALSE)
