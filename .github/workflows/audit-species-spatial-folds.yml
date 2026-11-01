@@ -1,0 +1,31 @@
+name: Audit species spatial-fold prevalence
+
+on:
+  push:
+    paths:
+      - 'data/train.csv'
+      - 'results/spatial_2d_block_assignments.csv'
+      - 'results/species_spatial_fold_presence_counts.csv'
+      - 'scripts/25_audit_species_spatial_folds.py'
+      - '.github/workflows/audit-species-spatial-folds.yml'
+  pull_request:
+    paths:
+      - 'data/train.csv'
+      - 'results/spatial_2d_block_assignments.csv'
+      - 'results/species_spatial_fold_presence_counts.csv'
+      - 'scripts/25_audit_species_spatial_folds.py'
+      - '.github/workflows/audit-species-spatial-folds.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recompute and check committed audit
+        run: |
+          python scripts/25_audit_species_spatial_folds.py
+          git diff --exit-code -- results/species_spatial_fold_presence_counts.csv
