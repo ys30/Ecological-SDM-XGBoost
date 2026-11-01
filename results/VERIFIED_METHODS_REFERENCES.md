@@ -10,3 +10,12 @@ The following bibliographic records and DOI landing pages were checked against p
 **Usage:** Roberts and Valavi support the need for spatially structured validation; Phillips describes the original MaxEnt species distribution modeling framework, while Chen and Guestrin describe XGBoost. The current project uses a custom R quantile-grid spatial partition, not the `blockCV` package, and its MaxEnt uses surveyed non-detections as approximate background rather than independently sampled landscape background. Cite these studies as methodological context, not as proof that their implementations exactly match this repository.
 
 **Still needed:** verify the hierarchical Bayesian/brms methodological reference, precision–recall under imbalance, MaxEnt interpretation/calibration references, and the original study dataset citation before final journal formatting.
+
+## Additional publisher-verified references
+
+5. Bürkner, P.-C. (2017). brms: An R package for Bayesian multilevel models using Stan. *Journal of Statistical Software*, 80(1), 1–28. https://doi.org/10.18637/jss.v080.i01
+6. Saito, T., & Rehmsmeier, M. (2015). The precision-recall plot is more informative than the ROC plot when evaluating binary classifiers on imbalanced datasets. *PLOS ONE*, 10(3), e0118432. https://doi.org/10.1371/journal.pone.0118432
+7. Phillips, S. J., Anderson, R. P., Dudík, M., Schapire, R. E., & Blair, M. E. (2017). Opening the black box: An open-source release of Maxent. *Ecography*, 40(7), 887–893. https://doi.org/10.1111/ecog.03049
+8. Valavi, R., Elith, J., Lahoz-Monfort, J. J., & Guillera-Arroita, G. (2023). Flexible species distribution modelling methods perform well on spatially separated testing data. *Global Ecology and Biogeography*, 32, 369–383. https://doi.org/10.1111/geb.13639
+
+Bürkner documents the implemented Bayesian multilevel framework; Saito and Rehmsmeier justify including average precision alongside ROC AUC for rare positives. Phillips et al. (2017) document the `maxnet` software and cloglog transformation; the present analysis nevertheless treats its output conservatively as a ranking score because its training background is constructed from surveyed non-detections. Valavi et al. (2023) is both relevant prior spatial SDM research and a candidate lead for the NSW predictor definitions; **exact row-level source attribution is not yet verified**.
