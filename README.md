@@ -47,6 +47,12 @@ The exact-record matched comparison covers **five evaluable species and 23 speci
 | *Eucalyptus fastigata* | 0.8084 | **0.8136** | 0.7909 |
 | *Eucalyptus nova-anglica* | 0.7520 | 0.7613 | **0.7705** |
 
+**Matched three-model visualizations:**
+
+![Matched three-model species-level ROC AUC](results/figures/22_three_model_auc.svg)
+
+![Matched three-model species-level average precision](results/figures/22_three_model_ap.svg)
+
 **Convergence limitations:** Across five folds, the maximum R-hat values range from 1.0053 to 1.0145; three parameter-fold diagnostics exceed 1.01. Minimum bulk ESS ranges from 191 to 341, with 12 parameter-fold diagnostics below 400. Divergent transitions, treedepth and BFMI have not yet been audited, so full MCMC convergence is **not claimed**. Sparse species without evaluable positive/negative held-out folds are excluded from the matched AUC table; partial pooling does not make their test metrics identifiable.
 
 **Evidence:** [Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Bayesian five-fold metrics](results/bayes_spatial_cv_metrics.csv) · [MCMC audit](results/bayes_mcmc_diagnostics_summary.csv) · [Three-model plot data](results/matched_three_model_plot_data.csv).
