@@ -49,3 +49,17 @@ The spatially held-out results indicate substantial species-to-species heterogen
 **Figure 2 caption (average precision).** Mean held-out average precision for the same matched species–fold combinations. Species differ in positive-class prevalence, and AP should be interpreted with this imbalance in mind. Bars are unweighted species-specific fold means, not confidence intervals. Bayesian values use original-fit predictions.
 
 **Reproducibility:** `results/matched_bayesian_maxent_xgboost_species.csv`, `results/matched_bayesian_maxent_xgboost_folds.csv`, `results/matched_three_model_plot_data.csv`, `results/bayesian_five_fold_confirmed_metrics.csv`, and the two historical Actions runs 41279140198 and 41277076588.
+
+## Supplementary analysis: rare-species survey prioritization
+
+Using existing original-fit Bayesian out-of-fold probabilities, we evaluated within-fold rankings of three sparse species under fixed survey budgets of 10, 25 and 50 plots per spatial fold. The five folds collectively contain 1,167 plots; selecting 25 per fold therefore inspects 125 plots (10.7% of all plots). A random-selection reference was calculated analytically as the sum across folds of k times observed fold prevalence, rather than through a stochastic simulation.
+
+| Species | Observed presences | Top-25-per-fold captured | Random expected captures | Descriptive enrichment |
+|---|---:|---:|---:|---:|
+| *Corymbia gummifera* | 8 | 3 | 0.849 | 3.53× |
+| *Corymbia intermedia* | 18 | 17 | 1.911 | 8.90× |
+| *Eucalyptus carnea* | 6 | 4 | 0.643 | 6.22× |
+
+For *C. intermedia*, the model retrieved eight of nine presences in fold 1 and all nine in fold 3 among the top 25 plots in each fold. These descriptive results suggest possible value for prioritizing limited surveys, but performance is heterogeneous and based on very few positive cases. Zero-presence folds remain included in the survey budget; they are not silently discarded. The random baseline represents an expected count, not a p-value, uncertainty interval or alternative fitted model. Importantly, pooled across-fold rankings and fold-local rankings address different deployment strategies and must not be conflated.
+
+**Supplementary Figure S1 caption.** Observed presence recall among the highest-scored 10, 25 or 50 plots *within each of five geographic holdout folds*, contrasted with the expected recall from randomly selecting the same number of plots in each fold. Each panel is one rare species, and denominators are eight, 18 and six observed presences respectively. Predictions come from original shorter-chain Bayesian spatial cross-validation; results are descriptive and not independent external validation. [Supplementary Figure S1 (SVG)](figures/24_rare_species_retrieval_publication.svg) · [Per-fold retrieval](bayesian_rare_species_within_fold_retrieval.csv) · [Random baseline](bayesian_rare_species_random_baseline.csv).
