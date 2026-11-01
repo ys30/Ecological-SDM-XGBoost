@@ -1,0 +1,19 @@
+name: Validate Bayesian four-chain metric stability
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/39_validate_bayesian_confirmation_metrics.py'
+      - 'results/bayes_spatial_cv_metrics.csv'
+      - 'results/bayesian_five_fold_confirmed_metrics.csv'
+      - '.github/workflows/validate-bayesian-confirmation-metrics.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare five-fold original and four-chain AUC AP and logloss
+        run: python3 scripts/39_validate_bayesian_confirmation_metrics.py
