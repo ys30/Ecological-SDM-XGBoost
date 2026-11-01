@@ -1,6 +1,15 @@
 name: Collect Bayesian spatial CV artifacts
 on:
   workflow_dispatch:
+    inputs:
+      fold_one_run_id:
+        description: 'Successful fold 1 workflow run ID'
+        required: true
+        type: string
+      remaining_run_id:
+        description: 'Successful folds 2-5 matrix workflow run ID'
+        required: true
+        type: string
 permissions:
   actions: read
   contents: write
@@ -9,11 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: bayesian-spatial-fold-*
-          merge-multiple: true
-          path: downloaded
+      - name: Download artifacts from completed runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ONE: ${{ inputs.fold_one_run_id }}
+          RUN_REMAINING: ${{ inputs.remaining_run_id }}
+        run: |
+          mkdir -p downloaded
+          gh run download "$RUN_ONE" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-one' --dir downloaded
+          gh run download "$RUN_REMAINING" --repo "$GITHUB_REPOSITORY" --pattern 'bayesian-spatial-fold-[2-5]' --dir downloaded
+          find downloaded -type f -name '*.csv' -exec cp {} downloaded/ \;
       - name: Check required fold outputs
         run: |
           for k in 1 2 3 4 5; do
