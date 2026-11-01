@@ -1,0 +1,28 @@
+name: Build verified five-fold spatial map
+on:
+  push:
+    paths:
+      - 'scripts/43_plot_spatial_five_folds.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install matplotlib
+      - run: python scripts/43_plot_spatial_five_folds.py
+      - name: Commit plot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/figures/25_spatial_five_fold_map.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish verified five-fold spatial assignment map"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
