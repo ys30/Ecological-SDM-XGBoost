@@ -1,0 +1,45 @@
+name: Rare-species end-to-end reproducibility
+
+on:
+  push:
+    paths:
+      - 'scripts/27_rare_species_within_fold_retrieval.py'
+      - 'scripts/28_rare_species_random_baseline.py'
+      - 'scripts/29_validate_rare_species_retrieval_svg.py'
+      - 'results/bayes_spatial_cv_predictions.csv'
+      - 'results/bayesian_rare_species_within_fold_retrieval.csv'
+      - 'results/bayesian_rare_species_random_baseline.csv'
+      - 'results/figures/24_rare_species_retrieval_publication.svg'
+      - '.github/workflows/rare-species-end-to-end.yml'
+  pull_request:
+    paths:
+      - 'scripts/27_rare_species_within_fold_retrieval.py'
+      - 'scripts/28_rare_species_random_baseline.py'
+      - 'scripts/29_validate_rare_species_retrieval_svg.py'
+      - 'results/bayes_spatial_cv_predictions.csv'
+      - 'results/bayesian_rare_species_within_fold_retrieval.csv'
+      - 'results/bayesian_rare_species_random_baseline.csv'
+      - 'results/figures/24_rare_species_retrieval_publication.svg'
+      - '.github/workflows/rare-species-end-to-end.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproducibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recompute spatial-fold retrieval from held-out predictions
+        run: python scripts/27_rare_species_within_fold_retrieval.py
+      - name: Recompute stratified random baseline
+        run: python scripts/28_rare_species_random_baseline.py
+      - name: Check generated tables against committed tables
+        run: git diff --exit-code -- results/bayesian_rare_species_within_fold_retrieval.csv results/bayesian_rare_species_random_baseline.csv
+      - name: Check supplementary figure against regenerated table
+        run: python scripts/29_validate_rare_species_retrieval_svg.py
