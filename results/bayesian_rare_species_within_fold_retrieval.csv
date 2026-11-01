@@ -1,0 +1,16 @@
+species,fold,n,positives,top_10_captured,top_10_recall,top_25_captured,top_25_recall,top_50_captured,top_50_recall
+Corymbia.gummifera,1,237,4,0,0.00000000,0,0.00000000,2,0.50000000
+Corymbia.gummifera,2,234,1,0,0.00000000,1,1.00000000,1,1.00000000
+Corymbia.gummifera,3,234,3,1,0.33333333,2,0.66666667,3,1.00000000
+Corymbia.gummifera,4,229,0,0,,0,,0,
+Corymbia.gummifera,5,233,0,0,,0,,0,
+Corymbia.intermedia,1,237,9,4,0.44444444,8,0.88888889,9,1.00000000
+Corymbia.intermedia,2,234,0,0,,0,,0,
+Corymbia.intermedia,3,234,9,5,0.55555556,9,1.00000000,9,1.00000000
+Corymbia.intermedia,4,229,0,0,,0,,0,
+Corymbia.intermedia,5,233,0,0,,0,,0,
+Eucalyptus.carnea,1,237,0,0,,0,,0,
+Eucalyptus.carnea,2,234,1,0,0.00000000,1,1.00000000,1,1.00000000
+Eucalyptus.carnea,3,234,0,0,,0,,0,
+Eucalyptus.carnea,4,229,0,0,,0,,0,
+Eucalyptus.carnea,5,233,5,2,0.40000000,3,0.60000000,5,1.00000000
