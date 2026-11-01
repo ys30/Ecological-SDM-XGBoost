@@ -12,7 +12,9 @@
 
 **Verified outcomes:** **0.9377 ROC AUC** on a plot-grouped holdout (coordinates included); **0.8895** mean ROC AUC under five longitude-band folds; **0.9072** under five 2D spatial-block folds. The latter two use the same environmental/taxon predictors and fixed 300-round configuration. These designs are not a paired significance test.
 
-**MaxEnt benchmark:** Species-specific MaxEnt (R `maxnet`) was evaluated on the same held-out spatial-fold records as XGBoost for **5 estimable species and 23 species–fold combinations**. XGBoost had higher mean ROC AUC for 3 species; MaxEnt for 2. Three rare species could not be scored reliably. [Matched benchmark CSV](results/matched_maxent_xgboost_species_summary.csv) · [Comparison figure](results/figures/21_matched_maxent_xgboost_auc.png). These are descriptive comparisons, not significance tests.\n\n**Practical insight:** Despite strong discrimination, the plot-grouped model identifies only **36.9% of presences** at a 0.50 threshold. I explicitly evaluated this sensitivity trade-off instead of reporting accuracy alone.
+**MaxEnt benchmark:** Species-specific MaxEnt (R `maxnet`) was evaluated on the same held-out spatial-fold records as XGBoost for **5 estimable species and 23 species–fold combinations**. XGBoost had higher mean ROC AUC for 3 species; MaxEnt for 2. Three rare species could not be scored reliably. [Matched benchmark CSV](results/matched_maxent_xgboost_species_summary.csv) · [Comparison figure](results/figures/21_matched_maxent_xgboost_auc.png). These are descriptive comparisons, not significance tests.
+
+**Practical insight:** Despite strong discrimination, the plot-grouped model identifies only **36.9% of presences** at a 0.50 threshold. I explicitly evaluated this sensitivity trade-off instead of reporting accuracy alone.
 
 **Skills demonstrated:** R · XGBoost · MaxEnt / maxnet · environmental data processing · geographic cross-validation · imbalanced classification · ROC/PR analysis · probability calibration · reproducible GitHub Actions.
 
@@ -25,11 +27,15 @@
 
 **Geographic robustness:** ![2D spatial-block assignments](results/figures/16_spatial_2d_block_assignments.png)
 
-**Spatial errors:** ![Held-out classification errors](results/figures/15_spatial_holdout_errors.png)\n\n**Model comparison:** ![Matched MaxEnt versus XGBoost spatial-fold AUC differences](results/figures/21_matched_maxent_xgboost_auc.png)
+**Spatial errors:** ![Held-out classification errors](results/figures/15_spatial_holdout_errors.png)
+
+**Model comparison:** ![Matched MaxEnt versus XGBoost spatial-fold AUC differences](results/figures/21_matched_maxent_xgboost_auc.png)
 
 </details>
 
 ---
+
+**Integrated research manuscript:** [Full draft — abstract through conclusions](results/INTEGRATED_SDM_MANUSCRIPT_DRAFT.md). This is an integrated scientific draft, **not yet a submission-ready paper**; citations, dataset provenance and model-configuration audit remain outstanding.
 
 ## Research extension — matched Bayesian / MaxEnt / XGBoost spatial benchmark
 
