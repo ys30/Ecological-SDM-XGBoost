@@ -1,0 +1,16 @@
+name: Guard anonymous species labels
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  anonymous-label-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Scan current public text files
+        run: python scripts/41_guard_anonymous_species_labels.py
