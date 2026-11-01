@@ -55,7 +55,7 @@ def main():
     assert sum(r["positives"] for r in rows) == 747
 
     with OUT.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\\n")
+        w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
     for sp in species:
