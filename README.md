@@ -33,7 +33,7 @@
 
 ## Research extension — matched Bayesian / MaxEnt / XGBoost spatial benchmark
 
-**Status:** Three-model benchmark CSVs and five-fold Bayesian MCMC diagnostic audit have been generated. Bayesian results are exploratory and are **not** included in the recruiter headline scores.
+**Status:** Three-model matched benchmark CSVs are published. Independent four-chain Bayesian confirmation fits have passed convergence screening in all five spatial folds. The matched three-model figures still use original shorter-chain Bayesian predictions; Bayesian scores are **not** included in recruiter headline results.
 
 The Bayesian hierarchical partial-pooling model completed five held-out 2D spatial folds on 9,336 species–plot records. Its unweighted fold means were **ROC AUC 0.8933**, **average precision 0.3632**, and **log loss 0.1988**. These pooled-record metrics must **not** be directly ranked against the species-level MaxEnt benchmark.
 
@@ -53,9 +53,9 @@ The exact-record matched comparison covers **five evaluable species and 23 speci
 
 ![Matched three-model species-level average precision](results/figures/22_three_model_ap.svg)
 
-**Convergence limitations:** Across five folds, the maximum R-hat values range from 1.0053 to 1.0145; three parameter-fold diagnostics exceed 1.01. Minimum bulk ESS ranges from 191 to 341, with 12 parameter-fold diagnostics below 400. Divergent transitions, treedepth and BFMI have not yet been audited, so full MCMC convergence is **not claimed**. Sparse species without evaluable positive/negative held-out folds are excluded from the matched AUC table; partial pooling does not make their test metrics identifiable.
+**Convergence audit (updated):** The original two-chain fits had three parameter-fold R-hat values above 1.01 and 12 bulk ESS values below 400. Independent four-chain refits (2,000 iterations per chain; 1,000 warmup) now pass the pre-specified screening thresholds in all **175/175 parameter-fold checks**: maximum R-hat **1.0058**, minimum bulk ESS **871**, and minimum tail ESS **1,368**. Across 20 chains there were **zero divergences**, **zero treedepth-limit hits**, and minimum BFMI **0.645**. These diagnostics support satisfactory MCMC convergence, not proof of model correctness. Long-chain fold-level predictive AUC differs by less than 0.00033 from original fits; however, long-chain per-record predictions were not retained in the historical Actions artifacts. Therefore, the matched three-model AUC/AP table above remains explicitly based on **original-fit Bayesian predictions**. Sparse species without evaluable positive/negative held-out folds are excluded from the matched AUC table; partial pooling does not make their test metrics identifiable.
 
-**Evidence:** [Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Bayesian five-fold metrics](results/bayes_spatial_cv_metrics.csv) · [MCMC audit](results/bayes_mcmc_diagnostics_summary.csv) · [Three-model plot data](results/matched_three_model_plot_data.csv).
+**Evidence:** [Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Bayesian five-fold metrics](results/bayes_spatial_cv_metrics.csv) · [Original MCMC audit](results/bayes_mcmc_diagnostics_summary.csv) · [Final five-fold convergence audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md) · [Confirmed metrics](results/bayesian_five_fold_confirmed_metrics.csv) · [Original vs confirmed metric comparison](results/BAYESIAN_LONG_CHAIN_METRIC_RECONCILIATION.md) · [Three-model plot data](results/matched_three_model_plot_data.csv).
 
 ---
 
