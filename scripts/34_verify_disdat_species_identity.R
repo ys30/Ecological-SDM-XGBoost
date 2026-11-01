@@ -7,7 +7,6 @@ env <- disdat::disEnv("NSW","ot")
 dir.create("results",showWarnings=FALSE)
 out <- "results/disdat_nsw_site_label_identity.txt"
 sink(out)
-on.exit(sink(),add=TRUE)
 cat("SOURCE IDENTITY AUDIT — site coordinates, environment and binary labels\n")
 stopifnot(all(c("x","y","siteid") %in% names(pa)),
           all(c("x","y","siteid") %in% names(env)))
