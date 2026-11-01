@@ -1,6 +1,6 @@
 # Sensitivity to species versus species–fold weighting
 
-The 23 matched species–fold comparisons span five species, with four species contributing five evaluable folds and *Eucalyptus blakelyi* contributing three. Thus, a mean across 23 fold rows gives more weight to species with five eligible folds. To examine this design choice, this audit compares (1) equal weight per eligible species–fold and (2) equal weight per species, calculated from species-level mean metrics.
+The 23 matched species–fold comparisons span five species, with four species contributing five evaluable folds and *nsw21* contributing three. Thus, a mean across 23 fold rows gives more weight to species with five eligible folds. To examine this design choice, this audit compares (1) equal weight per eligible species–fold and (2) equal weight per species, calculated from species-level mean metrics.
 
 | Contrast | 23-fold mean ΔAUC | 5-species mean ΔAUC | 23-fold mean ΔAP | 5-species mean ΔAP | Species with positive ΔAUC | Species with positive ΔAP |
 |---|---:|---:|---:|---:|---:|---:|
