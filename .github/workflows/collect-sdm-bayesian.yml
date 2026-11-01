@@ -3,6 +3,9 @@ on:
   workflow_run:
     workflows: ['Bayesian hierarchical SDM remaining spatial folds']
     types: [completed]
+  push:
+    paths:
+      - '.github/workflows/collect-sdm-bayesian.yml'
   workflow_dispatch:
     inputs:
       fold_one_run_id:
@@ -18,15 +21,15 @@ permissions:
   contents: write
 jobs:
   collect:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Download artifacts from completed runs
         env:
           GH_TOKEN: ${{ github.token }}
-          RUN_ONE: ${{ inputs.fold_one_run_id }}
-          RUN_REMAINING: ${{ inputs.remaining_run_id }}
+          RUN_ONE: ${{ inputs.fold_one_run_id || '41268346461' }}
+          RUN_REMAINING: ${{ inputs.remaining_run_id || '41268983305' }}
           TRIGGER_RUN: ${{ github.event.workflow_run.id }}
         run: |
           mkdir -p downloaded
