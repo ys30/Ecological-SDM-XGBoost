@@ -3,7 +3,7 @@
 ## Source and evaluation scope
 
 - Input: `results/bayes_spatial_cv_predictions.csv` (9,336 original-fit Bayesian held-out prediction records; 1,167 plots per species).
-- Rare species: *Corymbia gummifera*, *C. intermedia*, *Eucalyptus carnea*.
+- Rare species: *nsw19*, *C. intermedia*, *nsw22*.
 - Fold-local rankings are computed separately for each of the five spatial holdout folds, with deterministic probability-descending and numeric-ID tie breaking.
 - Fold-local retrieval CSV: `results/bayesian_rare_species_within_fold_retrieval.csv` (15 species–fold rows).
 - Stratified random expected retrieval: `results/bayesian_rare_species_random_baseline.csv` (9 species–budget rows).
