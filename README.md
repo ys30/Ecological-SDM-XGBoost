@@ -47,13 +47,13 @@ The exact-record matched comparison covers **five evaluable species and 23 speci
 
 | Species | Bayesian | MaxEnt | XGBoost |
 |---|---:|---:|---:|
-| *Angophora costata* | 0.7912 | 0.8219 | **0.8645** |
-| *Eucalyptus blakelyi* | 0.7289 | **0.7693** | 0.7550 |
-| *Eucalyptus campanulata* | 0.7119 | 0.7597 | **0.8085** |
-| *Eucalyptus fastigata* | 0.8084 | **0.8136** | 0.7909 |
-| *Eucalyptus nova-anglica* | 0.7520 | 0.7613 | **0.7705** |
+| *nsw18* | 0.7912 | 0.8219 | **0.8645** |
+| *nsw21* | 0.7289 | **0.7693** | 0.7550 |
+| *nsw24* | 0.7119 | 0.7597 | **0.8085** |
+| *nsw23* | 0.8084 | **0.8136** | 0.7909 |
+| *nsw25* | 0.7520 | 0.7613 | **0.7705** |
 
-**Rare-species survey prioritization (exploratory):** A Bayesian out-of-fold ranking within each of five spatial folds recovered **17/18 *Corymbia intermedia* presences** among the top 25 plots per fold (125/1,167 plots screened overall), versus **1.91 expected captures** under fold-stratified random selection. The other two rare species had only 8 and 6 presences, and the apparent gains are highly sample-sensitive. These are descriptive original-fit Bayesian results, not a three-model matched comparison or external field validation. [Supplementary Figure S1](results/figures/24_rare_species_retrieval_publication.svg) · [Fold-specific retrieval](results/bayesian_rare_species_within_fold_retrieval.csv) · [Random baseline](results/bayesian_rare_species_random_baseline.csv) · [Interpretation](results/BAYESIAN_RARE_SPECIES_BASELINE_AND_RETRIEVAL.md).
+**Rare-species survey prioritization (exploratory):** A Bayesian out-of-fold ranking within each of five spatial folds recovered **17/18 *nsw20* presences** among the top 25 plots per fold (125/1,167 plots screened overall), versus **1.91 expected captures** under fold-stratified random selection. The other two rare species had only 8 and 6 presences, and the apparent gains are highly sample-sensitive. These are descriptive original-fit Bayesian results, not a three-model matched comparison or external field validation. [Supplementary Figure S1](results/figures/24_rare_species_retrieval_publication.svg) · [Fold-specific retrieval](results/bayesian_rare_species_within_fold_retrieval.csv) · [Random baseline](results/bayesian_rare_species_random_baseline.csv) · [Interpretation](results/BAYESIAN_RARE_SPECIES_BASELINE_AND_RETRIEVAL.md).
 
 **Manuscript drafts:** [Results and interpretation](results/THREE_MODEL_MANUSCRIPT_RESULTS.md) · [Methods and Discussion](results/THREE_MODEL_METHODS_AND_DISCUSSION.md). These drafts distinguish original-fit matched predictions from confirmed-fit convergence and fold-level metrics.
 
@@ -222,7 +222,7 @@ The [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) holds out
 
 ![XGBoost gain feature importance](results/figures/08_plot_holdout_feature_importance.png)
 
-**Interpretation.** Despite strong ranking performance, the default 0.5 threshold misses 106 of 168 held-out presences (recall 36.9%). Threshold selection should therefore reflect ecological costs of missed presences versus false positives, using separate calibration or validation data. The top gain-ranked predictors are annual temperature (27.5%), *Angophora costata* identity (10.9%), *Eucalyptus fastigata* identity (9.8%), longitude (9.7%), and latitude (9.0%). Gain indicates contribution to model splits, **not causal ecological effects**.
+**Interpretation.** Despite strong ranking performance, the default 0.5 threshold misses 106 of 168 held-out presences (recall 36.9%). Threshold selection should therefore reflect ecological costs of missed presences versus false positives, using separate calibration or validation data. The top gain-ranked predictors are annual temperature (27.5%), *nsw18* identity (10.9%), *nsw23* identity (9.8%), longitude (9.7%), and latitude (9.0%). Gain indicates contribution to model splits, **not causal ecological effects**.
 
 **Reproducible outputs:** [Metrics](results/plot_holdout_metrics.csv) · [Per-record predictions](results/plot_holdout_predictions.csv) · [Full feature importance](results/plot_holdout_feature_importance.csv) · [Evaluation script](scripts/06_evaluate_plot_holdout.R).
 
@@ -345,12 +345,12 @@ The R `maxnet` baseline fits separate linear/quadratic MaxEnt models for eight s
 
 | Species | Evaluated folds | Mean ROC AUC | Mean average precision |
 |---|---:|---:|---:|
-| *Angophora costata* | 5/5 | 0.8219 | 0.4618 |
-| *Eucalyptus fastigata* | 5/5 | 0.8136 | 0.5374 |
-| *Eucalyptus blakelyi* | 3/5 | 0.7693 | 0.1352 |
-| *Eucalyptus campanulata* | 5/5 | 0.7597 | 0.2126 |
-| *Eucalyptus nova-anglica* | 5/5 | 0.7613 | 0.1494 |
-| *Corymbia gummifera*, *C. intermedia*, *E. carnea* | 0/5 | NA | NA |
+| *nsw18* | 5/5 | 0.8219 | 0.4618 |
+| *nsw23* | 5/5 | 0.8136 | 0.5374 |
+| *nsw21* | 3/5 | 0.7693 | 0.1352 |
+| *nsw24* | 5/5 | 0.7597 | 0.2126 |
+| *nsw25* | 5/5 | 0.7613 | 0.1494 |
+| *nsw19*, *C. intermedia*, *E. carnea* | 0/5 | NA | NA |
 
 **Coverage:** 23 of 40 species–fold evaluations produced valid scores; 17 were flagged as insufficient positive records. These are means over available folds, not an eight-species pooled benchmark. Species-specific prevalence affects average precision, and incomplete fold coverage for *E. blakelyi* limits comparisons.
 
@@ -364,11 +364,11 @@ Using existing out-of-fold predictions, both methods were scored on **identical 
 
 | Species | Valid folds | MaxEnt AUC | XGBoost AUC | AUC difference |
 |---|---:|---:|---:|---:|
-| *Angophora costata* | 5 | 0.8219 | 0.8645 | +0.0426 |
-| *Eucalyptus blakelyi* | 3 | 0.7693 | 0.7550 | −0.0143 |
-| *Eucalyptus campanulata* | 5 | 0.7597 | 0.8085 | +0.0488 |
-| *Eucalyptus fastigata* | 5 | 0.8136 | 0.7909 | −0.0226 |
-| *Eucalyptus nova-anglica* | 5 | 0.7613 | 0.7705 | +0.0091 |
+| *nsw18* | 5 | 0.8219 | 0.8645 | +0.0426 |
+| *nsw21* | 3 | 0.7693 | 0.7550 | −0.0143 |
+| *nsw24* | 5 | 0.7597 | 0.8085 | +0.0488 |
+| *nsw23* | 5 | 0.8136 | 0.7909 | −0.0226 |
+| *nsw25* | 5 | 0.7613 | 0.7705 | +0.0091 |
 
 ![Matched XGBoost minus MaxEnt ROC AUC by species](results/figures/21_matched_maxent_xgboost_auc.png)
 
