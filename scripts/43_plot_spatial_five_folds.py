@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plot recorded spatial-fold assignments, without refitting SDMs."""
+"""Plot recorded spatial-fold assignments, without refitting SDMs or changing assignments."""
 import csv
 from pathlib import Path
 import matplotlib
