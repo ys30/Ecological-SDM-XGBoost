@@ -14,14 +14,14 @@ This page separates **historical reported results** from values independently re
 
 | Species | Presences | Observations | Reported correlation with presence |
 |---|---:|---:|---:|
-| Eucalyptus carnea | 6 | 1,167 | 0.211 |
-| Angophora costata | 244 | 1,167 | 0.180 |
-| Eucalyptus fastigata | 270 | 1,167 | 0.019 |
-| Eucalyptus nova-anglica | 53 | 1,167 | −0.048 |
-| Eucalyptus blakelyi | 39 | 1,167 | −0.065 |
-| Corymbia intermedia | 18 | 1,167 | −0.090 |
-| Corymbia gummifera | 8 | 1,167 | −0.102 |
-| Eucalyptus campanulata | 109 | 1,167 | −0.104 |
+| nsw22 | 6 | 1,167 | 0.211 |
+| nsw18 | 244 | 1,167 | 0.180 |
+| nsw23 | 270 | 1,167 | 0.019 |
+| nsw25 | 53 | 1,167 | −0.048 |
+| nsw21 | 39 | 1,167 | −0.065 |
+| nsw20 | 18 | 1,167 | −0.090 |
+| nsw19 | 8 | 1,167 | −0.102 |
+| nsw24 | 109 | 1,167 | −0.104 |
 
 **Important validation issue:** The correlations above are transcribed from a historical console table and should **not** be used for ecological inference until recalculated. The committed EDA script assigns correlations using an order-dependent vector; additionally, a binary species dummy's association with the target should be checked against the corresponding species prevalence. For example, the very low prevalence of *E. carnea* cannot be interpreted as strong positive co-occurrence on the basis of this table alone. The species column represents the identity of the observation; the dataset does not by itself establish pairwise co-occurrence within a plot.
 
@@ -64,7 +64,7 @@ These metrics are from the historical manuscript draft. The exact alignment of t
 
 ### Reported feature importance
 
-The manuscript's gain-based XGBoost feature-importance figure ranks **annual temperature (`tempann`)** first, followed by **latitude**, **longitude**, **annual rainfall (`rainann`)**, and species indicators including *Angophora costata* and *Eucalyptus fastigata*. This is model importance, not a causal effect estimate.
+The manuscript's gain-based XGBoost feature-importance figure ranks **annual temperature (`tempann`)** first, followed by **latitude**, **longitude**, **annual rainfall (`rainann`)**, and species indicators including *nsw18* and *nsw23*. This is model importance, not a causal effect estimate.
 
 ### Additional XGBoost implementation found in the analysis history
 
