@@ -19,6 +19,9 @@ For each species and k in {10, 25, 50}, expected random captures = Σ_f k × P_f
 
 ## Automated checks
 
+**Recommended single gate:** [Rare-species end-to-end reproducibility](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/rare-species-end-to-end.yml) recomputes both tables from the stored Bayesian predictions, verifies that no tracked CSV changed, then checks the SVG data bars against the regenerated table. This workflow has been committed but a successful run has not yet been independently confirmed.
+
+
 - `scripts/27_rare_species_within_fold_retrieval.py` and `.github/workflows/validate-rare-species-retrieval.yml`
 - `scripts/28_rare_species_random_baseline.py` and `.github/workflows/validate-rare-species-random-baseline.yml`
 - `scripts/29_validate_rare_species_retrieval_svg.py` and `.github/workflows/validate-rare-species-figure.yml`
