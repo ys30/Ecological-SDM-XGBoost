@@ -1,0 +1,5 @@
+"chain","post_warmup_draws","divergences","max_treedepth_observed","treedepth_at_limit","bfmi"
+1,1000,0,8,0,0.809362163038978
+2,1000,0,8,0,0.715574196348983
+3,1000,0,8,0,0.819263692484032
+4,1000,0,8,0,0.914166678655858
