@@ -1,0 +1,63 @@
+name: Bayesian spatial CV convergence confirmation
+on:
+  workflow_dispatch:
+    inputs:
+      folds:
+        description: 'Comma-separated folds (default 2,3,5); only confirmed folds are run'
+        required: false
+        default: '2,3,5'
+        type: string
+permissions:
+  contents: read
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        fold: [2, 3, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+            any::pROC
+      - name: Fit independent longer-chain confirmation
+        run: Rscript scripts/15_bayes_hierarchical_spatial.R ${{ matrix.fold }} --confirm
+      - name: Validate convergence and sampler metrics
+        run: |
+          python - <<'PY'
+          import csv, math, os
+          k = ${{ matrix.fold }}
+          p=f"results/bayes_spatial_fold_{k}_diagnostics_confirm.csv"
+          rows=list(csv.DictReader(open(p)))
+          assert rows and {"variable","rhat","ess_bulk","ess_tail"} <= set(rows[0])
+          bad=[r for r in rows if not all(math.isfinite(float(r[c])) for c in ("rhat","ess_bulk","ess_tail")) or float(r["rhat"])>1.01 or min(float(r["ess_bulk"]),float(r["ess_tail"]))<400]
+          s=list(csv.DictReader(open(f"results/bayes_spatial_fold_{k}_sampler_diagnostics_confirm.csv")))
+          assert len(s)==4
+          sampler_bad=[r for r in s if int(r["divergences"])>0 or int(r["treedepth_at_limit"])>0 or float(r["bfmi"])<0.3]
+          print(f"Fold {k}: {len(rows)} parameters; {len(bad)} flagged; {len(sampler_bad)} sampler warnings")
+          for r in bad: print("PARAMETER FLAG",r)
+          for r in sampler_bad: print("SAMPLER FLAG",r)
+          with open(f"results/bayes_spatial_fold_{k}_confirmation_status.txt","w") as f:
+              f.write(f"parameter_flags={len(bad)}\nsampler_flags={len(sampler_bad)}\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayesian-confirm-fold-${{ matrix.fold }}
+          retention-days: 30
+          path: |
+            results/bayes_spatial_fold_*_diagnostics_confirm.csv
+            results/bayes_spatial_fold_*_sampler_diagnostics_confirm.csv
+            results/bayes_spatial_fold_*_confirmation_status.txt
+            results/bayes_spatial_cv_metrics_*_confirm.csv
