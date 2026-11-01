@@ -11,3 +11,8 @@ The two published charts `results/figures/22_three_model_auc.svg` and `results/f
 **Suggested publication caption (AP):** Mean held-out average precision for the same matched species–fold comparisons. Species differ in observed prevalence, and AP should be interpreted in relation to class imbalance. Bars are unweighted fold means, not confidence intervals; Bayesian values use original-fit posterior predictions.
 
 **Improvement priority:** move fold counts and positive-case counts into a companion table; ensure species names are italicized in the final journal artwork; preserve an explicit legend and axis label; and keep all model colors consistent between AUC and AP. Rebuild figures from the committed CSV rather than manually editing bar geometry if revisions are required.
+
+
+## Publication figure update (2026-11-01)
+
+New source-data-driven SVGs are available at [AUC](figures/23_three_model_auc_publication.svg) and [AP](figures/23_three_model_ap_publication.svg). Both use the committed species-level means, annotate the eligible fold count and positive cases, and retain the same model palette. The original figures are preserved. An [R plotting implementation](../scripts/23_three_model_publication_figures.R) is committed, but has **not** been executed in a verified R environment; the published SVGs were constructed directly from the source CSV rather than exported by that R script. Consequently pixel-for-pixel reproducibility of the SVGs from R is not yet established. The source-data values can be checked against the CSV independently.
