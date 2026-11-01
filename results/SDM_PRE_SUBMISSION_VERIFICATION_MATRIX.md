@@ -15,7 +15,7 @@
 | Supplementary figure S1 | `results/figures/24_rare_species_retrieval_publication.svg` | 18 SVG data bars independently matched CSV | Check visual readability and accessibility |
 | Current CI success | `.github/workflows/rare-species-end-to-end.yml` | **Not independently confirmed** | Inspect an actual successful GitHub Actions run before claiming pass |
 | Original study area and environmental predictor provenance | Dataset documentation not yet verified | **Open** | Confirm New South Wales extent, survey source, years, licenses, rainfall/temperature/soil/topography sources |
-| XGBoost hyperparameters and MaxEnt background strategy | Executable training scripts | **Open** | Locate exact scripts, extract tuning, pseudoabsence/background construction, feature preprocessing and random seeds |
+| XGBoost hyperparameters and MaxEnt background strategy | `scripts/11_spatial_2d_block_cv.R`; `scripts/13_maxent_spatial_2d_cv.R`; `scripts/14_matched_maxent_xgboost.R` | **Verified against committed scripts** | XGBoost fixed 300 rounds, eta .03, depth 4, subsample/colsample .8; MaxEnt `lq`, regmult 2, surveyed non-detection background. Record dependency versions |
 | References, author declarations and target journal | Author-provided metadata | **Open** | Verify and insert literature citations, authorship, funding, ethics, data/code availability and journal format |
 
 ## Scientific interpretation safeguards
