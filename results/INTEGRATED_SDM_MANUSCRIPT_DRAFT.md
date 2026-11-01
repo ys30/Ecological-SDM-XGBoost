@@ -2,6 +2,8 @@
 
 **Status:** Integrated manuscript draft; not yet journal-submission ready. Author list, affiliations, study-area description, data provenance, literature citations and final hyperparameter audit require author verification.
 
+**Foundational methods references:** The spatial-validation rationale follows Roberts et al. (2017) and Valavi et al. (2019); the algorithmic context follows Phillips et al. (2006) for MaxEnt and Chen and Guestrin (2016) for XGBoost. The project implements its own geographic quantile-grid fold assignment rather than invoking the `blockCV` R package. [Verified citations and DOIs](VERIFIED_METHODS_REFERENCES.md).
+
 ## Abstract
 
 **Background:** Species distribution models can achieve strong discrimination under conventional cross-validation while transferring less reliably to geographically distinct observations. Sparse species create additional challenges for comparative evaluation and survey prioritization.
@@ -134,3 +136,14 @@ The manuscript claims have been mapped to their source files in the [pre-submiss
 - [ ] Confirm author names, order, affiliations, funding, conflicts, data availability and code availability statements.
 - [ ] Verify final GitHub Actions runs; independent data consistency checks alone are not CI confirmation.
 - [ ] Decide whether spatially appropriate uncertainty analyses or external validation are needed for the target journal.
+
+
+## References (verified foundational sources)
+
+Roberts, D. R., et al. (2017). Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. *Ecography*, 40(8), 913–929. https://doi.org/10.1111/ecog.02881
+
+Valavi, R., Elith, J., Lahoz-Monfort, J. J., & Guillera-Arroita, G. (2019). blockCV: An R package for generating spatially or environmentally separated folds for k-fold cross-validation of species distribution models. *Methods in Ecology and Evolution*, 10(2), 225–232. https://doi.org/10.1111/2041-210X.13107
+
+Phillips, S. J., Anderson, R. P., & Schapire, R. E. (2006). Maximum entropy modeling of species geographic distributions. *Ecological Modelling*, 190(3–4), 231–259. https://doi.org/10.1016/j.ecolmodel.2005.03.026
+
+Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 785–794. https://doi.org/10.1145/2939672.2939785
