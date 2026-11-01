@@ -120,6 +120,10 @@ A common spatial-holdout evaluation framework revealed heterogeneity in the disc
 - **Supplementary Table S3:** [Random selection expected captures](bayesian_rare_species_random_baseline.csv).
 - **Reproducibility:** [Rare-species source-to-figure audit](RARE_SPECIES_RETRIEVAL_REPRODUCIBILITY_AUDIT.md); [Bayesian convergence confirmation](BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md).
 
+## Evidence and editorial verification
+
+The manuscript claims have been mapped to their source files in the [pre-submission verification matrix](SDM_PRE_SUBMISSION_VERIFICATION_MATRIX.md). In particular, the model-specific configuration and predictor provenance are not yet fully documented; these should be verified against executable code and dataset metadata before inserting detailed methodological claims. The rare-species retrieval calculations and figure were independently cross-checked against committed predictions and CSVs, but the current end-to-end GitHub Actions run has not been confirmed as successful.
+
 ## Author completion checklist (required before submission)
 
 - [ ] Confirm study area, coordinate reference system, geographic sampling frame and environmental predictor sources.
