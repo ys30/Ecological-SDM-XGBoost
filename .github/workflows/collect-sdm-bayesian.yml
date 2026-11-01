@@ -1,0 +1,44 @@
+name: Collect Bayesian spatial CV artifacts
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bayesian-spatial-fold-*
+          merge-multiple: true
+          path: downloaded
+      - name: Check required fold outputs
+        run: |
+          for k in 1 2 3 4 5; do
+            test -f "downloaded/bayes_spatial_cv_metrics_folds_${k}.csv"
+            test -f "downloaded/bayes_spatial_cv_predictions_folds_${k}.csv"
+            test -f "downloaded/bayes_spatial_fold_${k}_diagnostics.csv"
+          done
+      - name: Combine fold CSVs
+        run: |
+          python - <<'PY'
+          import csv,glob,os
+          os.makedirs("results",exist_ok=True)
+          for kind in ("metrics","predictions"):
+              files=[f"downloaded/bayes_spatial_cv_{kind}_folds_{k}.csv" for k in range(1,6)]
+              rows=[]
+              for f in files:
+                  with open(f,newline="") as handle:
+                      rows.extend(csv.DictReader(handle))
+              with open(f"results/bayes_spatial_cv_{kind}.csv","w",newline="") as out:
+                  writer=csv.DictWriter(out,fieldnames=rows[0].keys())
+                  writer.writeheader();writer.writerows(rows)
+          PY
+      - name: Publish aggregated results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/bayes_spatial_cv_metrics.csv results/bayes_spatial_cv_predictions.csv
+          git diff --cached --quiet || (git commit -m "Publish Bayesian five-fold spatial CV results" && git push)
