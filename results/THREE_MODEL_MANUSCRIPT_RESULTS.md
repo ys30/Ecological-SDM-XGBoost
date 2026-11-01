@@ -4,6 +4,8 @@
 
 The analysis includes 9,336 species–plot binary records, representing eight tree species across 1,167 plots. The three-model matched evaluation compares Bayesian hierarchical partial pooling, species-specific MaxEnt (`maxnet`), and XGBoost on identical held-out observations for the five species with evaluable spatial folds. Three very rare species lack sufficient evaluable folds and are excluded from this matched ranking. The matched dataset contains 23 species–fold evaluations. The comparison is descriptive; these results do not constitute a paired significance test.
 
+The [species-by-fold presence audit](SPECIES_SPATIAL_FOLD_PRESENCE_AUDIT.md) confirms that *Corymbia gummifera* has 8 presences distributed across three folds (4/1/3), *Corymbia intermedia* has 18 across two folds (9/9), and *Eucalyptus carnea* has six across two folds (1/5). Two folds for *Eucalyptus blakelyi* have no positives, leaving three evaluable folds. Zero-positive held-out folds cannot yield defined ROC AUC; rare-species exclusion from the matched benchmark is a separate eligibility choice, not evidence that all their folds are unscorable.
+
 ## Matched species-level performance
 
 Values are reproduced from `results/matched_bayesian_maxent_xgboost_species.csv`. Species-level results are unweighted means over eligible folds, rather than pooled prediction-level scores.
