@@ -15,3 +15,10 @@
 5. Make a separate decision on whether derived metrics and maps are permissible to publish under the applicable terms.
 
 **No license determination is made here.** Do not assume that a publicly accessible R package dataset is automatically licensed for unrestricted redistribution. This note is a compliance checklist, not legal advice.
+
+## External source check (2026-11-01)
+
+- CRAN lists `disdat` version 1.1-0 (published 2026-04-28) under **GPL (>= 3)**: https://cran.r-project.org/web/packages/disdat/index.html . This is a package-level license declaration; do not silently treat it as a separate blanket permission for course-provided enhancements or non-package materials.
+- The upstream `rspatial/disdat` repository recommends citing **Elith et al. (2020), _Presence-only and presence-absence data for comparing species distribution modeling methods_, Biodiversity Informatics 15:69–80**: https://github.com/rspatial/disdat .
+- The package vignette says the data were released through both OSF and the R package. Confirm any OSF dataset-specific terms and attribution requirements before deciding how to license repository CSV subsets.
+- **Practical status:** public reference dataset existence and package GPL declaration are verified; the precise rights covering this repository's derived CSVs and any course additions remain to be determined. No claim of a licensing violation or unrestricted redistribution is made.
