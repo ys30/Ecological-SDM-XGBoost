@@ -38,21 +38,27 @@ Identical held-out evaluation records: **23 eligible taxon–fold cells across f
 
 [Feature-representation sensitivity script](scripts/41_xgboost_spatial_encoding_sensitivity.R) · [Bayesian five-fold convergence audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md)
 
-## Practical use: prioritize limited surveys
+## Practical use: rare-taxon survey prioritization
 
-A retrospective Bayesian top-25-plots-per-fold screen recovered recorded positives for sparse taxa:
+**Why evaluate rare taxa differently?** Three taxa had too few positives in some held-out folds to support the same per-fold ROC AUC comparison as the five evaluable taxa. Rather than exclude them, we asked a practical question: *with a fixed number of plots to resurvey, how many previously recorded detections would a model-ranked shortlist capture?*
 
-| Anonymous taxon | Recovered / recorded detections |
-|---|---:|
-| `nsw19` | 3 / 8 |
-| `nsw20` | 17 / 18 |
-| `nsw22` | 4 / 6 |
+**Evaluation protocol:** In each of the five held-out geographic folds, rank plots using the hierarchical Bayesian model and select the top 10, 25 or 50. Count observed detections in those selections and compare with **fold-specific random selection** at the identical budget. This is retrospective screening, not prospective validation.
 
-![Retrospective fixed-budget rare-taxon retrieval](results/figures/24_rare_species_retrieval_publication.svg)
+**At top 25 plots per fold:** 125 / 1,167 plots screened (10.7%).
 
-These are **retrospective retrieval rates**, not expected prospective discoveries. A real field campaign must also account for detection uncertainty, access costs and spatial coverage.
+| Anonymous taxon | Recorded detections | Captured | Recall | Expected under random | Enrichment |
+|---|---:|---:|---:|---:|---:|
+| `nsw19` | 8 | 3 | 37.5% | 0.85 | **3.5×** |
+| `nsw20` | 18 | 17 | 94.4% | 1.91 | **8.9×** |
+| `nsw22` | 6 | 4 | 66.7% | 0.64 | **6.2×** |
 
-[Fold-level retrieval data](results/bayesian_rare_species_within_fold_retrieval.csv) · [Random-selection baseline](results/bayesian_rare_species_random_baseline.csv)
+![Rare-taxon retrieval across top-10, top-25 and top-50 budgets, with anonymous taxon labels](results/figures/24_rare_species_retrieval_publication.svg)
+
+**Interpretation:** The model concentrated known detections more effectively than random selection in this historical survey, especially for `nsw20`. Performance was heterogeneous: `nsw19` still missed five of eight recorded detections at top 25. With only 6–18 positives per taxon, percentages are sensitive to individual observations; the enrichment factors are descriptive, not estimates with demonstrated prospective generalizability.
+
+**Decision value:** Ranked shortlists could guide *where to investigate first* when field resources are constrained. Deployment requires explicit survey cost and access constraints, spatial coverage, detection-probability modeling and prospective independent evaluation. Observed non-detection is not proof of absence, and retrospective recall is not expected future discovery yield.
+
+[Fold-level top-k data](results/bayesian_rare_species_within_fold_retrieval.csv) · [Fold-specific random baseline and enrichment](results/bayesian_rare_species_random_baseline.csv)
 
 ## Reproducibility and limitations
 
