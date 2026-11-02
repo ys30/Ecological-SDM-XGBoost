@@ -9,8 +9,7 @@ stopifnot(setequal(unique(s$mode),modes))
 out <- list()
 for (mode in modes) {
   z <- merge(m,subset(s,mode==mode),by=c("species","fold"),all.x=TRUE,sort=FALSE)
-  stopifnot(nrow(z)==nrow(m),!anyNA(z$mode),all(z$status=="ok"),
-            all(z$n==z$n.x | !("n.x" %in% names(z))))
+  stopifnot(nrow(z)==nrow(m),!anyNA(z$mode),all(z$status=="ok"))
   # Exact held-out count and positive count audit
   stopifnot(all(z$n.x==z$n.y),all(z$positives==z$positive))
   out[[mode]] <- data.frame(mode=mode,species=z$species,fold=z$fold,
