@@ -12,7 +12,6 @@ d$delta_ap_vs_archived_xgboost <- d$ap-d$archived_xgboost_ap
 write.csv(d,"results/xgboost_matched_23_cell_paired_deltas.csv",row.names=FALSE)
 num <- c("auc","ap",grep("^delta_",names(d),value=TRUE))
 sp <- aggregate(d[num],by=list(mode=d$mode,species=d$species),FUN=mean)
-sp$folds <- as.integer(table(interaction(d$mode,d$species,drop=TRUE))[interaction(sp$mode,sp$species,drop=TRUE)])
 # Check the number of folds without relying on table ordering.
 sp$folds <- vapply(seq_len(nrow(sp)),function(i)sum(d$mode==sp$mode[i] & d$species==sp$species[i]),integer(1))
 write.csv(sp,"results/xgboost_matched_species_paired_deltas.csv",row.names=FALSE)
