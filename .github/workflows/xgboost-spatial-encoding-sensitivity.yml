@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/41_xgboost_spatial_encoding_sensitivity.R'
+      - 'scripts/42_compare_xgboost_species_fold_sensitivity.R'
       - '.github/workflows/xgboost-spatial-encoding-sensitivity.yml'
       - 'data/train.csv'
       - 'results/spatial_2d_block_assignments.csv'
@@ -25,6 +26,8 @@ jobs:
             any::pROC
       - name: Fit three XGBoost sensitivity pipelines across five held-out spatial folds
         run: Rscript scripts/41_xgboost_spatial_encoding_sensitivity.R
+      - name: Match species-fold metrics to archived 23 comparison cells
+        run: Rscript scripts/42_compare_xgboost_species_fold_sensitivity.R
       - name: Upload sensitivity results
         if: always()
         uses: actions/upload-artifact@v4
@@ -33,4 +36,6 @@ jobs:
           path: |
             results/xgboost_spatial_encoding_sensitivity.csv
             results/xgboost_spatial_species_fold_sensitivity.csv
+            results/xgboost_matched_23_cell_sensitivity.csv
+            results/xgboost_matched_23_cell_summary.csv
           if-no-files-found: warn
