@@ -350,9 +350,9 @@ The R `maxnet` baseline fits separate linear/quadratic MaxEnt models for eight s
 | *nsw21* | 3/5 | 0.7693 | 0.1352 |
 | *nsw24* | 5/5 | 0.7597 | 0.2126 |
 | *nsw25* | 5/5 | 0.7613 | 0.1494 |
-| *nsw19*, *C. intermedia*, *E. carnea* | 0/5 | NA | NA |
+| *nsw19*, *nsw20*, *nsw22* | 0/5 | NA | NA |
 
-**Coverage:** 23 of 40 species–fold evaluations produced valid scores; 17 were flagged as insufficient positive records. These are means over available folds, not an eight-species pooled benchmark. Species-specific prevalence affects average precision, and incomplete fold coverage for *E. blakelyi* limits comparisons.
+**Coverage:** 23 of 40 species–fold evaluations produced valid scores; 17 were flagged as insufficient positive records. These are means over available folds, not an eight-species pooled benchmark. Species-specific prevalence affects average precision, and incomplete fold coverage for *nsw21* limits comparisons.
 
 **Next benchmark:** Recompute XGBoost on the same species, held-out plots, and eligible folds, then compare species-level ROC AUC and average precision on matched validation records. The pooled XGBoost 2D spatial-block AUC of 0.9072 is **not directly comparable** to these per-species MaxEnt means. Do not interpret any difference as a statistically tested model advantage.
 
@@ -394,3 +394,25 @@ This case study demonstrates **tabular environmental data analysis, nonlinear ML
 ## License
 
 MIT License
+
+
+## Three-model matched spatial evaluation and sensitivity audit (verified)
+
+[Verified 23-cell matched comparison](results/XGBOOST_MATCHED_23_CELL_VERIFIED.md) · [Species-fold paired differences and bootstrap](results/XGBOOST_PAIRED_BOOTSTRAP_VERIFIED.md) · [Successful CI run](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41390769760)
+
+All comparisons below use the same **23 estimable species × spatial-fold cells** from five anonymized species. The three original model families differ in training setup and feature structure; these are not controlled algorithm-only comparisons.
+
+| Model | Mean within-species AUC | Mean within-species AP |
+|---|---:|---:|
+| Archived pooled XGBoost, scored within species | 0.8016 | 0.3401 |
+| Fold-local full XGBoost | 0.7990 | 0.3493 |
+| Four environmental predictors + Species XGBoost | 0.8028 | 0.3452 |
+| MaxEnt | 0.7865 | 0.3135 |
+| Hierarchical Bayesian | 0.7610 | 0.2838 |
+| Four environmental predictors only, pooled XGBoost | 0.6214 | 0.2105 |
+
+For the fold-local full XGBoost, mean paired AUC differences were **+0.0125 vs MaxEnt** (14/23 cells positive) and **+0.0380 vs Bayesian** (17/23 cells positive). Descriptive 2,000-replicate spatial-fold bootstrap percentile ranges were **[-0.0091, 0.0310]** and **[0.0189, 0.0509]**, respectively. Only five spatial folds were resampled: these ranges are **not formal confidence intervals** and cannot establish significance. Species-level results are heterogeneous.
+
+**Interpretation:** A pooled AUC near 0.91 should not be substituted for within-species discrimination (roughly 0.80 in matched cells). Species identity is crucial to this pooled classifier; removing it changes the modeling question. The environment-only pooled XGBoost is not a fair replacement for species-specific MaxEnt or hierarchical Bayesian models. Rare taxa without estimable held-out AUC remain outside the matched benchmark.
+
+**Privacy and provenance:** Species labels are anonymized. Do not upload unpublished manuscript drafts or original course-provided species identities. Verify permissions and data redistribution rights before public releases.
