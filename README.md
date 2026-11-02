@@ -4,6 +4,32 @@
 
 [**Results & technical interpretation**](results/RESULTS_AND_INTERPRETATION.md) · [**Portfolio**](https://ys30.github.io/)
 
+## Current research evidence | Matched three-model spatial benchmark (2026)
+
+**Research question:** How robust are rankings of XGBoost, MaxEnt and hierarchical Bayesian species-distribution pipelines when evaluated on identical held-out survey records, and what can their predictions offer sparse-taxon survey prioritization?
+
+**Data and design:** Public `disdat` NSW open-forest benchmark; **1,167 surveyed plots, eight anonymous taxa (`nsw18`–`nsw25`), 9,336 plot–taxon observations and 747 recorded detections**. Plot-grouped **five-fold, unbuffered geographic holdouts**; **23 eligible taxon–fold cells across five taxa** for matched AUC/AP comparisons. Recorded non-detection is not detection-corrected absence.
+
+| Matched pipeline | Mean held-out ROC AUC | Interpretation |
+|---|---:|---|
+| Pooled XGBoost (archived configuration) | **0.8016** | Environmental, categorical and taxon-identity predictors |
+| Species-specific MaxEnt | 0.7865 | Four numeric environmental predictors; surveyed non-detections used as background approximation |
+| Hierarchical Bayesian occurrence model | 0.7610 | Four numeric environmental predictors; taxon-level partial pooling |
+
+**Paired XGBoost–MaxEnt AUC difference: +0.0151** (descriptive). These are **unequal-information pipelines**, not a controlled ranking of algorithm families. The fixed 300-round XGBoost spatial benchmark was **not selected by nested spatial tuning**. An independent fold-local feature-encoding sensitivity check produced similar full-feature discrimination; removing taxon identity changes the prediction task, not just the encoding.
+
+**Rare-taxon retrospective top-25 screening:** Bayesian rankings recovered **3/8 (`nsw19`), 17/18 (`nsw20`) and 4/6 (`nsw22`)** recorded positives when selecting the 25 highest-ranked held-out plots per fold. These fractions do not estimate future field-survey discovery rates.
+
+**Geographic limitation:** 218/1,167 held-out plots were within 5 km of a training plot (37 within 1 km). The evaluation addresses **within-region withheld plots**, not independent-region transfer. Four-chain Bayesian confirmation passed archived convergence checks, but the matched Bayesian predictions remain from original fits.
+
+**Public evidence:** [Matched fold-level metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Matched taxon metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [XGBoost feature-encoding sensitivity script](scripts/41_xgboost_spatial_encoding_sensitivity.R) · [Rare-taxon retrieval](results/bayesian_rare_species_within_fold_retrieval.csv) · [MCMC audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md).
+
+**Figures:** [Three-model AUC](results/figures/23_three_model_auc_publication.svg) · [Three-model AP](results/figures/23_three_model_ap_publication.svg) · [Rare-taxon retrieval](results/figures/24_rare_species_retrieval_publication.svg). A true NSW geographic map was successfully generated in [GitHub Actions run 41540075797](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41540075797) on the `figure1-geographic-map` branch; it is not yet merged into `main`.
+
+**Publication status:** A research manuscript is being prepared separately and is **not publicly distributed in this repository**. Repository documents under `results/` are historical working drafts, not the current manuscript.
+
+---
+
 ## Recruiter quick scan | Project highlights
 
 **Business/research problem:** Predict native tree-species occurrence from environmental and geographic data while testing whether model performance transfers to unseen locations.
@@ -35,7 +61,7 @@
 
 ---
 
-**Integrated research manuscript:** [Full draft — abstract through conclusions](results/INTEGRATED_SDM_MANUSCRIPT_DRAFT.md). This is an integrated scientific draft, **not yet a submission-ready paper**; citations, dataset provenance and model-configuration audit remain outstanding.
+**Historical working draft:** [Earlier integrated research notes](results/INTEGRATED_SDM_MANUSCRIPT_DRAFT.md). This repository file is not the current private manuscript and should not be treated as submission-ready.
 
 ## Research extension — matched Bayesian / MaxEnt / XGBoost spatial benchmark
 
