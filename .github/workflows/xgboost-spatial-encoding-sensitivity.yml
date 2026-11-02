@@ -30,5 +30,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: xgboost-spatial-encoding-sensitivity
-          path: results/xgboost_spatial_encoding_sensitivity.csv
+          path: |\n            results/xgboost_spatial_encoding_sensitivity.csv\n            results/xgboost_spatial_species_fold_sensitivity.csv
           if-no-files-found: warn
