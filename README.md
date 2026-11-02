@@ -391,9 +391,13 @@ This case study demonstrates **tabular environmental data analysis, nonlinear ML
 
 [Explore more projects in my portfolio](https://ys30.github.io/)
 
+## Data rights and reuse
+
+The MIT license covers project-authored software; it does **not** establish redistribution rights for the underlying third-party NSW survey data or course-provided materials. The public repository currently includes dataset CSVs while permissions are under review. See the [data release rights audit](results/DATA_RELEASE_RIGHTS_AUDIT.md). Anonymous species IDs are retained, and the taxonomic identity mapping is not published.
+
 ## License
 
-MIT License
+MIT License (project-authored code; see data-rights qualification above)
 
 
 ## Three-model matched spatial evaluation and sensitivity audit (verified)
