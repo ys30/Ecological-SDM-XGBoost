@@ -31,6 +31,12 @@ Both artifact reports state:
 
 **Interpretation:** All local plot environmental signatures occur in the reference NSW dataset. This strongly supports the NSW `disdat` source hypothesis. It is **not yet** a coordinate-and-species-label identity proof: reference species are coded `nsw18`–`nsw25`, and the earlier reports did not compare geographic coordinates because their `x/y` column names were not recognized. The revised audit now recognizes geographic `x/y` when `disCRS("NSW")` reports `longlat`, and attempts joint coordinate-plus-environment matching.
 
+## Status clarification (2026-11-01)
+
+The older checklist below was superseded by the later completed site-and-label identity verification documented at the top of this report. The earlier six-covariate-only audit is retained as historical evidence; its outstanding identity steps are **not** still pending. Licensing, redistribution permissions, survey dates, and predictor units remain separate matters that are **not** resolved by matching records.
+
+### Historical checklist (superseded by completed identity audit)
+
 ## Remaining before source identity is declared
 
 1. Inspect the new audit run for geographic and joint coordinate/environment match counts.
