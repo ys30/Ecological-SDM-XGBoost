@@ -1,0 +1,34 @@
+name: XGBoost spatial encoding sensitivity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/41_xgboost_spatial_encoding_sensitivity.R'
+      - '.github/workflows/xgboost-spatial-encoding-sensitivity.yml'
+      - 'data/train.csv'
+      - 'results/spatial_2d_block_assignments.csv'
+permissions:
+  contents: read
+jobs:
+  sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::xgboost
+            any::pROC
+      - name: Fit two XGBoost sensitivity pipelines across five held-out spatial folds
+        run: Rscript scripts/41_xgboost_spatial_encoding_sensitivity.R
+      - name: Upload sensitivity results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xgboost-spatial-encoding-sensitivity
+          path: results/xgboost_spatial_encoding_sensitivity.csv
+          if-no-files-found: warn
