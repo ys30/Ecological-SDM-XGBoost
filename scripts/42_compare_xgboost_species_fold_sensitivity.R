@@ -8,7 +8,7 @@ modes <- c("fold_local_full","common_four_plus_species","common_four_environment
 stopifnot(setequal(unique(s$mode),modes))
 out <- list()
 for (mode in modes) {
-  z <- merge(m,subset(s,mode==mode),by=c("species","fold"),all.x=TRUE,sort=FALSE)
+  z <- merge(m,s[s$mode==mode,,drop=FALSE],by=c("species","fold"),all.x=TRUE,sort=FALSE)
   stopifnot(nrow(z)==nrow(m),!anyNA(z$mode),all(z$status=="ok"))
   # Exact held-out count and positive count audit
   stopifnot(all(z$n.x==z$n.y),all(z$positives==z$positive))
