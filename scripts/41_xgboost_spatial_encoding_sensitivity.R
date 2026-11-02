@@ -46,9 +46,9 @@ for(k in 1:5) {
    stopifnot(identical(colnames(tx),colnames(vx)),!anyNA(tx),!anyNA(vx))
    list(train=tx,test=vx,unseen=unseen)
  }
- for(mode in c("fold_local_full","common_four_environment")) {
-   features <- if(mode=="fold_local_full") c(env,cats) else env
-   enc <- make_x(features,if(mode=="fold_local_full") cats else character())
+ for(mode in c("fold_local_full","common_four_environment","common_four_plus_species")) {
+   features <- if(mode=="fold_local_full") c(env,cats) else if(mode=="common_four_plus_species") c(env,"Species") else env
+   enc <- make_x(features,if(mode=="fold_local_full") cats else if(mode=="common_four_plus_species") "Species" else character())
    set.seed(100+k)
    fit <- xgb.train(params=params,data=xgb.DMatrix(enc$train,label=tr$pres.abs),
                     nrounds=300,verbose=0)
