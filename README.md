@@ -1,448 +1,66 @@
-# Ecological Species Distribution Modeling | XGBoost, MaxEnt & Spatial Validation
+# Ecological Species Distribution Modeling — NSW, Australia
 
-**Environmental data science portfolio project** · Predicting native tree species presence across forest plots in New South Wales, Australia.
+**Research portfolio | R · XGBoost · MaxEnt · Bayesian hierarchical modeling · Spatial validation**
 
-[**Results & technical interpretation**](results/RESULTS_AND_INTERPRETATION.md) · [**Portfolio**](https://ys30.github.io/)
+[**View the visual case study**](https://ys30.github.io/projects/ecological-sdm-xgboost.html) · [**Inspect reproducible results**](results/matched_bayesian_maxent_xgboost_folds.csv) · [**Historical analyses**](results/README_HISTORICAL_DETAILED.md)
 
-## Current research evidence | Matched three-model spatial benchmark (2026)
+## The research question
 
-**Research question:** How robust are rankings of XGBoost, MaxEnt and hierarchical Bayesian species-distribution pipelines when evaluated on identical held-out survey records, and what can their predictions offer sparse-taxon survey prioritization?
+How robust are species distribution model rankings when evaluated on the **same geographically held-out records**, and can their predictions support **fixed-budget surveys of sparsely observed taxa**?
 
-**Data and design:** Public `disdat` NSW open-forest benchmark; **1,167 surveyed plots, eight anonymous taxa (`nsw18`–`nsw25`), 9,336 plot–taxon observations and 747 recorded detections**. Plot-grouped **five-fold, unbuffered geographic holdouts**; **23 eligible taxon–fold cells across five taxa** for matched AUC/AP comparisons. Recorded non-detection is not detection-corrected absence.
+**Data:** Public `disdat` NSW open-forest benchmark: **1,167 plots**, **8 anonymized taxa**, **9,336 plot–taxon observations**, **747 recorded detections**. Observed non-detections are not detection-corrected absences.
 
-| Matched pipeline | Mean held-out ROC AUC | Interpretation |
+## Geographic study design — Figure 1
+
+![Figure 1. NSW geographic survey locations and five held-out spatial folds](results/figures/figure1_geographic_nsw_holdouts.png)
+
+**Figure 1.** Geographic context and plot-level five-fold holdout assignments. A 4×4 longitude/latitude quantile grid allocates entire cells to folds. **No distance buffer:** 218/1,167 held-out plots were within 5 km of training plots; 37 were within 1 km. Results characterize withheld plots **within NSW**, not an independent-region transfer experiment.
+
+## Matched three-model results
+
+Identical held-out evaluation records: **23 eligible taxon–fold cells across five taxa**.
+
+| Implemented pipeline | Mean ROC AUC | Distinctive modeling assumption |
 |---|---:|---|
-| Pooled XGBoost (archived configuration) | **0.8016** | Environmental, categorical and taxon-identity predictors |
-| Species-specific MaxEnt | 0.7865 | Four numeric environmental predictors; surveyed non-detections used as background approximation |
-| Hierarchical Bayesian occurrence model | 0.7610 | Four numeric environmental predictors; taxon-level partial pooling |
+| **Pooled XGBoost** | **0.8016** | Gradient-boosted trees; taxon identity and environmental/categorical predictors |
+| **Taxon-specific MaxEnt** | 0.7865 | Regularized suitability from four environmental predictors; surveyed non-detections as background approximation |
+| **Hierarchical Bayesian SDM** | 0.7610 | Bernoulli occurrence model; partial pooling of taxon intercepts and selected slopes |
 
-**Paired XGBoost–MaxEnt AUC difference: +0.0151** (descriptive). These are **unequal-information pipelines**, not a controlled ranking of algorithm families. The fixed 300-round XGBoost spatial benchmark was **not selected by nested spatial tuning**. An independent fold-local feature-encoding sensitivity check produced similar full-feature discrimination; removing taxon identity changes the prediction task, not just the encoding.
+**Mean paired XGBoost–MaxEnt AUC difference: +0.0151.** This is a *descriptive pipeline comparison*, **not** an isolated algorithm effect: models have unequal information sets and score interpretations. The archived XGBoost benchmark uses a **fixed 300-round configuration**, not nested spatially tuned hyperparameters.
 
-**Rare-taxon retrospective top-25 screening:** Bayesian rankings recovered **3/8 (`nsw19`), 17/18 (`nsw20`) and 4/6 (`nsw22`)** recorded positives when selecting the 25 highest-ranked held-out plots per fold. These fractions do not estimate future field-survey discovery rates.
+![Matched taxon-level ROC AUC for XGBoost, MaxEnt and Bayesian pipelines](results/figures/23_three_model_auc_publication.svg)
 
-**Geographic limitation:** 218/1,167 held-out plots were within 5 km of a training plot (37 within 1 km). The evaluation addresses **within-region withheld plots**, not independent-region transfer. Four-chain Bayesian confirmation passed archived convergence checks, but the matched Bayesian predictions remain from original fits.
+[Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Average precision figure](results/figures/23_three_model_ap_publication.svg)
 
-**Public evidence:** [Matched fold-level metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Matched taxon metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [XGBoost feature-encoding sensitivity script](scripts/41_xgboost_spatial_encoding_sensitivity.R) · [Rare-taxon retrieval](results/bayesian_rare_species_within_fold_retrieval.csv) · [MCMC audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md).
+## What changes the model ranking?
 
-**Figures:** [Three-model AUC](results/figures/23_three_model_auc_publication.svg) · [Three-model AP](results/figures/23_three_model_ap_publication.svg) · [Rare-taxon retrieval](results/figures/24_rare_species_retrieval_publication.svg). A true NSW geographic map was successfully generated in [GitHub Actions run 41540075797](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41540075797) on the `figure1-geographic-map` branch; it is not yet merged into `main`.
+**Fold-local XGBoost feature encoding** gave similar discrimination to the archived full-feature configuration. **Removing taxon identity** substantially reduced pooled XGBoost performance, but changes the prediction task rather than isolating an encoding effect.
 
-**Publication status:** A research manuscript is being prepared separately and is **not publicly distributed in this repository**. Repository documents under `results/` are historical working drafts, not the current manuscript.
+[Feature-representation sensitivity script](scripts/41_xgboost_spatial_encoding_sensitivity.R) · [Bayesian five-fold convergence audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md)
 
----
+## Practical use: prioritize limited surveys
 
-## Recruiter quick scan | Project highlights
+A retrospective Bayesian top-25-plots-per-fold screen recovered recorded positives for sparse taxa:
 
-**Business/research problem:** Predict native tree-species occurrence from environmental and geographic data while testing whether model performance transfers to unseen locations.
-
-**What I delivered:** An end-to-end R-based XGBoost and species-specific MaxEnt analysis of **9,336 labeled records across 1,167 plots and 8 species**, with automated model evaluation, class-imbalance diagnostics, spatial cross-validation, probability calibration, and geographic error visualization.
-
-**Verified outcomes:** **0.9377 ROC AUC** on a plot-grouped holdout (coordinates included); **0.8895** mean ROC AUC under five longitude-band folds; **0.9072** under five 2D spatial-block folds. The latter two use the same environmental/taxon predictors and fixed 300-round configuration. These designs are not a paired significance test.
-
-**MaxEnt benchmark:** Species-specific MaxEnt (R `maxnet`) was evaluated on the same held-out spatial-fold records as XGBoost for **5 estimable species and 23 species–fold combinations**. XGBoost had higher mean ROC AUC for 3 species; MaxEnt for 2. Three rare species could not be scored reliably. [Matched benchmark CSV](results/matched_maxent_xgboost_species_summary.csv) · [Comparison figure](results/figures/21_matched_maxent_xgboost_auc.png). These are descriptive comparisons, not significance tests.
-
-**Practical insight:** Despite strong discrimination, the plot-grouped model identifies only **36.9% of presences** at a 0.50 threshold. I explicitly evaluated this sensitivity trade-off instead of reporting accuracy alone.
-
-**Skills demonstrated:** R · XGBoost · MaxEnt / maxnet · environmental data processing · geographic cross-validation · imbalanced classification · ROC/PR analysis · probability calibration · reproducible GitHub Actions.
-
-**Explore the evidence:** [Matched XGBoost–MaxEnt results](results/matched_maxent_xgboost_species_summary.csv) · [Plot-held-out metrics](results/plot_holdout_metrics.csv) · [Spatial CV results](results/spatial_2d_block_cv_summary.csv) · [Calibration analysis](results/plot_holdout_calibration_summary.csv) · [Detailed methods and limitations](results/RESULTS_AND_INTERPRETATION.md).
-
-<details>
-<summary><strong>Representative figures (expand)</strong></summary>
-
-**Model performance:** ![ROC on plot-held-out records](results/figures/06_plot_holdout_roc.png)
-
-**Geographic robustness:** ![2D spatial-block assignments](results/figures/16_spatial_2d_block_assignments.png)
-
-**Spatial errors:** ![Held-out classification errors](results/figures/15_spatial_holdout_errors.png)
-
-**Model comparison:** ![Matched MaxEnt versus XGBoost spatial-fold AUC differences](results/figures/21_matched_maxent_xgboost_auc.png)
-
-</details>
-
----
-
-**Historical working draft:** [Earlier integrated research notes](results/INTEGRATED_SDM_MANUSCRIPT_DRAFT.md). This repository file is not the current private manuscript and should not be treated as submission-ready.
-
-## Research extension — matched Bayesian / MaxEnt / XGBoost spatial benchmark
-
-**Status:** Three-model matched benchmark CSVs are published. Independent four-chain Bayesian confirmation fits have passed convergence screening in all five spatial folds. The matched three-model figures still use original shorter-chain Bayesian predictions; Bayesian scores are **not** included in recruiter headline results.
-
-The Bayesian hierarchical partial-pooling model completed five held-out 2D spatial folds on 9,336 species–plot records. Its unweighted fold means were **ROC AUC 0.8933**, **average precision 0.3632**, and **log loss 0.1988**. These pooled-record metrics must **not** be directly ranked against the species-level MaxEnt benchmark.
-
-The exact-record matched comparison covers **five evaluable species and 23 species–fold combinations**, using the same held-out observations for all three models. Species-level AUC results (unweighted means over eligible folds):
-
-| Species | Bayesian | MaxEnt | XGBoost |
-|---|---:|---:|---:|
-| *nsw18* | 0.7912 | 0.8219 | **0.8645** |
-| *nsw21* | 0.7289 | **0.7693** | 0.7550 |
-| *nsw24* | 0.7119 | 0.7597 | **0.8085** |
-| *nsw23* | 0.8084 | **0.8136** | 0.7909 |
-| *nsw25* | 0.7520 | 0.7613 | **0.7705** |
-
-**Rare-species survey prioritization (exploratory):** A Bayesian out-of-fold ranking within each of five spatial folds recovered **17/18 *nsw20* presences** among the top 25 plots per fold (125/1,167 plots screened overall), versus **1.91 expected captures** under fold-stratified random selection. The other two rare species had only 8 and 6 presences, and the apparent gains are highly sample-sensitive. These are descriptive original-fit Bayesian results, not a three-model matched comparison or external field validation. [Supplementary Figure S1](results/figures/24_rare_species_retrieval_publication.svg) · [Fold-specific retrieval](results/bayesian_rare_species_within_fold_retrieval.csv) · [Random baseline](results/bayesian_rare_species_random_baseline.csv) · [Interpretation](results/BAYESIAN_RARE_SPECIES_BASELINE_AND_RETRIEVAL.md).
-
-**Manuscript drafts:** [Results and interpretation](results/THREE_MODEL_MANUSCRIPT_RESULTS.md) · [Methods and Discussion](results/THREE_MODEL_METHODS_AND_DISCUSSION.md). These drafts distinguish original-fit matched predictions from confirmed-fit convergence and fold-level metrics.
-
-**Publication-style matched figures:** [AUC SVG](results/figures/23_three_model_auc_publication.svg) · [AP SVG](results/figures/23_three_model_ap_publication.svg) · [R regeneration script](scripts/23_three_model_publication_figures.R). The earlier figures remain available below.
-
-**Matched three-model visualizations:**
-
-![Matched three-model species-level ROC AUC](results/figures/22_three_model_auc.svg)
-
-![Matched three-model species-level average precision](results/figures/22_three_model_ap.svg)
-
-**Convergence audit (updated):** The original two-chain fits had three parameter-fold R-hat values above 1.01 and 12 bulk ESS values below 400. Independent four-chain refits (2,000 iterations per chain; 1,000 warmup) now pass the pre-specified screening thresholds in all **175/175 parameter-fold checks**: maximum R-hat **1.0058**, minimum bulk ESS **871**, and minimum tail ESS **1,368**. Across 20 chains there were **zero divergences**, **zero treedepth-limit hits**, and minimum BFMI **0.645**. These diagnostics support satisfactory MCMC convergence, not proof of model correctness. Long-chain fold-level predictive AUC differs by less than 0.00033 from original fits; however, long-chain per-record predictions were not retained in the historical Actions artifacts. Therefore, the matched three-model AUC/AP table above remains explicitly based on **original-fit Bayesian predictions**. Sparse species without evaluable positive/negative held-out folds are excluded from the matched AUC table; partial pooling does not make their test metrics identifiable.
-
-**Evidence:** [Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Bayesian five-fold metrics](results/bayes_spatial_cv_metrics.csv) · [Original MCMC audit](results/bayes_mcmc_diagnostics_summary.csv) · [Final five-fold convergence audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md) · [Confirmed metrics](results/bayesian_five_fold_confirmed_metrics.csv) · [Original vs confirmed metric comparison](results/BAYESIAN_LONG_CHAIN_METRIC_RECONCILIATION.md) · [Three-model plot data](results/matched_three_model_plot_data.csv).
-
----
-
-## At a glance — reproducible evidence
-
-**9,336 labeled species–plot records · 1,167 plots · 8 tree species · 8.0% observed presences.** The central question is how well ecological occurrence models generalize when validation separates plots or geographic regions.
-
-| Validation design | ROC AUC | Average precision | Protocol |
-|---|---:|---:|---|
-| Plot-grouped holdout | **0.9377** | **0.6276** | 234 held-out plots; includes geographic coordinates; training-only CV selected 500 rounds |
-| Matched-feature random plot holdout | **0.9289** | **0.5767** | One random plot split; environmental + taxon predictors, 300 rounds |
-| Longitude-band spatial CV | **0.8895** | **0.4474** | Mean across five geographic bands; environmental + taxon predictors, 300 rounds |
-| Two-dimensional spatial-block CV | **0.9072** | **0.4386** | Mean across five spatial folds; environmental + taxon predictors, 300 rounds |
-
-**Comparison rule:** Only the last three rows use matched feature sets and fixed boosting budgets. They are still not paired experiments; the random result is a single holdout, while spatial results are unweighted fold means. The plot-grouped result uses a different feature set and training protocol, so its higher score must not be interpreted as a controlled estimate of spatial leakage.
-
-**Ecological decision insight:** On the plot-grouped holdout, the 0.50 classification threshold detects only **36.9%** of observed presences. The ROC AUC therefore does not imply equally strong presence detection. Calibration and alternative thresholds are analyzed as exploratory diagnostics, not independently validated threshold optimization.
-
-**Historical report, distinct from reproducible evaluations:** A previously reported random-split ROC AUC of **0.9396** and log loss of **0.1693** remain documented below as historical validation figures. They are not independent external-test results and are not presented as the headline benchmark.
-
-## Problem & approach
-
-Species occurrence depends on environmental gradients, spatial context, and taxon-specific differences. I built an R-based binary classification workflow to assess whether combining these inputs improves predictions compared with simpler baselines.
-
-- **Data engineering & EDA:** Examine class imbalance, climate and soil distributions, spatial coordinates, categorical features, and data quality.
-- **Feature design:** Compare environmental-only, coordinate-only, and combined environmental–geographic–species predictors; encode species and other categorical attributes.
-- **Model benchmarking:** Evaluate logistic regression, random forest, and regularized gradient-boosted trees using log loss and ROC AUC.
-- **Optimization:** Tune XGBoost with cross-validation, learning rate, tree depth, boosting rounds, and row/column subsampling.
-- **Interpretation:** Review feature importance and the limits of spatial inference, then export species-presence probabilities for unlabeled records.
-
-**Stack:** R · tidyverse · caret · randomForest · xgboost · pROC · ggplot2 · ecological & spatial data
-
-## Selected results
-
-### Model comparison — historical validation
-
-| Model | Log loss ↓ | ROC AUC ↑ |
-|---|---:|---:|
-| Logistic regression | 0.2569 | 0.7882 |
-| Random forest | 0.2271 | 0.9343 |
-| **XGBoost** | **0.1891** | **0.9369** |
-
-### Feature-set experiments — XGBoost
-
-| Predictors | Log loss ↓ | ROC AUC ↑ |
-|---|---:|---:|
-| Environmental + species + easting/northing | 0.1737 | 0.9351 |
-| **Environmental + species + latitude/longitude** | **0.1693** | **0.9396** |
-| Environmental only (no species identity) | 0.3119 | 0.5239 |
-| Easting/northing only | 0.3066 | 0.5253 |
-| Latitude/longitude only | 0.3053 | 0.5394 |
-
-The combined-feature configuration performed best in the **reported random-split validation**. This comparison does **not** isolate the effect of spatial coordinates, because the environmental-only configuration also omits species identity.
-
-### Classification trade-off
-
-A separate reported tuned-XGBoost classification evaluation found **93.25% accuracy**, **70.65% balanced accuracy**, **43.11% presence recall**, and **98.17% absence specificity**. These numbers highlight why accuracy alone is inadequate with an 8% positive class. The precise configuration linking this confusion matrix to the feature-set results still requires verification.
-
-### What the model learned
-
-The historical gain-based feature-importance plot ranked **annual temperature, latitude, longitude, and annual rainfall** among the leading predictors. Species identity indicators also contributed. These are **predictive associations**, not causal effects or proof of interspecies interactions.
-
-For tables, methodology notes, figure inventory, and limitations, see [Results and interpretation](results/RESULTS_AND_INTERPRETATION.md).
-
-## Exploratory analysis — generated from training data
-
-The following figures are generated from the repository's labeled training CSV, rather than illustrative or simulated data.
-
-### Class imbalance and species-specific occurrence
-
-![Presence and absence distribution](results/figures/01_class_balance.png)
-
-![Observed presence and absence by species](results/figures/02_species_counts.png)
-
-Only **8.0%** of labeled observations are presences. Per-species prevalence varies substantially, so the high overall accuracy of a presence classifier must be interpreted alongside minority-class recall. These counts describe **species-specific records**, not verified pairwise co-occurrence.
-
-### Environmental and geographic feature distributions
-
-![Environmental predictor distributions](results/figures/03_environmental_distributions.png)
-
-![Spatial coordinate distributions](results/figures/04_spatial_boxplots.png)
-
-The faceted plots use separate axes for predictors measured on different scales. Temperature scaling and projected coordinate reference system remain to be confirmed before assigning physical units.
-
-### Predictor correlations
-
-![Numeric predictor correlations](results/figures/05_predictor_correlations.png)
-
-The matrix includes continuous environmental and coordinate variables, excluding numeric codes for categorical attributes. High correlations between geographic coordinate representations should be considered when interpreting feature importance.
-
-**Reproducibility:** [R figure script](scripts/05_export_portfolio_figures.R) · [Automated GitHub workflow](.github/workflows/build-sdm-figures.yml) · [Species summary CSV](results/species_summary_recomputed.csv) · [Correlation CSV](results/numeric_correlations.csv).
-
-Run locally from the repository root:
-
-```bash
-Rscript scripts/05_export_portfolio_figures.R
-```
-
-## Reproducible workflow
-
-```text
-data/
-  train.csv
-  test.csv
-scripts/
-  00_EDA.R
-  00_baselines_logit_rf.R
-  01_feature_sets_and_spatial_cv.R
-  02_tune_xgboost_caret.R
-  03_evaluate_tuned_xgboost.R
-  04_train_full_cv_nrounds_predict.R
-  05_export_portfolio_figures.R
-  06_evaluate_plot_holdout.R
-  07_longitude_block_cv.R
-  08_matched_protocol_comparison.R
-  09_calibration_thresholds.R
-  10_spatial_holdout_maps.R
-  11_spatial_2d_block_cv.R
-results/
-  RESULTS_AND_INTERPRETATION.md
-  plot_holdout_metrics.csv
-  longitude_block_cv_summary.csv
-  matched_protocol_summary.csv
-  spatial_2d_block_cv_summary.csv
-  spatial_2d_block_fold_diagnostics.csv
-  submission_xgb_tuned.csv
-```
-
-Run the numbered scripts from the repository root with the packages used in each script installed. The code covers exploratory analysis, baseline fitting, feature-set comparisons, tuning, validation, and probability export. **Historical report scores** have not been independently reconstructed under an identical archived protocol. In contrast, the newer plot-grouped, longitude-band, matched-feature, and 2D spatial-block experiments provide saved machine-readable metrics, predictions, and reproducible scripts.
-
-## Plot-grouped holdout evaluation — verified results
-
-[![Evaluate SDM plot-held-out XGBoost](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-xgboost.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-xgboost.yml)
-
-The [standalone evaluation script](scripts/06_evaluate_plot_holdout.R) holds out entire plot IDs (234 plots; 1,872 observations), while fitting on 933 distinct plots (7,464 observations). Internal five-fold CV also groups by plot, selecting 500 boosting rounds. **This evaluates unseen plots, not geographic-block extrapolation**, and is a separate experiment from historical random-split results.
-
-| Metric | Plot-held-out XGBoost |
+| Anonymous taxon | Recovered / recorded detections |
 |---|---:|
-| ROC AUC | **0.9377** |
-| Average precision (PR-AUC, stepwise) | **0.6276** |
-| Log loss | **0.1653** |
-| Precision at threshold 0.5 | 0.7209 |
-| Recall at threshold 0.5 | 0.3690 |
-| F1 at threshold 0.5 | 0.4882 |
-| Specificity at threshold 0.5 | 0.9859 |
-| True positives / false positives | 62 / 24 |
-| True negatives / false negatives | 1,680 / 106 |
+| `nsw19` | 3 / 8 |
+| `nsw20` | 17 / 18 |
+| `nsw22` | 4 / 6 |
 
-![ROC curve on held-out plots](results/figures/06_plot_holdout_roc.png)
+![Retrospective fixed-budget rare-taxon retrieval](results/figures/24_rare_species_retrieval_publication.svg)
 
-![Precision–recall curve on held-out plots](results/figures/07_plot_holdout_pr.png)
+These are **retrospective retrieval rates**, not expected prospective discoveries. A real field campaign must also account for detection uncertainty, access costs and spatial coverage.
 
-![XGBoost gain feature importance](results/figures/08_plot_holdout_feature_importance.png)
+[Fold-level retrieval data](results/bayesian_rare_species_within_fold_retrieval.csv) · [Random-selection baseline](results/bayesian_rare_species_random_baseline.csv)
 
-**Interpretation.** Despite strong ranking performance, the default 0.5 threshold misses 106 of 168 held-out presences (recall 36.9%). Threshold selection should therefore reflect ecological costs of missed presences versus false positives, using separate calibration or validation data. The top gain-ranked predictors are annual temperature (27.5%), *nsw18* identity (10.9%), *nsw23* identity (9.8%), longitude (9.7%), and latitude (9.0%). Gain indicates contribution to model splits, **not causal ecological effects**.
+## Reproducibility and limitations
 
-**Reproducible outputs:** [Metrics](results/plot_holdout_metrics.csv) · [Per-record predictions](results/plot_holdout_predictions.csv) · [Full feature importance](results/plot_holdout_feature_importance.csv) · [Evaluation script](scripts/06_evaluate_plot_holdout.R).
+- **Spatial evaluation:** five unbuffered geographic folds, with plots kept intact across taxa.
+- **Predictor comparability:** XGBoost uses more information than MaxEnt and Bayesian models; differences should not be presented as algorithm-only effects.
+- **Bayesian diagnostics:** four-chain confirmation fits passed archived convergence thresholds; matched figures use original-fit Bayesian predictions because complete long-chain observation-level prediction artifacts were not retained.
+- **Practical interpretation:** results support within-region ranking and retrospective screening, not calibrated occupancy, independent geographic transfer or a prospective field survey.
 
+**Code and results are public; the journal manuscript and appendix remain private.** Older analyses, different validation protocols and historical draft links are preserved in the [historical README](results/README_HISTORICAL_DETAILED.md), not mixed into the current matched-model headline.
 
-## Geographic transfer stress test — verified longitude-block CV
-
-[![Geographic longitude-block CV](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-longitude-blocks.yml)
-
-The [geographic validation script](scripts/07_longitude_block_cv.R) partitions whole plots into five consecutive, non-overlapping longitude bands and evaluates each held-out band. Geographic coordinates are **excluded from predictors**, leaving environmental and species information. The model uses a fixed 300-round boosting budget for each fold; this is a distinct feature set and tuning protocol from the plot-held-out experiment.
-
-**Five-fold results (unweighted fold averages):** mean ROC AUC **0.8895** (SD 0.0415); mean average precision **0.4474**; mean log loss **0.1895**. The overall observed presence rate is **8.0%**.
-
-| Held-out longitude band | ROC AUC | Average precision | Recall at 0.5 | Presence rate |
-|---|---:|---:|---:|---:|
-| 1 | 0.8370 | 0.2808 | 0.4021 | 5.20% |
-| 2 | 0.9374 | 0.5535 | 0.1304 | 8.64% |
-| 3 | 0.9160 | 0.5473 | 0.2252 | 8.07% |
-| 4 | 0.8999 | 0.4714 | 0.1325 | 8.91% |
-| 5 | 0.8573 | 0.3842 | 0.4709 | 9.19% |
-
-![ROC AUC across held-out longitude bands](results/figures/09_longitude_block_cv_auc.png)
-
-![Average precision and baseline prevalence by geographic band](results/figures/10_longitude_block_cv_ap.png)
-
-**Interpretation:** Ranking quality remains substantial in each band, but positive-class recall at a 0.5 threshold varies from **13.0% to 47.1%**. This heterogeneity is important for ecological decisions where missed occurrences carry costs. Mean ROC AUC is lower than the separate plot-held-out experiment (0.8895 vs 0.9377), but **the difference cannot be attributed solely to geographic extrapolation** because predictors and training protocols differ. Longitude bands also do not provide full two-dimensional spatial blocking or independent external validation.
-
-**Audit files:** [Per-fold metrics](results/longitude_block_cv_metrics.csv) · [Summary](results/longitude_block_cv_summary.csv) · [Out-of-fold predictions](results/longitude_block_cv_predictions.csv).
-
-
-## Matched-feature validation comparison — verified
-
-[![Matched protocol comparison](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-protocols.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-protocols.yml)
-
-The [matched comparison script](scripts/08_matched_protocol_comparison.R) evaluates **identical environmental/taxon features** (without longitude/latitude), XGBoost parameters, and a fixed 300 boosting rounds using one random plot-level holdout and five longitude-band holdouts.
-
-| Metric | Random plot holdout (one split) | Longitude-band CV (mean of five bands) |
-|---|---:|---:|
-| ROC AUC | **0.9289** | **0.8895** |
-| Average precision | **0.5767** | **0.4474** |
-| Log loss | **0.1790** | **0.1895** |
-| Recall at threshold 0.5 | **0.3214** | **0.2722** |
-
-![Matched protocol comparison](results/figures/11_matched_protocol_comparison.png)
-
-**Interpretation:** The geographic-band mean ROC AUC is 0.0393 lower, and average precision is 0.1292 lower, than the single random plot holdout. This supports geographic transfer as a relevant robustness concern. However, the single random split has unmeasured sampling variability; fold averages are not a paired experiment or a formal significance test, and training sets are not identical. Average precision also depends on positive-class prevalence.
-
-**Audit files:** [Protocol-level results](results/matched_protocol_metrics.csv) · [Summary](results/matched_protocol_summary.csv) · [Reproducible script](scripts/08_matched_protocol_comparison.R).
-
-
-## Probability calibration and decision-threshold sensitivity — verified
-
-[![SDM calibration diagnostics](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-calibration.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-calibration.yml)
-
-The [calibration script](scripts/09_calibration_thresholds.R) analyzes **1,872 existing plot-held-out predictions** without retraining. The observed prevalence is **8.97%**, while the mean predicted probability is **7.70%**. Brier score is **0.0498**, versus **0.0817** for a constant prediction equal to the validation prevalence (a descriptive benchmark, not an independently estimated deployment baseline). The highest predicted-risk decile has mean predicted probability **48.1%** versus **58.5%** observed presence, suggesting underprediction in this bin.
-
-![Plot-held-out probability calibration](results/figures/12_plot_holdout_calibration.png)
-
-The fixed holdout also supports an **exploratory** threshold sensitivity analysis:
-
-| Probability threshold | Precision | Recall | F1 | False negatives |
-|---|---:|---:|---:|---:|
-| 0.10 | 0.424 | 0.869 | 0.570 | 22 |
-| 0.20 | 0.498 | 0.720 | 0.589 | 47 |
-| 0.30 | 0.599 | 0.631 | 0.614 | 62 |
-| 0.50 | 0.721 | 0.369 | 0.488 | 106 |
-
-![Exploratory precision recall and F1 by threshold](results/figures/13_plot_holdout_thresholds.png)
-
-**Decision implication:** The default 0.50 threshold misses many observed occurrences; lower thresholds trade additional false positives for fewer missed presences. Among the **evaluated 0.05-step grid**, 0.30 gives the largest observed F1, **but this is not an independently validated optimal threshold**. Threshold selection and evaluation on the same holdout would bias performance upward. For deployment, choose thresholds on separate training-side validation data, then test once on an untouched holdout. Reliability-bin Wald intervals are descriptive and can be unreliable at very low event counts.
-
-**Audit files:** [Calibration summary](results/plot_holdout_calibration_summary.csv) · [Reliability bins](results/plot_holdout_calibration_bins.csv) · [Threshold sensitivity](results/plot_holdout_threshold_sensitivity.csv).
-
-
-## Spatially explicit predictions and error audit
-
-[![SDM spatial holdout maps](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-spatial-maps.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/build-sdm-spatial-maps.yml)
-
-The [spatial audit script](scripts/10_spatial_holdout_maps.R) joins plot-held-out model predictions back to the original, observed coordinates and species identities. Each predicted record is checked against its original occurrence label and plot ID. Maps facet the eight species separately rather than treating different taxa as interchangeable observations.
-
-**Predicted presence probabilities at observed held-out plots:**
-
-![Species-specific held-out presence probabilities](results/figures/14_spatial_predicted_presence.png)
-
-**Spatial classification errors at the fixed 0.50 threshold:**
-
-![Species-specific spatial prediction errors](results/figures/15_spatial_holdout_errors.png)
-
-**Data integrity:** These are observed-location point maps, **not** interpolated habitat suitability surfaces or predictions over unsampled territory. No basemap boundaries or land-cover data are inferred. [Download the row-level spatial audit CSV](results/spatial_holdout_audit.csv) to trace plotted predictions to coordinates, species, and actual occurrence labels.
-
-## Two-dimensional spatial-block cross-validation — verified
-
-[![2D spatial-block CV](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-spatial-2d.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-spatial-2d.yml)
-
-The [2D spatial-block script](scripts/11_spatial_2d_block_cv.R) uses a **4 × 4 quantile grid** of observed plot longitude/latitude (16 occupied blocks), assigning complete blocks and plots to five folds. Each fold fits the same environmental/taxon features and fixed 300-round XGBoost settings as the longitude-band study; geographic coordinates are excluded as predictors.
-
-**Verified five-fold mean:** ROC AUC **0.9072** (SD **0.0210**), average precision **0.4386**, log loss **0.1823**, and recall at 0.5 **0.2543**.
-
-| Held-out 2D spatial fold | Plots | Presence prevalence | ROC AUC | Average precision | Recall at 0.5 |
-|---|---:|---:|---:|---:|---:|
-| 1 | 237 | 7.01% | 0.8912 | 0.3657 | 0.3609 |
-| 2 | 234 | 8.92% | 0.9364 | 0.5822 | 0.2575 |
-| 3 | 234 | 9.51% | 0.8850 | 0.4128 | 0.2584 |
-| 4 | 229 | 7.26% | 0.9040 | 0.3695 | 0.2331 |
-| 5 | 233 | 7.30% | 0.9194 | 0.4626 | 0.1618 |
-
-![Audited 2D spatial-block assignments](results/figures/16_spatial_2d_block_assignments.png)
-
-![ROC AUC across 2D spatial holdout folds](results/figures/17_spatial_2d_block_auc.png)
-
-**Interpretation:** The 2D block mean ROC AUC (0.9072) lies between the longitude-band mean (0.8895) and the single matched-feature random plot holdout (0.9289). These are **descriptive, non-paired comparisons** with different held-out regions; they do not establish statistical significance or causality. The grid uses latitude/longitude quantiles rather than equal-distance buffered geographic blocks, and training/validation regions may be adjacent. Positive-class recall varies considerably across folds.
-
-**Audit files:** [Fold metrics](results/spatial_2d_block_cv_metrics.csv) · [Summary](results/spatial_2d_block_cv_summary.csv) · [Fold diagnostics](results/spatial_2d_block_fold_diagnostics.csv) · [Plot/block assignments](results/spatial_2d_block_assignments.csv) · [Out-of-fold predictions](results/spatial_2d_block_cv_predictions.csv).
-
-
-## MaxEnt presence–background extension — CI outputs verified
-
-[MaxEnt source](scripts/13_maxent_spatial_2d_cv.R) · [GitHub Actions workflow](.github/workflows/evaluate-sdm-maxent.yml) · [Species-level results](results/maxent_spatial_2d_species_summary.csv) · [Fold-level audit](results/maxent_spatial_2d_species_folds.csv)
-
-The R `maxnet` baseline fits separate linear/quadratic MaxEnt models for eight species on the existing five plot-level 2D spatial folds. Training-fold detections are presences and surveyed non-detections approximate background; this is **not independently sampled landscape background**. The cloglog score is treated as relative suitability, not a calibrated occurrence probability.
-
-| Species | Evaluated folds | Mean ROC AUC | Mean average precision |
-|---|---:|---:|---:|
-| *nsw18* | 5/5 | 0.8219 | 0.4618 |
-| *nsw23* | 5/5 | 0.8136 | 0.5374 |
-| *nsw21* | 3/5 | 0.7693 | 0.1352 |
-| *nsw24* | 5/5 | 0.7597 | 0.2126 |
-| *nsw25* | 5/5 | 0.7613 | 0.1494 |
-| *nsw19*, *nsw20*, *nsw22* | 0/5 | NA | NA |
-
-**Coverage:** 23 of 40 species–fold evaluations produced valid scores; 17 were flagged as insufficient positive records. These are means over available folds, not an eight-species pooled benchmark. Species-specific prevalence affects average precision, and incomplete fold coverage for *nsw21* limits comparisons.
-
-**Next benchmark:** Recompute XGBoost on the same species, held-out plots, and eligible folds, then compare species-level ROC AUC and average precision on matched validation records. The pooled XGBoost 2D spatial-block AUC of 0.9072 is **not directly comparable** to these per-species MaxEnt means. Do not interpret any difference as a statistically tested model advantage.
-
-## Matched MaxEnt versus XGBoost — verified spatial-fold benchmark
-
-[![Matched MaxEnt–XGBoost workflow](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-maxent.yml/badge.svg)](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/evaluate-sdm-matched-maxent.yml)
-
-Using existing out-of-fold predictions, both methods were scored on **identical species, spatial folds, and validation records**. The benchmark covers 5 estimable species and 23 valid species–fold combinations; three sparse species lacked sufficient positives for MaxEnt evaluation. Differences below are XGBoost minus MaxEnt, averaged over eligible folds per species.
-
-| Species | Valid folds | MaxEnt AUC | XGBoost AUC | AUC difference |
-|---|---:|---:|---:|---:|
-| *nsw18* | 5 | 0.8219 | 0.8645 | +0.0426 |
-| *nsw21* | 3 | 0.7693 | 0.7550 | −0.0143 |
-| *nsw24* | 5 | 0.7597 | 0.8085 | +0.0488 |
-| *nsw23* | 5 | 0.8136 | 0.7909 | −0.0226 |
-| *nsw25* | 5 | 0.7613 | 0.7705 | +0.0091 |
-
-![Matched XGBoost minus MaxEnt ROC AUC by species](results/figures/21_matched_maxent_xgboost_auc.png)
-
-**Interpretation:** Neither model dominates across species. MaxEnt uses species-specific environmental-only linear/quadratic features and surveyed non-detections as a background proxy; XGBoost uses environmental and taxon predictors in a pooled classifier. The matched validation rows improve metric comparability but do not equalize training objectives, feature sets, or model complexity. Fold results are not independent evidence of statistical significance, and relative suitability scores are not calibrated occurrence probabilities.
-
-**Reproducibility:** [Matched per-fold metrics](results/matched_maxent_xgboost_species_folds.csv) · [Species summary](results/matched_maxent_xgboost_species_summary.csv) · [R comparison script](scripts/14_matched_maxent_xgboost.R).
-
-## Scientific limitations and reproducibility audit
-
-- **Validation unit and spatial dependence:** The new holdout and spatial CV protocols separate plot IDs; longitude bands and 2D grid cells are implemented and audited. The 2D design uses latitude/longitude quantiles and may place training cells adjacent to validation cells. Neither spatial design is a distance-buffered test or an independent external dataset.
-- **Comparability:** The 0.9377 plot-held-out ROC AUC includes coordinates and training-side CV-selected rounds, unlike the matched-feature 300-round comparison. The random-vs-spatial contrasts are descriptive, not paired statistical significance tests.
-- **Class imbalance and decision thresholds:** Overall prevalence is about 8%. Positive-class recall remains modest and varies by geographic fold. The holdout threshold sweep reuses the evaluation labels, so the observed F1 maximum at 0.30 is exploratory and **not** a deployment-ready threshold.
-- **Data semantics:** Verify original temperature scaling and projected coordinate reference system before assigning physical units or presenting continuous geographic suitability surfaces. Existing geographic figures map observed sample coordinates only.
-- **Historical versus reproduced evidence:** Legacy model-comparison figures are retained as historical reported results. Newer validated outputs are linked to their scripts and CSV files; no unlabeled test-set score or external validation is claimed.
-- **Scope:** Species-specific model benchmarking, SHAP/partial-dependence, and buffered spatial CV are optional future research extensions, not prerequisites for this completed portfolio case study.
-
-## Relevance to environmental & climate data science
-
-This case study demonstrates **tabular environmental data analysis, nonlinear ML, model selection, geographic feature engineering, evaluation under class imbalance, and careful communication of uncertainty**—skills transferable to ecological monitoring, climate-risk analytics, remote sensing, and environmental decision support.
-
-[Explore more projects in my portfolio](https://ys30.github.io/)
-
-## Data rights and reuse
-
-The MIT license covers project-authored software; it does **not** establish redistribution rights for the underlying third-party NSW survey data or course-provided materials. The public repository currently includes dataset CSVs while permissions are under review. See the [data release rights audit](results/DATA_RELEASE_RIGHTS_AUDIT.md). Anonymous species IDs are retained, and the taxonomic identity mapping is not published.
-
-## License
-
-MIT License (project-authored code; see data-rights qualification above)
-
-
-## Three-model matched spatial evaluation and sensitivity audit (verified)
-
-[Verified 23-cell matched comparison](results/XGBOOST_MATCHED_23_CELL_VERIFIED.md) · [Species-fold paired differences and bootstrap](results/XGBOOST_PAIRED_BOOTSTRAP_VERIFIED.md) · [Successful CI run](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41390769760)
-
-All comparisons below use the same **23 estimable species × spatial-fold cells** from five anonymized species. The three original model families differ in training setup and feature structure; these are not controlled algorithm-only comparisons.
-
-| Model | Mean within-species AUC | Mean within-species AP |
-|---|---:|---:|
-| Archived pooled XGBoost, scored within species | 0.8016 | 0.3401 |
-| Fold-local full XGBoost | 0.7990 | 0.3493 |
-| Four environmental predictors + Species XGBoost | 0.8028 | 0.3452 |
-| MaxEnt | 0.7865 | 0.3135 |
-| Hierarchical Bayesian | 0.7610 | 0.2838 |
-| Four environmental predictors only, pooled XGBoost | 0.6214 | 0.2105 |
-
-For the fold-local full XGBoost, mean paired AUC differences were **+0.0125 vs MaxEnt** (14/23 cells positive) and **+0.0380 vs Bayesian** (17/23 cells positive). Descriptive 2,000-replicate spatial-fold bootstrap percentile ranges were **[-0.0091, 0.0310]** and **[0.0189, 0.0509]**, respectively. Only five spatial folds were resampled: these ranges are **not formal confidence intervals** and cannot establish significance. Species-level results are heterogeneous.
-
-**Interpretation:** A pooled AUC near 0.91 should not be substituted for within-species discrimination (roughly 0.80 in matched cells). Species identity is crucial to this pooled classifier; removing it changes the modeling question. The environment-only pooled XGBoost is not a fair replacement for species-specific MaxEnt or hierarchical Bayesian models. Rare taxa without estimable held-out AUC remain outside the matched benchmark.
-
-**Privacy and provenance:** Species labels are anonymized. Do not upload unpublished manuscript drafts or original course-provided species identities. Verify permissions and data redistribution rights before public releases.
+**Map provenance:** [GitHub Actions geographic Figure 1 build](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41540075797).
