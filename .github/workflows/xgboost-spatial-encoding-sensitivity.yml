@@ -23,12 +23,14 @@ jobs:
           packages: |
             any::xgboost
             any::pROC
-      - name: Fit two XGBoost sensitivity pipelines across five held-out spatial folds
+      - name: Fit three XGBoost sensitivity pipelines across five held-out spatial folds
         run: Rscript scripts/41_xgboost_spatial_encoding_sensitivity.R
       - name: Upload sensitivity results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: xgboost-spatial-encoding-sensitivity
-          path: |\n            results/xgboost_spatial_encoding_sensitivity.csv\n            results/xgboost_spatial_species_fold_sensitivity.csv
+          path: |
+            results/xgboost_spatial_encoding_sensitivity.csv
+            results/xgboost_spatial_species_fold_sensitivity.csv
           if-no-files-found: warn
