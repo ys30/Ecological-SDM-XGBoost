@@ -1,0 +1,30 @@
+name: Generate Figure 1 geographic NSW map
+on:
+  push:
+    branches: [figure1-geographic-map]
+    paths:
+      - "scripts/generate_figure1_geographic.py"
+      - ".github/workflows/figure1-geographic-map.yml"
+      - "results/spatial_2d_block_assignments.csv"
+  workflow_dispatch:
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install GIS plotting dependencies
+        run: python -m pip install --upgrade numpy matplotlib cartopy shapely pyshp
+      - name: Render geographically grounded figure
+        run: python scripts/generate_figure1_geographic.py
+      - name: Upload PNG and PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: figure1-nsw-geographic-map
+          path: |
+            results/figures/figure1_geographic_nsw_holdouts.png
+            results/figures/figure1_geographic_nsw_holdouts.pdf
+          if-no-files-found: error
