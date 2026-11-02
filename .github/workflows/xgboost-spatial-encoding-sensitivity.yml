@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/41_xgboost_spatial_encoding_sensitivity.R'
       - 'scripts/42_compare_xgboost_species_fold_sensitivity.R'
+      - 'scripts/43_paired_xgboost_sensitivity_audit.R'
       - '.github/workflows/xgboost-spatial-encoding-sensitivity.yml'
       - 'data/train.csv'
       - 'results/spatial_2d_block_assignments.csv'
@@ -28,6 +29,8 @@ jobs:
         run: Rscript scripts/41_xgboost_spatial_encoding_sensitivity.R
       - name: Match species-fold metrics to archived 23 comparison cells
         run: Rscript scripts/42_compare_xgboost_species_fold_sensitivity.R
+      - name: Audit paired species-fold differences and fold-block uncertainty
+        run: Rscript scripts/43_paired_xgboost_sensitivity_audit.R
       - name: Upload sensitivity results
         if: always()
         uses: actions/upload-artifact@v4
@@ -38,4 +41,8 @@ jobs:
             results/xgboost_spatial_species_fold_sensitivity.csv
             results/xgboost_matched_23_cell_sensitivity.csv
             results/xgboost_matched_23_cell_summary.csv
+            results/xgboost_matched_23_cell_paired_deltas.csv
+            results/xgboost_matched_species_paired_deltas.csv
+            results/xgboost_matched_23_cell_paired_summary.csv
+            results/xgboost_matched_fold_bootstrap_descriptive.csv
           if-no-files-found: warn
