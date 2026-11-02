@@ -13,7 +13,7 @@ auc <- function(y,p) as.numeric(pROC::auc(pROC::roc(y,p,levels=c(0,1),direction=
 ap <- function(y,p) {o<-order(p,decreasing=TRUE); z<-y[o]==1; sum((cumsum(z)/seq_along(z))[z])/sum(z)}
 params <- list(objective="binary:logistic",eval_metric="logloss",eta=.03,
                max_depth=4,subsample=.8,colsample_bytree=.8,nthread=2)
-out <- list()
+out <- list(); species_out <- list()
 for(k in 1:5) {
  tr <- d[d$fold!=k,,drop=FALSE]; te <- d[d$fold==k,,drop=FALSE]
  stopifnot(length(intersect(unique(tr$plot),unique(te$plot)))==0)
@@ -53,6 +53,15 @@ for(k in 1:5) {
    fit <- xgb.train(params=params,data=xgb.DMatrix(enc$train,label=tr$pres.abs),
                     nrounds=300,verbose=0)
    p <- pmin(pmax(as.numeric(predict(fit,enc$test)),1e-15),1-1e-15)
+   for(sp in sort(unique(as.character(te$Species)))) {
+     ix <- as.character(te$Species)==sp
+     yy <- te$pres.abs[ix]; pp <- p[ix]
+     species_out[[length(species_out)+1L]] <- data.frame(mode=mode,fold=k,species=sp,
+       n=sum(ix),positive=sum(yy),
+       auc=if(length(unique(yy))==2) auc(yy,pp) else NA_real_,
+       ap=if(sum(yy)>0) ap(yy,pp) else NA_real_,
+       status=if(length(unique(yy))==2) "ok" else "insufficient_test_classes")
+   }
    out[[length(out)+1L]] <- data.frame(mode=mode,fold=k,
      n=nrow(te),positive=sum(te$pres.abs),unseen_category_values=enc$unseen,
      auc=auc(te$pres.abs,p),ap=ap(te$pres.abs,p),
@@ -62,3 +71,6 @@ for(k in 1:5) {
 res <- do.call(rbind,out)
 write.csv(res,"results/xgboost_spatial_encoding_sensitivity.csv",row.names=FALSE)
 print(res)
+
+write.csv(do.call(rbind,species_out),"results/xgboost_spatial_species_fold_sensitivity.csv",row.names=FALSE)
+print(aggregate(cbind(auc,ap)~mode,data=subset(do.call(rbind,species_out),status=="ok"),FUN=mean))
