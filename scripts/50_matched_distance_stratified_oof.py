@@ -41,11 +41,15 @@ def auc(y,p):
         rs+=(i+1+j)/2*sum(t for _,t in v[i:j]);i=j
     return (rs-pos*(pos+1)/2)/(pos*neg)
 def ap(y,p):
+    """Threshold-grouped AP, invariant to ordering of equal scores."""
     if not sum(y):return None
-    v=sorted(zip(p,y),reverse=True);tp=0;s=0
-    for i,(_,t) in enumerate(v,1):
-        if t:tp+=1;s+=tp/i
-    return s/sum(y)
+    v=sorted(zip(p,y),reverse=True);tp=0;seen=0;area=0.;i=0
+    while i<len(v):
+        j=i+1
+        while j<len(v) and v[j][0]==v[i][0]:j+=1
+        newly=sum(t for _,t in v[i:j]);tp+=newly;seen+=j-i
+        area+=newly*tp/seen;i=j
+    return area/sum(y)
 groups=defaultdict(list)
 for k,z in mi.items():
     sp=z["species"];fold=int(z["fold"]);p=z["plot"];dist=distance[p]
@@ -55,7 +59,7 @@ for k,z in mi.items():
         if keep:groups[(sp,fold,band)].append((y,vals))
 out=[]
 for (sp,fold,band),records in sorted(groups.items()):
-    y=[v[0] for v in records]; row=dict(species=sp,fold=fold,distance_band=band,n=len(y),positives=sum(y))
+    y=[v[0] for v in records]; row=dict(species=sp,fold=fold,distance_band=band,n=len(y),positives=sum(y),\n        auc_status="ok" if 0<sum(y)<len(y) else "undefined_single_class")
     for model in ("bayesian","maxent","xgboost"):
         scores=[v[1][model] for v in records]
         row[model+"_auc"]=auc(y,scores);row[model+"_ap"]=ap(y,scores)
