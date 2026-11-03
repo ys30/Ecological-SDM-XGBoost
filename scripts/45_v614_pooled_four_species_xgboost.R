@@ -12,6 +12,7 @@ rows <- list()
 for(k in sort(unique(d$fold))) {
  tr <- d[d$fold!=k,,drop=FALSE];te <- d[d$fold==k,,drop=FALSE]
  stopifnot(!length(intersect(unique(tr$plot),unique(te$plot))))
+ stopifnot(length(unique(tr$pres.abs))==2)
  species_levels <- sort(unique(as.character(tr$Species)))
  stopifnot(all(te$Species %in% species_levels))
  make_matrix <- function(z) {
@@ -29,7 +30,8 @@ for(k in sort(unique(d$fold))) {
     fold=k,y=te$pres.abs,p=pp)
 }
 out <- do.call(rbind,rows)
-stopifnot(nrow(out)==nrow(d),setequal(out$id,d$id),!anyDuplicated(out$id))
+stopifnot(nrow(out)==nrow(d),setequal(out$id,d$id),!anyDuplicated(out$id),
+          all(is.finite(out$p)),all(out$p>0 & out$p<1))
 dir.create("results/v614_common_input",recursive=TRUE,showWarnings=FALSE)
 write.csv(out,"results/v614_common_input/pooled_four_plus_species_xgboost_oof.csv",row.names=FALSE)
 cat("Pooled common-input OOF predictions:",nrow(out),"\n")
