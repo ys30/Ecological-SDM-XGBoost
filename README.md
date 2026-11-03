@@ -32,9 +32,17 @@ Identical held-out evaluation records: **23 eligible taxon–fold cells across f
 
 [Matched species metrics](results/matched_bayesian_maxent_xgboost_species.csv) · [Matched fold metrics](results/matched_bayesian_maxent_xgboost_folds.csv) · [Average precision figure](results/figures/23_three_model_ap_publication.svg)
 
+### Spatial-fold heterogeneity — paired differences
+
+![XGBoost minus MaxEnt ROC AUC, with individual spatial folds and taxon means](results/figures/25_paired_xgboost_maxent_auc.svg)
+
+![XGBoost minus MaxEnt average precision, with individual spatial folds and taxon means](results/figures/26_paired_xgboost_maxent_ap.svg)
+
+XGBoost exceeded MaxEnt in **14/23 eligible ROC AUC cells** (mean paired ΔAUC **+0.01508**) and **13/23 AP cells** (mean paired ΔAP **+0.02658**). The direction varies by taxon and fold. Points are descriptive; the 23 cells are not independent replicates. [Figure methods and audit caveats](results/MATCHED_PAIRED_FIGURES_AND_METHOD_AUDIT.md).
+
 ## What changes the model ranking?
 
-**Fold-local XGBoost feature encoding** gave similar discrimination to the archived full-feature configuration. **Removing taxon identity** substantially reduced pooled XGBoost performance, but changes the prediction task rather than isolating an encoding effect.
+**Fold-local XGBoost feature encoding** is implemented as a sensitivity analysis, but its generated result CSVs were not found on the current main branch during the latest audit. Its numerical impact should be treated as **pending artifact verification**, rather than as a confirmed result. Removing taxon identity also changes the prediction task, rather than isolating an encoding effect.
 
 [Feature-representation sensitivity script](scripts/41_xgboost_spatial_encoding_sensitivity.R) · [Bayesian five-fold convergence audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md)
 
@@ -67,6 +75,6 @@ Identical held-out evaluation records: **23 eligible taxon–fold cells across f
 - **Bayesian diagnostics:** four-chain confirmation fits passed archived convergence thresholds; matched figures use original-fit Bayesian predictions because complete long-chain observation-level prediction artifacts were not retained.
 - **Practical interpretation:** results support within-region ranking and retrospective screening, not calibrated occupancy, independent geographic transfer or a prospective field survey.
 
-**Code and results are public; the journal manuscript and appendix remain private.** Older analyses, different validation protocols and historical draft links are preserved in the [historical README](results/README_HISTORICAL_DETAILED.md), not mixed into the current matched-model headline.
+**The current journal manuscript and appendix are managed separately from the public results.** Historical manuscript-like draft files and older analyses remain accessible in this public repository; they have not been migrated or deleted. Different validation protocols and historical materials are linked from the [historical README](results/README_HISTORICAL_DETAILED.md), not mixed into the current matched-model headline.
 
 **Map provenance:** [GitHub Actions geographic Figure 1 build](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41540075797).
