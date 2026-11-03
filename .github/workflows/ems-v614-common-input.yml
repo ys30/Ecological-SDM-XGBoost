@@ -6,6 +6,7 @@ on:
       - '.github/workflows/ems-v614-common-input.yml'
       - 'scripts/42_common_input_xgboost.R'
       - 'scripts/43_v614_common_input_audit.R'
+      - 'scripts/44_v614_rare_taxon_retrieval.R'
 jobs:
   fit:
     runs-on: ubuntu-latest
@@ -21,6 +22,8 @@ jobs:
         run: Rscript scripts/42_common_input_xgboost.R
       - name: Audit paired results
         run: Rscript scripts/43_v614_common_input_audit.R
+      - name: Rare-taxon top-k retrieval
+        run: Rscript scripts/44_v614_rare_taxon_retrieval.R
       - name: Publish validation summary
         if: success()
         shell: bash
@@ -28,6 +31,7 @@ jobs:
           Rscript - <<'RSCRIPT'
           p <- read.csv("results/v614_common_input/taxon_specific_xgboost_oof.csv")
           m <- read.csv("results/v614_common_input/matched_comparison_audit.csv")
+          rare <- read.csv("results/v614_common_input/rare_taxon_retrieval_summary.csv")
           stopifnot(nrow(p)==nrow(read.csv("data/train.csv")))
           valid <- is.finite(p$p)
           lines <- c(
@@ -40,8 +44,10 @@ jobs:
             paste0("- Eligible specific-model AUC cells: ", sum(is.finite(m$specific_auc))),
             paste0("- Mean specific minus pooled XGBoost AUC: ", round(mean(m$delta_specific_minus_pooled_auc,na.rm=TRUE),4)),
             paste0("- Mean specific minus MaxEnt AUC: ", round(mean(m$delta_specific_minus_maxent_auc,na.rm=TRUE),4)),
+            paste0("- Rare-taxon top-k summaries: ", nrow(rare)),
+            paste0("- Complete rare-taxon summaries: ", sum(rare$status=="ok")),
             "",
-            "Full per-observation predictions and matched metrics are in the workflow artifact."
+            "Full OOF predictions, metrics, calibration baselines and rare-taxon retrieval are in the artifact."
           )
           cat(paste(lines,collapse="\n"),"\n")
           writeLines(lines,Sys.getenv("GITHUB_STEP_SUMMARY"))
