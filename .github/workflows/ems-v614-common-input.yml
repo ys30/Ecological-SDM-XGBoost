@@ -10,6 +10,7 @@ on:
       - 'scripts/45_v614_pooled_four_species_xgboost.R'
       - 'scripts/46_v614_pooling_ablation_audit.R'
       - 'scripts/47_v614_pooled_four_only_xgboost.R'
+      - 'scripts/48_v614_three_way_uncertainty.R'
 jobs:
   fit:
     runs-on: ubuntu-latest
@@ -29,6 +30,8 @@ jobs:
         run: Rscript scripts/47_v614_pooled_four_only_xgboost.R
       - name: Audit pooled versus specific ablation
         run: Rscript scripts/46_v614_pooling_ablation_audit.R
+      - name: Quantify taxon-cluster uncertainty
+        run: Rscript scripts/48_v614_three_way_uncertainty.R
       - name: Audit paired results
         run: Rscript scripts/43_v614_common_input_audit.R
       - name: Rare-taxon top-k retrieval
@@ -43,6 +46,7 @@ jobs:
           rare <- read.csv("results/v614_common_input/rare_taxon_retrieval_summary.csv")
           pooling <- read.csv("results/v614_common_input/pooled_vs_specific_four_input.csv")
           blind <- read.csv("results/v614_common_input/pooled_four_only_xgboost_oof.csv")
+          uncertainty <- read.csv("results/v614_common_input/three_way_taxon_cluster_uncertainty.csv")
           stopifnot(nrow(blind)==nrow(p),setequal(blind$id,p$id))
           stopifnot(nrow(p)==nrow(read.csv("data/train.csv")))
           valid <- is.finite(p$p)
@@ -59,6 +63,7 @@ jobs:
             paste0("- Common-input pooled minus specific AUC: ", round(mean(pooling$delta_pooled_minus_specific_auc,na.rm=TRUE),4)),
             paste0("- Common-input pooled minus specific AP: ", round(mean(pooling$delta_pooled_minus_specific_ap,na.rm=TRUE),4)),
             paste0("- Species-blind negative-control predictions: ", nrow(blind)),
+            paste0("- Exploratory cluster-uncertainty comparisons: ", nrow(uncertainty)),
             paste0("- Rare-taxon top-k summaries: ", nrow(rare)),
             paste0("- Complete rare-taxon summaries: ", sum(rare$status=="ok")),
             "",
