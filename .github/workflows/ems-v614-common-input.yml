@@ -21,9 +21,34 @@ jobs:
         run: Rscript scripts/42_common_input_xgboost.R
       - name: Audit paired results
         run: Rscript scripts/43_v614_common_input_audit.R
+      - name: Publish validation summary
+        if: success()
+        shell: bash
+        run: |
+          Rscript - <<'RSCRIPT'
+          p <- read.csv("results/v614_common_input/taxon_specific_xgboost_oof.csv")
+          m <- read.csv("results/v614_common_input/matched_comparison_audit.csv")
+          stopifnot(nrow(p)==nrow(read.csv("data/train.csv")))
+          valid <- is.finite(p$p)
+          lines <- c(
+            "## EMS v6.14 common-input XGBoost validation",
+            "",
+            paste0("- OOF observations: ", nrow(p)),
+            paste0("- Valid predictions: ", sum(valid)),
+            paste0("- Missing predictions: ", sum(!valid)),
+            paste0("- Matched taxon-fold rows: ", nrow(m)),
+            paste0("- Eligible specific-model AUC cells: ", sum(is.finite(m$specific_auc))),
+            paste0("- Mean specific minus pooled XGBoost AUC: ", round(mean(m$delta_specific_minus_pooled_auc,na.rm=TRUE),4)),
+            paste0("- Mean specific minus MaxEnt AUC: ", round(mean(m$delta_specific_minus_maxent_auc,na.rm=TRUE),4)),
+            "",
+            "Full per-observation predictions and matched metrics are in the workflow artifact."
+          )
+          cat(paste(lines,collapse="\n"),"\n")
+          writeLines(lines,Sys.getenv("GITHUB_STEP_SUMMARY"))
+          RSCRIPT
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ems-v614-taxon-specific-xgboost
           path: results/v614_common_input/
-          if-no-files-found: warn
+          if-no-files-found: error
