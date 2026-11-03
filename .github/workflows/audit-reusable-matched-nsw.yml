@@ -1,0 +1,51 @@
+name: Audit reusable matched OOF evaluator on NSW
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/52_evaluate_matched_oof.py'
+      - 'scripts/53_build_matched_oof_input.py'
+      - '.github/workflows/audit-reusable-matched-nsw.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit tests
+        run: python3 scripts/52_evaluate_matched_oof.py --self-test
+      - name: Strict join of three model predictions
+        run: python3 scripts/53_build_matched_oof_input.py
+      - name: Run generic matched evaluator
+        run: |
+          python3 scripts/52_evaluate_matched_oof.py \
+            --input results/matched_oof_generic_input.csv \
+            --scores bayesian maxent xgboost \
+            --output results/matched_oof_generic_metrics.csv
+      - name: Check archived 23-cell alignment
+        run: |
+          python3 - <<'PY'
+          import csv
+          def read(p):
+              with open(p,newline='') as f:return list(csv.DictReader(f))
+          old=read('results/matched_bayesian_maxent_xgboost_folds.csv')
+          new=read('results/matched_oof_generic_metrics.csv')
+          assert len(old)==len(new)==23,(len(old),len(new))
+          oldidx={(r['species'],r['fold']):r for r in old}
+          for r in new:
+              ref=oldidx[(r['taxon'],r['fold'])]
+              assert int(r['n_matched'])==int(ref['n'])
+              assert int(r['positives'])==int(ref['positives'])
+              assert r['status']=='ok'
+              for model in ('bayesian','maxent','xgboost'):
+                  assert abs(float(r[model+'_auc'])-float(ref[model+'_auc']))<1e-10,(r['taxon'],r['fold'],model)
+          print('PASS: exact 23-cell eligibility, counts, and AUC reproduced')
+          print('AP may differ from archive due to grouped-score tie convention; compare in dedicated AP tie audit.')
+          PY
+      - name: Archive portable inputs and results
+        uses: actions/upload-artifact@v4
+        with:
+          name: reusable-matched-nsw-validation
+          path: |
+            results/matched_oof_generic_input.csv
+            results/matched_oof_generic_metrics.csv
+          if-no-files-found: error
