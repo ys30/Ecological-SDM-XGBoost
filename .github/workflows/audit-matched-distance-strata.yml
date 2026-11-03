@@ -1,0 +1,20 @@
+name: Audit matched OOF performance by train-distance
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/50_matched_distance_stratified_oof.py'
+      - '.github/workflows/audit-matched-distance-strata.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compute distance-stratified held-out metrics
+        run: python3 scripts/50_matched_distance_stratified_oof.py
+      - name: Upload audit CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: matched-distance-stratified-oof
+          path: results/matched_distance_stratified_oof_metrics.csv
+          if-no-files-found: error
