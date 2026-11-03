@@ -36,6 +36,10 @@ m<-do.call(rbind,rows)
 stopifnot(!is.null(m),!anyDuplicated(paste(m$species,m$fold)))
 x<-merge(a,m,by=c("species","fold"),all.x=TRUE,sort=FALSE)
 stopifnot(nrow(x)==nrow(a))
+# Never compare metrics from different evaluation samples.
+stopifnot(all(is.finite(x$n.x)), all(is.finite(x$positives.x)))
+stopifnot(all(!is.na(x$n.y)), all(!is.na(x$positives.y)))
+stopifnot(all(x$n.x==x$n.y), all(x$positives.x==x$positives.y))
 x$delta_specific_minus_pooled_auc<-x$specific_auc-x$xgboost_auc
 x$delta_specific_minus_maxent_auc<-x$specific_auc-x$maxent_auc
 x$delta_specific_minus_bayes_auc<-x$specific_auc-x$bayesian_auc
