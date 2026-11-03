@@ -7,6 +7,8 @@ on:
       - 'scripts/42_common_input_xgboost.R'
       - 'scripts/43_v614_common_input_audit.R'
       - 'scripts/44_v614_rare_taxon_retrieval.R'
+      - 'scripts/45_v614_pooled_four_species_xgboost.R'
+      - 'scripts/46_v614_pooling_ablation_audit.R'
 jobs:
   fit:
     runs-on: ubuntu-latest
@@ -20,6 +22,10 @@ jobs:
         run: Rscript -e 'install.packages(c("xgboost","pROC"),repos="https://cloud.r-project.org")'
       - name: Run spatial out-of-fold experiment
         run: Rscript scripts/42_common_input_xgboost.R
+      - name: Run matched pooled common-input experiment
+        run: Rscript scripts/45_v614_pooled_four_species_xgboost.R
+      - name: Audit pooled versus specific ablation
+        run: Rscript scripts/46_v614_pooling_ablation_audit.R
       - name: Audit paired results
         run: Rscript scripts/43_v614_common_input_audit.R
       - name: Rare-taxon top-k retrieval
@@ -32,6 +38,7 @@ jobs:
           p <- read.csv("results/v614_common_input/taxon_specific_xgboost_oof.csv")
           m <- read.csv("results/v614_common_input/matched_comparison_audit.csv")
           rare <- read.csv("results/v614_common_input/rare_taxon_retrieval_summary.csv")
+          pooling <- read.csv("results/v614_common_input/pooled_vs_specific_four_input.csv")
           stopifnot(nrow(p)==nrow(read.csv("data/train.csv")))
           valid <- is.finite(p$p)
           lines <- c(
@@ -44,6 +51,8 @@ jobs:
             paste0("- Eligible specific-model AUC cells: ", sum(is.finite(m$specific_auc))),
             paste0("- Mean specific minus pooled XGBoost AUC: ", round(mean(m$delta_specific_minus_pooled_auc,na.rm=TRUE),4)),
             paste0("- Mean specific minus MaxEnt AUC: ", round(mean(m$delta_specific_minus_maxent_auc,na.rm=TRUE),4)),
+            paste0("- Common-input pooled minus specific AUC: ", round(mean(pooling$delta_pooled_minus_specific_auc,na.rm=TRUE),4)),
+            paste0("- Common-input pooled minus specific AP: ", round(mean(pooling$delta_pooled_minus_specific_ap,na.rm=TRUE),4)),
             paste0("- Rare-taxon top-k summaries: ", nrow(rare)),
             paste0("- Complete rare-taxon summaries: ", sum(rare$status=="ok")),
             "",
