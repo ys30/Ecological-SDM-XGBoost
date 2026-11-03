@@ -1,0 +1,14 @@
+name: Test reusable matched SDM evaluator
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/52_evaluate_matched_oof.py'
+      - '.github/workflows/test-reusable-sdm-evaluator.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run deterministic synthetic self-tests
+        run: python3 scripts/52_evaluate_matched_oof.py --self-test
