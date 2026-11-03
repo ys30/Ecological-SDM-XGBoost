@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 450" role="img" aria-label="Bayesian and XGBoost rare taxon retrieval recall by inspection budget">
+<rect width="930" height="450" fill="white"/>
+<text x="44" y="36" font-family="Arial,sans-serif" font-size="21" font-weight="bold" fill="#172b4d">Rare-taxon retrieval: matched spatial folds</text>
+<text x="44" y="59" font-family="Arial,sans-serif" font-size="12" fill="#526579">Recall among observed presences; top-k plots selected independently in each of five folds</text>
+<text x="58" y="99" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#172b4d">nsw19</text>
+<line x1="88" y1="340" x2="313" y2="340" stroke="#e3e8ee"/>
+<text x="80" y="344" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">0</text>
+<line x1="88" y1="240.0" x2="313" y2="240.0" stroke="#e3e8ee"/>
+<text x="80" y="244.0" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">0.5</text>
+<line x1="88" y1="140" x2="313" y2="140" stroke="#e3e8ee"/>
+<text x="80" y="144" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">1</text>
+<rect x="114" y="315.00" width="13" height="25.00" fill="#3269a8"/>
+<rect x="128" y="215.00" width="13" height="125.00" fill="#db7b30"/>
+<text x="125" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">10</text>
+<rect x="184" y="265.00" width="13" height="75.00" fill="#3269a8"/>
+<rect x="198" y="165.00" width="13" height="175.00" fill="#db7b30"/>
+<text x="195" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">25</text>
+<rect x="254" y="190.00" width="13" height="150.00" fill="#3269a8"/>
+<rect x="268" y="140.00" width="13" height="200.00" fill="#db7b30"/>
+<text x="265" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">50</text>
+<text x="203" y="381" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#526579">Top-k per fold</text>
+<text x="363" y="99" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#172b4d">nsw20</text>
+<line x1="393" y1="340" x2="618" y2="340" stroke="#e3e8ee"/>
+<text x="385" y="344" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">0</text>
+<line x1="393" y1="240.0" x2="618" y2="240.0" stroke="#e3e8ee"/>
+<text x="385" y="244.0" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">0.5</text>
+<line x1="393" y1="140" x2="618" y2="140" stroke="#e3e8ee"/>
+<text x="385" y="144" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">1</text>
+<rect x="419" y="240.00" width="13" height="100.00" fill="#3269a8"/>
+<rect x="433" y="206.67" width="13" height="133.33" fill="#db7b30"/>
+<text x="430" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">10</text>
+<rect x="489" y="151.11" width="13" height="188.89" fill="#3269a8"/>
+<rect x="503" y="162.22" width="13" height="177.78" fill="#db7b30"/>
+<text x="500" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">25</text>
+<rect x="559" y="140.00" width="13" height="200.00" fill="#3269a8"/>
+<rect x="573" y="140.00" width="13" height="200.00" fill="#db7b30"/>
+<text x="570" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">50</text>
+<text x="508" y="381" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#526579">Top-k per fold</text>
+<text x="668" y="99" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#172b4d">nsw22</text>
+<line x1="698" y1="340" x2="923" y2="340" stroke="#e3e8ee"/>
+<text x="690" y="344" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">0</text>
+<line x1="698" y1="240.0" x2="923" y2="240.0" stroke="#e3e8ee"/>
+<text x="690" y="244.0" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">0.5</text>
+<line x1="698" y1="140" x2="923" y2="140" stroke="#e3e8ee"/>
+<text x="690" y="144" font-family="Arial,sans-serif" font-size="10" text-anchor="end" fill="#6b7280">1</text>
+<rect x="724" y="273.33" width="13" height="66.67" fill="#3269a8"/>
+<rect x="738" y="340.00" width="13" height="0.00" fill="#db7b30"/>
+<text x="735" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">10</text>
+<rect x="794" y="206.67" width="13" height="133.33" fill="#3269a8"/>
+<rect x="808" y="306.67" width="13" height="33.33" fill="#db7b30"/>
+<text x="805" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">25</text>
+<rect x="864" y="140.00" width="13" height="200.00" fill="#3269a8"/>
+<rect x="878" y="306.67" width="13" height="33.33" fill="#db7b30"/>
+<text x="875" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#344054">50</text>
+<text x="813" y="381" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#526579">Top-k per fold</text>
+<rect x="345" y="412" width="13" height="13" fill="#3269a8"/>
+<text x="363" y="423" font-family="Arial,sans-serif" font-size="12" fill="#344054">Bayesian</text>
+<rect x="450" y="412" width="13" height="13" fill="#db7b30"/>
+<text x="468" y="423" font-family="Arial,sans-serif" font-size="12" fill="#344054">Taxon-specific XGBoost</text>
+</svg>
