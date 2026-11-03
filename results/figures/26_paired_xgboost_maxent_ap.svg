@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="590" viewBox="0 0 1050 590">
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="45" y="35" font-family="Arial" font-size="24" font-weight="bold">XGBoost minus MaxEnt: paired AP differences</text>
+<text x="45" y="59" font-family="Arial" font-size="14" fill="#555">Matched held-out species–folds; positive values favor XGBoost; descriptive, not inferential</text>
+<line x1="151.15384615384616" x2="151.15384615384616" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="151.15384615384616" y="543" text-anchor="middle" font-size="12" font-family="Arial">-0.25</text>
+<line x1="231.9230769230769" x2="231.9230769230769" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="231.9230769230769" y="543" text-anchor="middle" font-size="12" font-family="Arial">-0.20</text>
+<line x1="312.6923076923077" x2="312.6923076923077" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="312.6923076923077" y="543" text-anchor="middle" font-size="12" font-family="Arial">-0.15</text>
+<line x1="393.46153846153845" x2="393.46153846153845" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="393.46153846153845" y="543" text-anchor="middle" font-size="12" font-family="Arial">-0.10</text>
+<line x1="474.23076923076917" x2="474.23076923076917" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="474.23076923076917" y="543" text-anchor="middle" font-size="12" font-family="Arial">-0.05</text>
+<line x1="555" x2="555" y1="80" y2="515" stroke="#555" stroke-width="2"/>
+<text x="555" y="543" text-anchor="middle" font-size="12" font-family="Arial">-0.00</text>
+<line x1="635.7692307692307" x2="635.7692307692307" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="635.7692307692307" y="543" text-anchor="middle" font-size="12" font-family="Arial">0.05</text>
+<line x1="716.5384615384615" x2="716.5384615384615" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="716.5384615384615" y="543" text-anchor="middle" font-size="12" font-family="Arial">0.10</text>
+<line x1="797.3076923076924" x2="797.3076923076924" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="797.3076923076924" y="543" text-anchor="middle" font-size="12" font-family="Arial">0.15</text>
+<line x1="878.0769230769231" x2="878.0769230769231" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="878.0769230769231" y="543" text-anchor="middle" font-size="12" font-family="Arial">0.20</text>
+<line x1="958.8461538461538" x2="958.8461538461538" y1="80" y2="515" stroke="#e5e7eb" stroke-width="1"/>
+<text x="958.8461538461538" y="543" text-anchor="middle" font-size="12" font-family="Arial">0.25</text>
+<text x="25" y="120" font-family="Arial" font-size="16">nsw18</text>
+<line x1="571.6287326187698" y1="115" x2="855.8809330328986" y2="115" stroke="#9ca3af" stroke-width="2"/>
+<circle cx="855.8809330328986" cy="101" r="5" fill="#4979b9" opacity=".82"><title>nsw18 fold 1: 0.18626</title></circle>
+<circle cx="571.6287326187698" cy="108" r="5" fill="#4979b9" opacity=".82"><title>nsw18 fold 2: 0.01029</title></circle>
+<circle cx="703.9086258107279" cy="115" r="5" fill="#4979b9" opacity=".82"><title>nsw18 fold 3: 0.09218</title></circle>
+<circle cx="646.8263370888199" cy="122" r="5" fill="#4979b9" opacity=".82"><title>nsw18 fold 4: 0.05684</title></circle>
+<circle cx="738.3019600420745" cy="129" r="5" fill="#4979b9" opacity=".82"><title>nsw18 fold 5: 0.11347</title></circle>
+<polygon points="703.3093177186581,106 712.3093177186581,115 703.3093177186581,124 694.3093177186581,115" fill="#d97706" stroke="#fff" stroke-width="1"/>
+<text x="998" y="119" font-family="Arial" font-size="13" text-anchor="end">+0.092</text>
+<text x="25" y="211" font-family="Arial" font-size="16">nsw21</text>
+<line x1="511.93156016885007" y1="206" x2="623.9043738195976" y2="206" stroke="#9ca3af" stroke-width="2"/>
+<circle cx="548.1303155743219" cy="199" r="5" fill="#4979b9" opacity=".82"><title>nsw21 fold 1: -0.00425</title></circle>
+<circle cx="511.93156016885007" cy="206" r="5" fill="#4979b9" opacity=".82"><title>nsw21 fold 2: -0.02666</title></circle>
+<circle cx="623.9043738195976" cy="213" r="5" fill="#4979b9" opacity=".82"><title>nsw21 fold 3: 0.04266</title></circle>
+<polygon points="561.3220831875899,197 570.3220831875899,206 561.3220831875899,215 552.3220831875899,206" fill="#d97706" stroke="#fff" stroke-width="1"/>
+<text x="998" y="210" font-family="Arial" font-size="13" text-anchor="end">+0.004</text>
+<text x="25" y="302" font-family="Arial" font-size="16">nsw23</text>
+<line x1="240.02449069560157" y1="297" x2="743.2156573617519" y2="297" stroke="#9ca3af" stroke-width="2"/>
+<circle cx="240.02449069560157" cy="283" r="5" fill="#4979b9" opacity=".82"><title>nsw23 fold 1: -0.19498</title></circle>
+<circle cx="553.5285225315617" cy="290" r="5" fill="#4979b9" opacity=".82"><title>nsw23 fold 2: -0.00091</title></circle>
+<circle cx="373.37682363450256" cy="297" r="5" fill="#4979b9" opacity=".82"><title>nsw23 fold 3: -0.11243</title></circle>
+<circle cx="342.70882955573904" cy="304" r="5" fill="#4979b9" opacity=".82"><title>nsw23 fold 4: -0.13142</title></circle>
+<circle cx="743.2156573617519" cy="311" r="5" fill="#4979b9" opacity=".82"><title>nsw23 fold 5: 0.11651</title></circle>
+<polygon points="450.5708647558314,288 459.5708647558314,297 450.5708647558314,306 441.5708647558314,297" fill="#d97706" stroke="#fff" stroke-width="1"/>
+<text x="998" y="301" font-family="Arial" font-size="13" text-anchor="end">-0.065</text>
+<text x="25" y="393" font-family="Arial" font-size="16">nsw24</text>
+<line x1="536.8024236051889" y1="388" x2="889.1750920986595" y2="388" stroke="#9ca3af" stroke-width="2"/>
+<circle cx="602.4896585783792" cy="374" r="5" fill="#4979b9" opacity=".82"><title>nsw24 fold 1: 0.02940</title></circle>
+<circle cx="889.1750920986595" cy="381" r="5" fill="#4979b9" opacity=".82"><title>nsw24 fold 2: 0.20687</title></circle>
+<circle cx="691.0046651292985" cy="388" r="5" fill="#4979b9" opacity=".82"><title>nsw24 fold 3: 0.08419</title></circle>
+<circle cx="536.8024236051889" cy="395" r="5" fill="#4979b9" opacity=".82"><title>nsw24 fold 4: -0.01127</title></circle>
+<circle cx="824.7176411570131" cy="402" r="5" fill="#4979b9" opacity=".82"><title>nsw24 fold 5: 0.16697</title></circle>
+<polygon points="708.8378961137079,379 717.8378961137079,388 708.8378961137079,397 699.8378961137079,388" fill="#d97706" stroke="#fff" stroke-width="1"/>
+<text x="998" y="392" font-family="Arial" font-size="13" text-anchor="end">+0.095</text>
+<text x="25" y="484" font-family="Arial" font-size="16">nsw25</text>
+<line x1="426.1299009450041" y1="479" x2="645.9729901477272" y2="479" stroke="#9ca3af" stroke-width="2"/>
+<circle cx="645.9729901477272" cy="465" r="5" fill="#4979b9" opacity=".82"><title>nsw25 fold 1: 0.05632</title></circle>
+<circle cx="594.8151782421282" cy="472" r="5" fill="#4979b9" opacity=".82"><title>nsw25 fold 2: 0.02465</title></circle>
+<circle cx="553.6910524185835" cy="479" r="5" fill="#4979b9" opacity=".82"><title>nsw25 fold 3: -0.00081</title></circle>
+<circle cx="426.1299009450041" cy="486" r="5" fill="#4979b9" opacity=".82"><title>nsw25 fold 4: -0.07978</title></circle>
+<circle cx="534.410187592296" cy="493" r="5" fill="#4979b9" opacity=".82"><title>nsw25 fold 5: -0.01275</title></circle>
+<polygon points="551.0038618691478,470 560.0038618691478,479 551.0038618691478,488 542.0038618691478,479" fill="#d97706" stroke="#fff" stroke-width="1"/>
+<text x="998" y="483" font-family="Arial" font-size="13" text-anchor="end">-0.002</text>
+<text x="45" y="577" font-family="Arial" font-size="13" fill="#555">Dots: individual folds; diamonds: species means; overall 23-cell mean: +0.02658; source: matched_bayesian_maxent_xgboost_folds.csv</text>
+</svg>
