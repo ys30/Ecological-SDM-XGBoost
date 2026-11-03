@@ -1,0 +1,19 @@
+name: Audit matched average precision ties
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/51_audit_matched_ap_ties.py'
+      - '.github/workflows/audit-matched-ap-ties.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare archived and grouped-threshold AP
+        run: python3 scripts/51_audit_matched_ap_ties.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: matched-ap-tie-sensitivity
+          path: results/matched_ap_tie_sensitivity.csv
+          if-no-files-found: error
