@@ -1,0 +1,7 @@
+"comparison","n_taxa","n_cells","equal_taxon_mean","bootstrap_lower","bootstrap_upper","signflip_tail_fraction","interpretation"
+"delta_pooled_minus_specific_auc",8,30,-0.0123100783182364,-0.0510108336879891,0.0219947098226303,0.5859375,"exploratory; taxon clusters are few"
+"delta_blind_minus_pooled_auc",8,30,-0.313131264374973,-0.461943021975326,-0.179325779092038,0.0078125,"exploratory; taxon clusters are few"
+"delta_pooled_minus_specific_ap",8,30,0.00154933941998598,-0.0304169296066226,0.0335568066883496,0.9375,"exploratory; taxon clusters are few"
+"delta_blind_minus_pooled_ap",8,30,-0.182209678205554,-0.302883926994845,-0.0856817242330369,0.0078125,"exploratory; taxon clusters are few"
+"delta_pooled_minus_specific_brier",8,40,-0.00534029423756477,-0.00905234859313308,-0.00213731944696096,0.0078125,"exploratory; taxon clusters are few"
+"delta_blind_minus_pooled_brier",8,40,0.0191683824656396,0.0047405541052642,0.0384385878067944,0.0078125,"exploratory; taxon clusters are few"
