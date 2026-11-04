@@ -59,7 +59,8 @@ for k,z in mi.items():
         if keep:groups[(sp,fold,band)].append((y,vals))
 out=[]
 for (sp,fold,band),records in sorted(groups.items()):
-    y=[v[0] for v in records]; row=dict(species=sp,fold=fold,distance_band=band,n=len(y),positives=sum(y),\n        auc_status="ok" if 0<sum(y)<len(y) else "undefined_single_class")
+    y=[v[0] for v in records]; row=dict(species=sp,fold=fold,distance_band=band,n=len(y),positives=sum(y),
+        auc_status="ok" if 0<sum(y)<len(y) else "undefined_single_class")
     for model in ("bayesian","maxent","xgboost"):
         scores=[v[1][model] for v in records]
         row[model+"_auc"]=auc(y,scores);row[model+"_ap"]=ap(y,scores)
