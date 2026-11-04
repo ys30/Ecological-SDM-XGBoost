@@ -1,0 +1,35 @@
+name: Audit paired distance interactions
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/56_paired_distance_interaction_audit.py'
+      - '.github/workflows/audit-paired-distance-interaction.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compute paired taxon-fold near-far model contrasts
+        run: python3 scripts/56_paired_distance_interaction_audit.py
+      - name: Publish paired diagnostics
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/paired_distance_interaction_audit.csv results/paired_distance_interaction_summary.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish paired near-far distance interaction audit'
+            git pull --rebase origin main
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paired-distance-interaction-audit
+          path: |
+            results/paired_distance_interaction_audit.csv
+            results/paired_distance_interaction_summary.csv
+          if-no-files-found: warn
