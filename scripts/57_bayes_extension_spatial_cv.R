@@ -1,4 +1,4 @@
-# Bayesian extension experiment: pre-registered quadratic vs no-pooling comparisons.
+# Bayesian extension experiment: exploratory quadratic vs no-pooling comparisons.
 # Five archived plot-grouped spatial folds; no held-out data in preprocessing.
 suppressPackageStartupMessages({library(brms);library(pROC)})
 args <- commandArgs(trailingOnly=TRUE)
