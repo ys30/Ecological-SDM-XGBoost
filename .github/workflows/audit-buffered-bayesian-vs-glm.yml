@@ -31,6 +31,11 @@ jobs:
           name_is_regexp: true
           path: results
 
+      - name: Normalize GLM artifact directory
+        run: |
+          mkdir -p results/alternative_spatial_validation/buffered_glm
+          test -f results/buffered_glm_oof.csv
+          cp results/buffered_glm_oof.csv results/alternative_spatial_validation/buffered_glm/buffered_glm_oof.csv
       - name: Normalize downloaded Bayesian artifact folders
         run: |
           python - <<'PY'
