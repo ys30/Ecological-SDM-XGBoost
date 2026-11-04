@@ -43,7 +43,7 @@ m=allp.groupby(["variant","species","fold"],sort=True).apply(metrics,include_gro
 out=Path("results/bayes_extensions");out.mkdir(parents=True,exist_ok=True)
 m.to_csv(out/"five_fold_metrics.csv",index=False)
 baseline=m[m.variant=="baseline"].drop(columns="variant")
-joined=m[m.variant!="baseline"].merge(baseline,on=["species","fold"],suffixes=("","_baseline"),validate="one_to_one")
+joined=m[m.variant!="baseline"].merge(baseline,on=["species","fold"],suffixes=("","_baseline"),validate="many_to_one")
 for metric in ["auc","ap","brier","logloss"]:
     joined[f"delta_{metric}"]=joined[metric]-joined[f"{metric}_baseline"]
 joined.to_csv(out/"paired_baseline_differences.csv",index=False)
