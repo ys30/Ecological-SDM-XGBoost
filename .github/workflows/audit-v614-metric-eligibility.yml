@@ -1,0 +1,32 @@
+name: Audit EMS v6.14 metric eligibility
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/55_audit_v614_metric_eligibility.py'
+      - '.github/workflows/audit-v614-metric-eligibility.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all forty taxon-fold rows and derive corrected metric status
+        run: python3 scripts/55_audit_v614_metric_eligibility.py
+      - name: Commit non-destructive status audit
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/v614_common_input/metric_eligibility_audit.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish v6.14 single-class metric eligibility audit'
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v614-metric-eligibility-audit
+          path: results/v614_common_input/metric_eligibility_audit.csv
+          if-no-files-found: warn
