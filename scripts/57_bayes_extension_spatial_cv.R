@@ -28,9 +28,11 @@ if(variant=="quadratic") {
   f <- bf(pres.abs ~ 0 + species + species:z_rainann +
           species:z_tempann + species:z_soildepth + species:z_topo)
 }
-pri <- if(variant=="quadratic")
-  c(prior(normal(-2.5,2),class="Intercept"),prior(normal(0,1),class="b"),prior(exponential(2),class="sd"))
-else c(prior(normal(0,2),class="b"))
+pri <- if (variant == "quadratic") {
+  c(prior(normal(-2.5,2),class="Intercept"), prior(normal(0,1),class="b"), prior(exponential(2),class="sd"))
+} else {
+  c(prior(normal(0,2),class="b"))
+}
 fit <- brm(f,data=tr,family=bernoulli(),prior=pri,
            chains=4,iter=2000,warmup=1000,cores=4,seed=3026+fold,
            refresh=0,control=list(adapt_delta=0.97))
