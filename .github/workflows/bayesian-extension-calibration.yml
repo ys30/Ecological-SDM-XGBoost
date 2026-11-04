@@ -1,0 +1,32 @@
+name: Bayesian extension calibration and heterogeneity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/60_bayes_extension_calibration.py'
+      - '.github/workflows/bayesian-extension-calibration.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  calibration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas numpy tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41769286020
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: bayes-*
+          path: downloaded
+          merge-multiple: false
+      - run: python scripts/60_bayes_extension_calibration.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayes-extension-calibration-report
+          path: results/bayes_extensions/
