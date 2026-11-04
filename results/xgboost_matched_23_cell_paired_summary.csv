@@ -1,0 +1,4 @@
+"mode","cells","species","mean_delta_auc_vs_maxent","mean_delta_auc_vs_bayesian","mean_delta_auc_vs_archived_xgboost","mean_delta_ap_vs_maxent","mean_delta_ap_vs_bayesian","mean_delta_ap_vs_archived_xgboost","auc_cells_above_maxent","auc_cells_above_bayesian"
+"common_four_environment",23,5,-0.165166530484587,-0.139648198603975,-0.180245219631231,-0.103038797189844,-0.0733461859977371,-0.129619516390762,2,3
+"common_four_plus_species",23,5,0.0162806921603534,0.0417990240409656,0.00120200301370966,0.0316547914923959,0.0613474026845027,0.00507407229147778,13,15
+"fold_local_full",23,5,0.0124853952234692,0.0380037271040814,-0.00259329392317453,0.0358157448333952,0.0655083560255021,0.00923502563247713,14,17
