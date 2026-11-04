@@ -68,6 +68,28 @@ XGBoost exceeded MaxEnt in **14/23 eligible ROC AUC cells** (mean paired ΔAUC *
 
 [Fold-level top-k data](results/bayesian_rare_species_within_fold_retrieval.csv) · [Fold-specific random baseline and enrichment](results/bayesian_rare_species_random_baseline.csv)
 
+## Matched Bayesian vs XGBoost rare-taxon retrieval
+
+A second, pipeline-level comparison uses **identical held-out spatial folds, anonymous taxa and inspection budgets**. Here, XGBoost is the **taxon-specific four-environment-predictor** pipeline; the earlier figure above is Bayesian-only.
+
+![Bayesian and taxon-specific XGBoost recall across matched fold-local top-k budgets](results/figures/27_rare_taxon_matched_topk_bayesian_xgboost.svg)
+
+| Taxon | Observed presences | Top 25/fold: Bayesian | Top 25/fold: XGBoost |
+|---|---:|---:|---:|
+| `nsw19` | 8 | 3/8 (37.5%) | **7/8 (87.5%)** |
+| `nsw20` | 18 | **17/18 (94.4%)** | 16/18 (88.9%) |
+| `nsw22` | 6 | **4/6 (66.7%)** | 1/6 (16.7%) |
+
+**What matters:** the preferred model changes by taxon and inspection budget. A single average AUC would obscure the very different screening outcomes for `nsw19` and `nsw22`. These are retrospective, within-region **pipeline comparisons**, not independent field trials or algorithm-only causal effects.
+
+[Verified matched counts and interpretation](results/RARE_TAXON_MATCHED_BAYES_XGBOOST_VERIFIED.md) · [Machine-readable fold-matched comparison](results/rare_taxon_bayesian_xgboost_matched_topk.csv) · [Reproduction script](scripts/54_compare_rare_taxon_retrieval.py)
+
+## Common-input XGBoost ablation: taxon identity matters
+
+Across eight taxa, the equal-taxon mean **pooled minus taxon-specific** AUC difference was **−0.0123** (exploratory taxon-bootstrap range −0.0510 to +0.0220). Removing species identity from the pooled model decreased AUC by **0.3131** on the same common four-environment-predictor experiment. These findings distinguish model architecture from the information supplied to it; they do not establish independent cross-region generalization.
+
+[Verified common-input results](results/EMS_V614_COMMON_INPUT_VERIFIED_RESULTS.md)
+
 ## Reproducibility and limitations
 
 - **Spatial evaluation:** five unbuffered geographic folds, with plots kept intact across taxa.
