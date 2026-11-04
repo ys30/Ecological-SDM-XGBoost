@@ -1,3 +1,11 @@
+## Verified Bayesian specification extension (November 2026)
+
+A five-fold Bayesian sensitivity analysis compared the archived hierarchical baseline with quadratic rainfall/temperature responses and a nonpooled taxon-specific model. This is **within-dataset model-specification validation, not an independent external cohort**. The original three-pipeline comparison uses 23 eligible matched taxon–fold cells; the expanded Bayesian AUC/AP analysis has 30 eligible cells.
+
+On the **original 23 cells**, quadratic Bayesian improved mean paired AUC by **+0.0453**, AP by **+0.0831**, and Brier by **−0.0118** relative to archived Bayesian predictions. In the expanded analysis, mean paired AUC was **+0.0378** and AP **+0.0813**. Across all held-out records, pooled Brier improved **0.06084 → 0.05404**, 10-bin ECE **0.01985 → 0.01255**, and mean residual 5-NN Moran's I **0.341 → 0.291**. Positive residual spatial autocorrelation remains. Excluding nsw18, the quadratic gains retained favorable directions. These results are exploratory, and the baseline OOF predictions came from a shorter-chain fit.
+
+See [consolidated verified findings](results/BAYESIAN_EXTENSION_CONSOLIDATED_VERIFIED.md) for evidence, limitations and links to successful CI runs. The manuscript remains private.
+
 # Ecological Species Distribution Modeling — NSW, Australia
 
 **Research portfolio | R · XGBoost · MaxEnt · Bayesian hierarchical modeling · Spatial validation**
