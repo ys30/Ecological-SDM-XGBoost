@@ -1,0 +1,48 @@
+name: Buffered Bayesian alternative spatial refits
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/72_buffered_bayesian_adapter.R'
+      - '.github/workflows/buffered-bayesian-alternative-spatial.yml'
+permissions:
+  contents: read
+jobs:
+  refit:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [linear, quadratic]
+        fold: [1, 2, 3, 4, 5]
+        buffer_km: [5, 10, 20]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+            any::pROC
+      - run: Rscript -e 'parse(file="scripts/72_buffered_bayesian_adapter.R")'
+      - name: Buffered hierarchical Bayesian fit
+        run: Rscript scripts/72_buffered_bayesian_adapter.R ${{ matrix.variant }} ${{ matrix.fold }} ${{ matrix.buffer_km }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buffered-bayes-${{ matrix.variant }}-${{ matrix.buffer_km }}km-fold-${{ matrix.fold }}
+          path: |
+            results/bayes_buffered/
+            results/alternative_spatial_validation/
