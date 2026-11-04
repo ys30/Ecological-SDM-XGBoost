@@ -39,6 +39,8 @@ jobs:
           git add results/xgboost_spatial_encoding_sensitivity.csv results/xgboost_spatial_species_fold_sensitivity.csv results/xgboost_matched_23_cell_sensitivity.csv results/xgboost_matched_23_cell_summary.csv results/xgboost_matched_23_cell_paired_deltas.csv results/xgboost_matched_species_paired_deltas.csv results/xgboost_matched_23_cell_paired_summary.csv results/xgboost_matched_fold_bootstrap_descriptive.csv
           if ! git diff --cached --quiet; then
             git commit -m 'Publish validated XGBoost spatial sensitivity result CSVs'
+            # The default branch may advance while this long-running fit is executing.
+            git pull --rebase origin main
             git push
           fi
       - name: Upload sensitivity results
