@@ -38,6 +38,8 @@ The retrieval experiment is **retrospective** and uses out-of-fold predictions. 
 - `results/v614_common_input/rare_taxon_within_fold_retrieval.csv`
 - `.github/workflows/ems-v614-common-input.yml`
 
+**Metric eligibility audit:** the archived v6.14 table has 40 taxon–fold rows, of which 30 contain both outcome classes and support AUC/AP; the other 10 are single-class folds with undefined AUC/AP but valid Brier scores. The source table labels all 40 rows `ok`; this is a status-label limitation, not evidence that AUC/AP were calculated in single-class folds. [Verified row-level eligibility audit ](v614_common_input/v614_common_input/metric_eligibility_audit.csv).
+
 ## Limitations before EMS submission
 
 1. No independently validated second-region or second-dataset experiment.
