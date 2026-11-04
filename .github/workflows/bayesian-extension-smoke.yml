@@ -29,6 +29,8 @@ jobs:
             any::brms
             any::posterior
             any::pROC
+      - name: Parse R script before fitting
+        run: Rscript -e 'parse(file="scripts/57_bayes_extension_spatial_cv.R"); cat("R syntax OK\\n")'
       - name: Fit held-out fold 1
         run: Rscript scripts/57_bayes_extension_spatial_cv.R ${{ matrix.variant }} 1
       - uses: actions/upload-artifact@v4
