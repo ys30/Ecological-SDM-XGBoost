@@ -1,3 +1,7 @@
+## Taxon-cluster uncertainty for the four-model comparison
+
+A [verified 20,000-resample eight-taxon bootstrap](results/FOUR_MODEL_TAXON_BOOTSTRAP_VERIFIED.md) found GLM quadratic minus Bayesian quadratic equal-taxon mean ΔAUC **+0.0064** (exploratory 95% interval **−0.0267 to +0.0397**) and ΔAP **+0.0277** (**−0.0418 to +0.1218**). All reported intervals for GLM–Bayesian and quadratic–linear contrasts cross zero. **Pooled model ranking does not establish a stable advantage across taxa**; intervals are exploratory with only eight taxa and are not confirmatory significance tests.
+
 ## Verified four-model comparison on identical spatial holdouts
 
 The [matched four-model audit](results/FOUR_MODEL_ALTERNATIVE_SPATIAL_VERIFIED.md) verified identical 9,336 held-out plot–taxon records for per-taxon L2-regularized GLM linear/quadratic and hierarchical Bayesian linear/quadratic on the alternative spatial five-fold partition. **Quadratic GLM** achieved the highest pooled AUC (**0.9022**) and AP (**0.4284**); **quadratic Bayesian** achieved the lowest pooled Brier (**0.05591**) and log loss (**0.18730**). Across 34 eligible taxon–fold cells, GLM quadratic minus Bayesian quadratic mean ΔAUC was **+0.00683** and ΔAP **+0.02460**; across 40 cells ΔBrier was **+0.00031**. These are exploratory within-dataset descriptive differences, not independent external validation or proof of universal superiority. Taxon heterogeneity remains a central limitation.
