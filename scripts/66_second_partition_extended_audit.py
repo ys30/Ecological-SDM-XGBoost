@@ -18,7 +18,7 @@ assert diag.rhat.max()<=1.01 and diag.ess_bulk.min()>=400 and diag.ess_tail.min(
 assert sam.divergences.sum()==0 and sam.treedepth_limit_hits.sum()==0 and sam.bfmi.min()>=.3
 assert len(pred)==18672
 plots=pd.read_csv("data/train.csv")[["plot","easting","northing"]].drop_duplicates("plot")
-assert plots.plot.is_unique
+assert plots['plot'].is_unique
 pred=pred.merge(plots,on="plot",validate="many_to_one")
 def ece(x):
     bins=np.minimum((x.probability.to_numpy()*10).astype(int),9)
