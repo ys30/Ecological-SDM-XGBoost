@@ -21,7 +21,7 @@ jobs:
         with:
           workflow: buffered-alternative-spatial-glm.yml
           run_id: 41874313829
-          name: buffered-glm-results
+          name: buffered-alternative-spatial-glm
           path: results
       - uses: dawidd6/action-download-artifact@v6
         with:
