@@ -1,0 +1,31 @@
+name: Second partition extended Bayesian audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/66_second_partition_extended_audit.py'
+      - '.github/workflows/second-partition-extended-audit.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scikit-learn tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41773784743
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: alternate-*
+          path: downloaded
+      - run: python scripts/66_second_partition_extended_audit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: second-partition-extended-audit
+          path: results/alternative_spatial_validation/
