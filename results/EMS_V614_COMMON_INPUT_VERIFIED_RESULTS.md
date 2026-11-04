@@ -27,7 +27,7 @@ Source: `rare_taxon_retrieval_summary.csv`. Each budget applies **separately in 
 | nsw20 | 18 | 12 (66.7%) | 16 (88.9%) | 18 (100%) |
 | nsw22 | 6 | 0 (0%) | 1 (16.7%) | 1 (16.7%) |
 
-The retrieval experiment is **retrospective** and uses out-of-fold predictions. Taxon nsw22 demonstrates substantial heterogeneity: no universal rare-taxon retrieval success claim is justified. These are taxon-specific XGBoost results, **not** yet a verified matched cross-model top-k comparison against Bayesian or MaxEnt.
+The retrieval experiment is **retrospective** and uses out-of-fold predictions. Taxon nsw22 demonstrates substantial heterogeneity: no universal rare-taxon retrieval success claim is justified. These are taxon-specific XGBoost results. A **separate verified matched comparison against Bayesian** is now available in [the rare-taxon comparison report](RARE_TAXON_MATCHED_BAYES_XGBOOST_VERIFIED.md); a matched MaxEnt top-k comparison is not established here.
 
 ## Public artifacts and reproducibility
 
@@ -38,7 +38,7 @@ The retrieval experiment is **retrospective** and uses out-of-fold predictions. 
 - `results/v614_common_input/rare_taxon_within_fold_retrieval.csv`
 - `.github/workflows/ems-v614-common-input.yml`
 
-**Metric eligibility audit:** the archived v6.14 table has 40 taxon–fold rows, of which 30 contain both outcome classes and support AUC/AP; the other 10 are single-class folds with undefined AUC/AP but valid Brier scores. The source table labels all 40 rows `ok`; this is a status-label limitation, not evidence that AUC/AP were calculated in single-class folds. [Verified row-level eligibility audit ](v614_common_input/v614_common_input/metric_eligibility_audit.csv).
+**Metric eligibility audit:** the archived v6.14 table has 40 taxon–fold rows, of which 30 contain both outcome classes and support AUC/AP; the other 10 are single-class folds with undefined AUC/AP but valid Brier scores. The source table labels all 40 rows `ok`; this is a status-label limitation, not evidence that AUC/AP were calculated in single-class folds. [Verified row-level eligibility audit](v614_common_input/metric_eligibility_audit.csv).
 
 ## Limitations before EMS submission
 
