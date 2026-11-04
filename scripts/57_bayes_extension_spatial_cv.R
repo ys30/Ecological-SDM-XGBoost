@@ -4,9 +4,10 @@ suppressPackageStartupMessages({library(brms);library(pROC)})
 args <- commandArgs(trailingOnly=TRUE)
 stopifnot(length(args)>=2)
 variant <- args[1]; fold <- as.integer(args[2])
-stopifnot(variant %in% c("quadratic","no_pool"),fold %in% 1:5)
+stopifnot(variant %in% c("quadratic","no_pool","linear"),fold %in% 1:5)
 d <- read.csv("data/train.csv",check.names=FALSE)
-a <- read.csv("results/spatial_2d_block_assignments.csv")
+assignment_path <- if (length(args)>=3) args[3] else "results/spatial_2d_block_assignments.csv"
+a <- read.csv(assignment_path)
 d$fold <- a$fold[match(d$plot,a$plot)]
 stopifnot(!anyNA(d$fold),!anyDuplicated(d$id))
 d$species <- factor(d$Species)
@@ -22,13 +23,16 @@ if(variant=="quadratic") {
   f <- bf(pres.abs ~ z_rainann + z_tempann + z_soildepth + z_topo +
           I(z_rainann^2) + I(z_tempann^2) +
           (1 + z_rainann + z_tempann || species))
+} else if(variant=="linear") {
+  f <- bf(pres.abs ~ z_rainann + z_tempann + z_soildepth + z_topo +
+          (1 + z_rainann + z_tempann || species))
 } else {
   # No pooling across species: separate intercepts and slopes; regularizing priors.
   # Same four predictors as the archived hierarchical baseline.
   f <- bf(pres.abs ~ 0 + species + species:z_rainann +
           species:z_tempann + species:z_soildepth + species:z_topo)
 }
-pri <- if (variant == "quadratic") {
+pri <- if (variant %in% c("quadratic","linear")) {
   c(prior(normal(-2.5,2),class="Intercept"), prior(normal(0,1),class="b"), prior(exponential(2),class="sd"))
 } else {
   c(prior(normal(0,2),class="b"))
