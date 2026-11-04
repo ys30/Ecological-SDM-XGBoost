@@ -1,3 +1,7 @@
+## Alternative spatial partition robustness (November 2026)
+
+A second outcome-blind spatial partition (15 geographic clusters into five folds; adjusted Rand index 0.0955 versus the original partition) was used to **refit both linear and quadratic hierarchical Bayesian models**, 10 successful four-chain jobs in total. The [verified paired audit](results/ALTERNATIVE_SPATIAL_BAYESIAN_VERIFIED.md) found 34 eligible taxon–fold AUC/AP cells: mean paired ΔAUC **+0.01675**, ΔAP **+0.02299**; across all 40 cells, ΔBrier **−0.00648** and ΔLog loss **−0.01741**. Pooled AUC was **0.8856 → 0.8999** and pooled AP **0.3360 → 0.4087**. These are favorable **within-dataset alternative-partition** results, **not external validation**.
+
 ## Verified Bayesian specification extension (November 2026)
 
 A five-fold Bayesian sensitivity analysis compared the archived hierarchical baseline with quadratic rainfall/temperature responses and a nonpooled taxon-specific model. This is **within-dataset model-specification validation, not an independent external cohort**. The original three-pipeline comparison uses 23 eligible matched taxon–fold cells; the expanded Bayesian AUC/AP analysis has 30 eligible cells.
