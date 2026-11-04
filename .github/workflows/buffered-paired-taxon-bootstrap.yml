@@ -1,0 +1,31 @@
+name: Buffered paired taxon-cluster bootstrap
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/buffered-paired-taxon-bootstrap.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: audit-buffered-bayesian-vs-glm.yml
+          run_id: 41917257355
+          name: audited-buffered-model-comparison
+          path: results/alternative_spatial_validation/buffered_four_model
+      - name: Bootstrap 8 taxa (20,000 resamples)
+        run: python scripts/74_buffered_taxon_cluster_bootstrap.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buffered-paired-taxon-bootstrap
+          path: results/alternative_spatial_validation/buffered_four_model/taxon_cluster_bootstrap_20000.csv
