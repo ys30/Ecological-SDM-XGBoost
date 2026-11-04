@@ -1,3 +1,7 @@
+## Verified four-model comparison on identical spatial holdouts
+
+The [matched four-model audit](results/FOUR_MODEL_ALTERNATIVE_SPATIAL_VERIFIED.md) verified identical 9,336 held-out plot–taxon records for per-taxon L2-regularized GLM linear/quadratic and hierarchical Bayesian linear/quadratic on the alternative spatial five-fold partition. **Quadratic GLM** achieved the highest pooled AUC (**0.9022**) and AP (**0.4284**); **quadratic Bayesian** achieved the lowest pooled Brier (**0.05591**) and log loss (**0.18730**). Across 34 eligible taxon–fold cells, GLM quadratic minus Bayesian quadratic mean ΔAUC was **+0.00683** and ΔAP **+0.02460**; across 40 cells ΔBrier was **+0.00031**. These are exploratory within-dataset descriptive differences, not independent external validation or proof of universal superiority. Taxon heterogeneity remains a central limitation.
+
 ## Taxon influence: important qualification
 
 A [verified second-partition taxon-exclusion audit](results/SECOND_PARTITION_TAXON_EXCLUSION_VERIFIED.md) shows the pooled quadratic advantage is **not uniform across taxa**. With all eight taxa, pooled quadratic-minus-linear differences were ΔAUC **+0.0143**, ΔAP **+0.0727**, and ΔBrier **−0.00647**. When **both nsw18 and nsw24** are excluded from evaluation, the differences reverse (ΔAUC **−0.0069**, ΔAP **−0.0314**, ΔBrier **+0.00028**). These are evaluation-subset exclusions, **not retraining without the taxa**. The defensible conclusion is taxon-dependent nonlinear benefits, not universal quadratic superiority.
