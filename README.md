@@ -90,6 +90,8 @@ Across eight taxa, the equal-taxon mean **pooled minus taxon-specific** AUC diff
 
 [Verified common-input results](results/EMS_V614_COMMON_INPUT_VERIFIED_RESULTS.md)
 
+**Metric eligibility audit:** the archived v6.14 table has 40 taxon–fold rows, of which 30 contain both outcome classes and support AUC/AP; the other 10 are single-class folds with undefined AUC/AP but valid Brier scores. The source table labels all 40 rows `ok`; this is a status-label limitation, not evidence that AUC/AP were calculated in single-class folds. [Verified row-level eligibility audit](results/v614_common_input/metric_eligibility_audit.csv).
+
 ## Reproducibility and limitations
 
 - **Spatial evaluation:** five unbuffered geographic folds, with plots kept intact across taxa.
