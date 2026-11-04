@@ -31,6 +31,22 @@ jobs:
           name_is_regexp: false
           path: results
           merge_multiple: true
+      - name: Normalize downloaded Bayesian artifact folders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+          root=Path("results")
+          files=list(root.rglob("*_oof.csv"))
+          print("OOF files:",len(files))
+          for f in files:
+              if "bayes_buffered" not in f.parts: continue
+              i=f.parts.index("bayes_buffered")
+              target=root.joinpath(*f.parts[i:])
+              if f!=target:
+                  target.parent.mkdir(parents=True,exist_ok=True)
+                  shutil.copy2(f,target)
+          PY
       - name: Check artifact paths
         run: find results -maxdepth 5 -type f | grep -E 'buffered_glm_oof|bayes_buffered' | head -40
       - name: Audit matched predictions
