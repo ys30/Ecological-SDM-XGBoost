@@ -1,3 +1,7 @@
+## Alternative-partition diagnostics (verified)
+
+The [second-partition extended audit](results/SECOND_PARTITION_EXTENDED_DIAGNOSTICS_VERIFIED.md) passed all MCMC thresholds across ten fits (max Rhat **1.0082**, min bulk/tail ESS **814/1,412**, min BFMI **0.705**, zero divergences or treedepth hits). Quadratic versus linear improved pooled Brier by **0.00647** and ECE10 by **0.00581**, but Brier improved for only **5/8 anonymous taxa**, with much of the gain from nsw18 and nsw24. Mean held-out residual five-nearest-neighbor Moran's I fell **0.2815 → 0.2471** (24/40 cells improved); residual spatial autocorrelation persists. All are within-dataset sensitivity results, not external validation.
+
 ## Alternative spatial partition robustness (November 2026)
 
 A second outcome-blind spatial partition (15 geographic clusters into five folds; adjusted Rand index 0.0955 versus the original partition) was used to **refit both linear and quadratic hierarchical Bayesian models**, 10 successful four-chain jobs in total. The [verified paired audit](results/ALTERNATIVE_SPATIAL_BAYESIAN_VERIFIED.md) found 34 eligible taxon–fold AUC/AP cells: mean paired ΔAUC **+0.01675**, ΔAP **+0.02299**; across all 40 cells, ΔBrier **−0.00648** and ΔLog loss **−0.01741**. Pooled AUC was **0.8856 → 0.8999** and pooled AP **0.3360 → 0.4087**. These are favorable **within-dataset alternative-partition** results, **not external validation**.
