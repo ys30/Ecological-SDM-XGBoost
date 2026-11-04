@@ -1,0 +1,31 @@
+name: Bayesian extension original 23 matched cells
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/63_bayes_original_23_cells.py'
+      - '.github/workflows/bayesian-original-23-cells.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas numpy scikit-learn tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41769286020
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: bayes-*
+          path: downloaded
+      - run: python scripts/63_bayes_original_23_cells.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayesian-original-23-cells
+          path: results/bayes_extensions/
