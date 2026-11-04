@@ -1,0 +1,35 @@
+name: Bayesian extension taxon-clustered robustness
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/59_bayes_extension_robustness.py'
+      - '.github/workflows/bayesian-extension-robustness.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas numpy scikit-learn tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41769286020
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: bayes-*
+          path: downloaded
+          merge-multiple: false
+      - name: Reproduce paired five-fold metrics
+        run: python scripts/58_audit_bayes_extension_oof.py
+      - name: Taxon-level uncertainty and rare-taxon retrieval
+        run: python scripts/59_bayes_extension_robustness.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayes-extension-robustness-audit
+          path: results/bayes_extensions/
