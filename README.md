@@ -1,3 +1,7 @@
+## Buffered spatial validation: GLM-only sensitivity
+
+The [verified alternative-partition buffer refits](results/BUFFERED_GLM_ALTERNATIVE_SPATIAL_VERIFIED.md) excluded training plots within 0, 5, 10, or 20 projected-distance km of any held-out plot and refitted both per-taxon regularized GLMs. Quadratic AUC changed **0.9022 → 0.9027 → 0.8994 → 0.8913**; linear AUC **0.8892 → 0.8894 → 0.8864 → 0.8771**. Quadratic GLM retained higher pooled AUC/AP at every radius, while absolute discrimination fell at 20 km. Training-set shrinkage and unverified source CRS metadata limit causal interpretation; these are **GLM-only within-dataset results**, not a matched buffered Bayesian comparison or external validation.
+
 ## Taxon-cluster uncertainty for the four-model comparison
 
 A [verified 20,000-resample eight-taxon bootstrap](results/FOUR_MODEL_TAXON_BOOTSTRAP_VERIFIED.md) found GLM quadratic minus Bayesian quadratic equal-taxon mean ΔAUC **+0.0064** (exploratory 95% interval **−0.0267 to +0.0397**) and ΔAP **+0.0277** (**−0.0418 to +0.1218**). All reported intervals for GLM–Bayesian and quadratic–linear contrasts cross zero. **Pooled model ranking does not establish a stable advantage across taxa**; intervals are exploratory with only eight taxa and are not confirmatory significance tests.
