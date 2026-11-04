@@ -1,0 +1,32 @@
+name: Audit alternative spatial Bayesian OOF
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/65_audit_alternative_bayesian_oof.py'
+      - '.github/workflows/audit-alternative-bayesian-oof.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41773784743
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: alternate-*
+          path: downloaded
+      - run: python scripts/65_audit_alternative_bayesian_oof.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: alternative-bayesian-verified-metrics
+          path: results/alternative_spatial_validation/
