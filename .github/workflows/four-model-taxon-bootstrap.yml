@@ -1,0 +1,37 @@
+name: Four model taxon clustered uncertainty
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/70_four_model_taxon_bootstrap.py'
+      - '.github/workflows/four-model-taxon-bootstrap.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scikit-learn tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41870643992
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: alternative-spatial-glm-baselines
+          path: glm
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41773784743
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: alternate-*
+          path: bayes
+      - run: python scripts/70_four_model_taxon_bootstrap.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: four-model-taxon-bootstrap
+          path: results/alternative_spatial_validation/
