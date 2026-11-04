@@ -42,7 +42,7 @@ XGBoost exceeded MaxEnt in **14/23 eligible ROC AUC cells** (mean paired ΔAUC *
 
 ## What changes the model ranking?
 
-**Fold-local XGBoost feature encoding** is implemented as a sensitivity analysis, but its generated result CSVs were not found on the current main branch during the latest audit. Its numerical impact should be treated as **pending artifact verification**, rather than as a confirmed result. Removing taxon identity also changes the prediction task, rather than isolating an encoding effect.
+**Fold-local XGBoost feature encoding** has now passed CI and its CSV outputs are archived. Across the 23 matched cells, XGBoost with the common four environmental predictors alone had mean ΔAUC **−0.1652** versus MaxEnt; adding taxon identity changed that to **+0.0163**, while the fold-local full encoding gave **+0.0125**. These are descriptive pipeline contrasts: removing taxon identity changes the prediction task and does not isolate an algorithm effect. [Final verified spatial robustness and encoding audit](results/EMS_SPATIAL_ROBUSTNESS_FINAL.md).
 
 [Feature-representation sensitivity script](scripts/41_xgboost_spatial_encoding_sensitivity.R) · [Bayesian five-fold convergence audit](results/BAYESIAN_FIVE_FOLD_CONVERGENCE_FINAL.md)
 
@@ -91,6 +91,8 @@ Across eight taxa, the equal-taxon mean **pooled minus taxon-specific** AUC diff
 [Verified common-input results](results/EMS_V614_COMMON_INPUT_VERIFIED_RESULTS.md)
 
 **Metric eligibility audit:** the archived v6.14 table has 40 taxon–fold rows, of which 30 contain both outcome classes and support AUC/AP; the other 10 are single-class folds with undefined AUC/AP but valid Brier scores. The source table labels all 40 rows `ok`; this is a status-label limitation, not evidence that AUC/AP were calculated in single-class folds. [Verified row-level eligibility audit](results/v614_common_input/metric_eligibility_audit.csv).
+
+**Spatial-distance robustness:** in 21 eligible paired taxon–fold cells across five taxa, the XGBoost-minus-MaxEnt AUC advantage changed by **−0.0915** (cell mean) between near (<5 km) and far (≥5 km) held-out plots. The equal-taxon mean was **−0.0835**, with exploratory taxon sign-flip **p = 0.125**; this is not evidence of a confirmed interaction or independent geographic transfer. [Detailed paired audit](results/EMS_SPATIAL_ROBUSTNESS_FINAL.md).
 
 ## Reproducibility and limitations
 
