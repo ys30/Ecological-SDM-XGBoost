@@ -1,0 +1,42 @@
+name: Audit buffered Bayesian vs GLM matched OOF
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/audit-buffered-bayesian-vs-glm.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scikit-learn scipy
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: buffered-alternative-spatial-glm.yml
+          run_id: 41874313829
+          name: buffered-glm-results
+          path: results
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: buffered-bayesian-alternative-spatial.yml
+          run_id: 41907588922
+          name: buffered-bayes-*
+          name_is_regexp: false
+          path: results
+          merge_multiple: true
+      - name: Check artifact paths
+        run: find results -maxdepth 5 -type f | grep -E 'buffered_glm_oof|bayes_buffered' | head -40
+      - name: Audit matched predictions
+        run: python scripts/73_audit_buffered_bayesian_vs_glm.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audited-buffered-model-comparison
+          path: results/alternative_spatial_validation/buffered_four_model/
