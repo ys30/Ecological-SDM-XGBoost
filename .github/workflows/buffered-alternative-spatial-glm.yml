@@ -1,0 +1,25 @@
+name: Buffered alternative spatial GLM refits
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/71_buffered_alternative_spatial_glm.py'
+      - '.github/workflows/buffered-alternative-spatial-glm.yml'
+permissions:
+  contents: read
+jobs:
+  refit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python scripts/71_buffered_alternative_spatial_glm.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buffered-alternative-spatial-glm
+          path: results/alternative_spatial_validation/buffered_glm/
