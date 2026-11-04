@@ -1,3 +1,7 @@
+## Taxon influence: important qualification
+
+A [verified second-partition taxon-exclusion audit](results/SECOND_PARTITION_TAXON_EXCLUSION_VERIFIED.md) shows the pooled quadratic advantage is **not uniform across taxa**. With all eight taxa, pooled quadratic-minus-linear differences were ΔAUC **+0.0143**, ΔAP **+0.0727**, and ΔBrier **−0.00647**. When **both nsw18 and nsw24** are excluded from evaluation, the differences reverse (ΔAUC **−0.0069**, ΔAP **−0.0314**, ΔBrier **+0.00028**). These are evaluation-subset exclusions, **not retraining without the taxa**. The defensible conclusion is taxon-dependent nonlinear benefits, not universal quadratic superiority.
+
 ## Alternative-partition diagnostics (verified)
 
 The [second-partition extended audit](results/SECOND_PARTITION_EXTENDED_DIAGNOSTICS_VERIFIED.md) passed all MCMC thresholds across ten fits (max Rhat **1.0082**, min bulk/tail ESS **814/1,412**, min BFMI **0.705**, zero divergences or treedepth hits). Quadratic versus linear improved pooled Brier by **0.00647** and ECE10 by **0.00581**, but Brier improved for only **5/8 anonymous taxa**, with much of the gain from nsw18 and nsw24. Mean held-out residual five-nearest-neighbor Moran's I fell **0.2815 → 0.2471** (24/40 cells improved); residual spatial autocorrelation persists. All are within-dataset sensitivity results, not external validation.
