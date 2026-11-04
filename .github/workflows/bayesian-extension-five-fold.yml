@@ -1,0 +1,40 @@
+name: Bayesian extension full five-fold comparison
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/bayesian-extension-five-fold.yml'
+permissions:
+  contents: read
+jobs:
+  extension:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [quadratic, no_pool]
+        fold: [1, 2, 3, 4, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+            any::pROC
+      - name: Validate R syntax
+        run: Rscript -e 'parse(file="scripts/57_bayes_extension_spatial_cv.R"); cat("R syntax OK\\n")'
+      - name: Fit and evaluate held-out spatial fold
+        run: Rscript scripts/57_bayes_extension_spatial_cv.R ${{ matrix.variant }} ${{ matrix.fold }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayes-${{ matrix.variant }}-fold-${{ matrix.fold }}
+          path: results/bayes_extensions/
