@@ -27,7 +27,8 @@ jobs:
         with:
           workflow: buffered-bayesian-alternative-spatial.yml
           run_id: 41907588922
-          name: "buffered-bayes-.*"\n          name_is_regexp: true
+          name: "buffered-bayes-.*"
+          name_is_regexp: true
           path: results
 
       - name: Normalize downloaded Bayesian artifact folders
