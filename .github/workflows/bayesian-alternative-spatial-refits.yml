@@ -1,0 +1,48 @@
+name: Bayesian alternative spatial five-fold refits
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/bayesian-alternative-spatial-refits.yml'
+permissions:
+  contents: read
+jobs:
+  refit:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [linear, quadratic]
+        fold: [1, 2, 3, 4, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scikit-learn tabulate
+      - name: Generate and audit alternate spatial folds
+        run: python scripts/64_alternative_spatial_partition.py
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+            any::pROC
+      - name: Check model source syntax
+        run: Rscript -e 'parse(file="scripts/57_bayes_extension_spatial_cv.R"); cat("syntax OK\\n")'
+      - name: Fit linear and quadratic models on alternative spatial folds
+        run: Rscript scripts/57_bayes_extension_spatial_cv.R ${{ matrix.variant }} ${{ matrix.fold }} results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: alternate-${{ matrix.variant }}-fold-${{ matrix.fold }}
+          path: |
+            results/bayes_extensions/
+            results/alternative_spatial_validation/
