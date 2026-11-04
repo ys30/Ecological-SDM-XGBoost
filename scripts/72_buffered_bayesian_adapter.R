@@ -18,6 +18,7 @@ insertion <- paste0(anchor,"\n",
 "stopifnot(nrow(tr)>0, length(unique(tr$species))==8)\n",
 "cat('BUFFER',",radius,", 'FOLD',",fold,", 'TRAIN_PLOTS',length(unique(tr$plot)),'EXCLUDED',sum(!keep),'\\n')\n")
 s <- sub(anchor,insertion,s,fixed=TRUE)
+s <- sub('assignment_path <- if (length(args)>=3) args[3] else "results/spatial_2d_block_assignments.csv"', 'assignment_path <- "results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv"', s, fixed=TRUE)
 s <- gsub("results/bayes_extensions",paste0("results/bayes_buffered/",radius,"km"),s,fixed=TRUE)
 stopifnot(grepl("results/bayes_buffered",s,fixed=TRUE))
 tmp <- tempfile(fileext=".R");writeLines(s,tmp)
