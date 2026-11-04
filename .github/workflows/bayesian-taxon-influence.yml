@@ -1,0 +1,31 @@
+name: Bayesian extension leave-one-taxon-out influence
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/61_bayes_taxon_influence.py'
+      - '.github/workflows/bayesian-taxon-influence.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  influence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas numpy scikit-learn tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41769286020
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: bayes-*
+          path: downloaded
+      - run: python scripts/61_bayes_taxon_influence.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bayesian-taxon-influence
+          path: results/bayes_extensions/
