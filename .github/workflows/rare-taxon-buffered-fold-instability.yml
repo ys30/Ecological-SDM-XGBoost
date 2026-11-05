@@ -15,13 +15,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install numpy pandas scipy
+      - run: pip install numpy pandas scipy scikit-learn tabulate
       - uses: dawidd6/action-download-artifact@v6
         with:
           workflow: audit-buffered-bayesian-vs-glm.yml
           run_id: 41917257355
           name: audited-buffered-model-comparison
           path: results/alternative_spatial_validation/buffered_four_model
+      - run: python scripts/64_alternative_spatial_partition.py
       - run: python scripts/77_rare_taxon_fold_instability.py
       - uses: actions/upload-artifact@v4
         if: always()
