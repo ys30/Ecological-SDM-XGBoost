@@ -1,0 +1,44 @@
+name: Nested Bayesian remaining four folds 10km
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/89_nested_bayesian_remaining_assignments.py'
+      - 'scripts/90_nested_bayesian_remaining.R'
+      - '.github/workflows/nested-bayesian-remaining.yml'
+permissions:
+  contents: read
+jobs:
+  refit:
+    strategy:
+      fail-fast: false
+      matrix:
+        fold: [1, 2, 4, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python scripts/89_nested_bayesian_remaining_assignments.py ${{ matrix.fold }}
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+      - run: Rscript -e 'parse(file="scripts/90_nested_bayesian_remaining.R")'
+      - run: Rscript scripts/90_nested_bayesian_remaining.R ${{ matrix.fold }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nested-bayesian-fold-${{ matrix.fold }}
+          path: results/nested_bayesian_pilot/fold${{ matrix.fold }}_10km_nested_bayesian_counts.csv
