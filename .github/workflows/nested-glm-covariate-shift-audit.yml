@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install numpy pandas scipy scikit-learn
+      - run: pip install numpy pandas scipy scikit-learn tabulate
       - run: python scripts/64_alternative_spatial_partition.py
       - run: python scripts/85_nested_glm_covariate_shift_audit.py
       - uses: actions/upload-artifact@v4
