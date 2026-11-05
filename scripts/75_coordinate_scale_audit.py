@@ -6,11 +6,11 @@ import pandas as pd
 from scipy.spatial import cKDTree
 from pathlib import Path
 d=pd.read_csv("data/train.csv")
-p=d[["plot","Longitude","Latitude","easting","northing"]].drop_duplicates("plot")
+p=d[["plot","long","lat","easting","northing"]].drop_duplicates("plot")
 assert len(p)==1167
 assert p.notna().all().all()
 xy=p[["easting","northing"]].to_numpy(float)
-lon=np.deg2rad(p.Longitude.to_numpy(float));lat=np.deg2rad(p.Latitude.to_numpy(float))
+lon=np.deg2rad(p["long"].to_numpy(float));lat=np.deg2rad(p["lat"].to_numpy(float))
 # Sample nearest neighbors in XY, compare great-circle distances in metres.
 dist,idx=cKDTree(xy).query(xy,k=2)
 j=idx[:,1]
