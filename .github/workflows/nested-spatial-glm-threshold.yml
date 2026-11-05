@@ -1,0 +1,28 @@
+name: Nested spatial GLM threshold evaluation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/nested-spatial-glm-threshold.yml'
+      - 'scripts/83_nested_spatial_glm_threshold.py'
+permissions:
+  contents: read
+jobs:
+  nested:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy scikit-learn tabulate
+      - name: Rebuild deterministic spatial folds
+        run: python scripts/64_alternative_spatial_partition.py
+      - name: Nested spatial GLM thresholds
+        run: python scripts/83_nested_spatial_glm_threshold.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nested-spatial-glm-threshold
+          path: results/alternative_spatial_validation/nested_glm_threshold/
