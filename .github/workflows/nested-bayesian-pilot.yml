@@ -1,0 +1,40 @@
+name: Nested Bayesian pilot 10km fold3
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/87_nested_bayesian_pilot_assignments.py'
+      - 'scripts/88_nested_bayesian_pilot.R'
+      - '.github/workflows/nested-bayesian-pilot.yml'
+permissions:
+  contents: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python scripts/87_nested_bayesian_pilot_assignments.py
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::BH
+            any::RcppEigen
+            any::rstan
+            any::brms
+            any::posterior
+      - run: Rscript -e 'parse(file="scripts/88_nested_bayesian_pilot.R")'
+      - run: Rscript scripts/88_nested_bayesian_pilot.R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nested-bayesian-pilot-aggregate
+          path: results/nested_bayesian_pilot/fold3_10km_nested_bayesian_counts.csv
