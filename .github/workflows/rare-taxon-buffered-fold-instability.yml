@@ -1,0 +1,32 @@
+name: Rare taxon buffered fold instability
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/rare-taxon-buffered-fold-instability.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: audit-buffered-bayesian-vs-glm.yml
+          run_id: 41917257355
+          name: audited-buffered-model-comparison
+          path: results/alternative_spatial_validation/buffered_four_model
+      - run: python scripts/77_rare_taxon_fold_instability.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rare-taxon-buffered-fold-instability
+          path: |
+            results/alternative_spatial_validation/buffered_four_model/rare_taxon_fold_differences_with_counts.csv
+            results/alternative_spatial_validation/buffered_four_model/rare_taxon_fold_instability.csv
