@@ -1,0 +1,26 @@
+name: Nested GLM score distribution shift
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/nested-glm-score-shift.yml'
+      - 'scripts/86_nested_glm_score_shift.py'
+permissions:
+  contents: read
+jobs:
+  score-shift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python scripts/86_nested_glm_score_shift.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nested-glm-score-shift
+          path: results/alternative_spatial_validation/nested_glm_threshold/
