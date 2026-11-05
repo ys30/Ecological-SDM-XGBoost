@@ -139,3 +139,5 @@ Across eight taxa, the equal-taxon mean **pooled minus taxon-specific** AUC diff
 
 
 **New verified buffered Bayesian–GLM comparison (5/10/20 km):** all 30 Bayesian fits passed and the matched 9,336-record OOF audit succeeded ([run #41917257355](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41917257355)). Across all three radii, quadratic GLM has higher pooled AUC/AP while quadratic hierarchical Bayesian has lower Brier/log loss; see [verified results and limitations](results/BUFFERED_FOUR_MODEL_MATCHED_VERIFIED.md). This is within-dataset spatial sensitivity, not external validation; coordinate units remain to be CRS-verified.
+
+**Buffered model uncertainty (verified):** 20,000 equal-taxon bootstrap resamples across eight anonymized taxa ([run #41930995688](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/41930995688)). All 24 GLM-minus-Bayesian 95% descriptive percentile intervals (linear/quadratic × 5/10/20 km × four metrics) include zero. [Full verified summary](results/BUFFERED_TAXON_BOOTSTRAP_VERIFIED.md). No statistically significant superiority claim.
