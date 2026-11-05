@@ -1,0 +1,30 @@
+name: Nested GLM fold transfer audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/nested-glm-fold-transfer-audit.yml'
+      - 'scripts/84_nested_glm_fold_transfer_audit.py'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas numpy
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: nested-spatial-glm-threshold.yml
+          run_id: 42112283643
+          name: nested-spatial-glm-threshold
+          path: results/alternative_spatial_validation/nested_glm_threshold
+      - run: python scripts/84_nested_glm_fold_transfer_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nested-glm-fold-transfer-audit
+          path: results/alternative_spatial_validation/nested_glm_fold_audit/
