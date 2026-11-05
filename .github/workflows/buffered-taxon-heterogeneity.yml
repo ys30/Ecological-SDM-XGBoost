@@ -1,0 +1,32 @@
+name: Buffered model taxon heterogeneity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/buffered-taxon-heterogeneity.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: audit-buffered-bayesian-vs-glm.yml
+          run_id: 41917257355
+          name: audited-buffered-model-comparison
+          path: results/alternative_spatial_validation/buffered_four_model
+      - run: python scripts/76_buffered_taxon_heterogeneity.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buffered-taxon-heterogeneity
+          path: |
+            results/alternative_spatial_validation/buffered_four_model/taxon_heterogeneity.csv
+            results/alternative_spatial_validation/buffered_four_model/detection_heterogeneity_associations.csv
