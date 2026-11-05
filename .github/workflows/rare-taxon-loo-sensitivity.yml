@@ -1,0 +1,31 @@
+name: Rare taxon leave-one-fold-out sensitivity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/rare-taxon-loo-sensitivity.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: audit-buffered-bayesian-vs-glm.yml
+          run_id: 41917257355
+          name: audited-buffered-model-comparison
+          path: results/alternative_spatial_validation/buffered_four_model
+      - run: python scripts/78_rare_taxon_leave_one_fold_out.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rare-taxon-loo-sensitivity
+          path: |
+            results/alternative_spatial_validation/buffered_four_model/rare_taxon_leave_one_fold_out.csv
+            results/alternative_spatial_validation/buffered_four_model/rare_taxon_loo_summary.csv
