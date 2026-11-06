@@ -1,0 +1,23 @@
+name: Nested decision manuscript figure
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/91_plot_nested_decision_tradeoff.py'
+      - '.github/workflows/nested-decision-figure.yml'
+permissions:
+  contents: read
+jobs:
+  figure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas matplotlib
+      - run: python scripts/91_plot_nested_decision_tradeoff.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nested-decision-manuscript-figure
+          path: results/nested_decision_figures/
