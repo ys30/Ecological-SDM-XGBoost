@@ -14,4 +14,4 @@
 
 At the same cutoff, the high-score tail of held-out negatives is heavier than the inner validation tail in these folds, directly accounting for increased observed false-positive counts. This is a **distributional explanation**, not a causal identification of why model scores changed. Different inner/outer training fits and spatial shift may contribute. In nsw22 fold 3, the inner negative above-cutoff count is **4**, rather than approximately 2% of 910, because many probabilities are tied around the selected order statistic. The inner target is an upper allowance, not a promise of exact 2% realized rate.
 
-The P98 ratio is not a calibrated effect size and should not be used as a formal significance measure. This is an internal spatial holdout analysis, not independent external validation. No nested Bayesian comparator yet.
+The P98 ratio is not a calibrated effect size and should not be used as a formal significance measure. This is an internal spatial holdout analysis, not independent external validation. A five-fold 10-km Bayesian nested comparator was subsequently completed; see [verified Bayesian–GLM report](NESTED_BAYESIAN_FIVE_FOLD_VERIFIED.md).
