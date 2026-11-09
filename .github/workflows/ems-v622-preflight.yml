@@ -1,0 +1,19 @@
+name: EMS v6.22 preregistration preflight
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/**'
+      - '.github/workflows/ems-v622-preflight.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install pyyaml
+      - name: Validate plan, references and manifest
+        run: python experiments/v622/validate_candidate.py
