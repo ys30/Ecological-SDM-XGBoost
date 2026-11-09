@@ -1,0 +1,20 @@
+name: EMS v6.22 model matrix gate
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/config/v622_model_matrix.csv'
+      - 'experiments/v622/config/v622_contrasts.csv'
+      - 'experiments/v622/validate_matrix.py'
+      - '.github/workflows/ems-v622-matrix.yml'
+  workflow_dispatch:
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate model and contrast matrix only (not freeze)
+        run: python experiments/v622/validate_matrix.py
