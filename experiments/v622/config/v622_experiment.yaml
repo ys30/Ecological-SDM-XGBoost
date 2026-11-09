@@ -1,0 +1,97 @@
+# EMS v6.22 supplementary analysis — executable configuration
+# Status: DRAFT (not frozen). Freeze only after full CI pass and separate freeze commit.
+inputs:
+  data/train.csv: f7eb81447e0e6deab1a10579ec1a6694587c6c61aa56947fe6a0d6012c3b1763
+  results/spatial_2d_block_assignments.csv: 4e9c2d698ab44cf11282d12429d7a8e016f95e4e50baa1cf2653f558a7af2a81
+  results/ems_revision/kmeans15_five_fold_assignments.csv: 04686634473d51b5c63dcbd4474659fe864a114ae0885c5c5f55736522c798ce
+  results/ems_revision/fold_schemes.csv: 8c988b33fd66e487063913a4adea37aec0bd383e9ac8e5eebe59ecbbe409e73a
+  results/ems_revision/train_exclusions.csv: 6aea19418a629926f11b1195f0cd6e721bd30bbfdcbc0be59371bb2e7d63ad5e
+  results/ems_revision/oof_bayes_km15.csv.gz: 556a58e80350b7472d3aa064a610d21ff5e253c914fd54e5939e62287d1455db
+  base_commit: 4c8cb67c654c379f0c8768fcbbbd9d4e682a7a3d
+environment:
+  R: "4.3.3"
+  python: "3.13"
+  threads: 2
+designs:
+  primary: [grid4_s2026_b0, km15_b0]
+  conditional_secondary: [grid4_s2026_b10, km15_b10]
+  sensitivity_fixed_parameter: all 23 schemes in fold_schemes.csv (existing v6.21 outputs)
+inner_folds:
+  method: kmeans on projected easting/northing of outer-training plots
+  k_clusters: 12
+  n_folds: 4
+  allocation: greedy by plot count, clusters in random order
+  seed: 6220 + outer_fold
+  buffer_km: 0
+eligibility_and_fallback:
+  per_taxon_min_training_positives: 5
+  fallback_prediction: training prevalence of the taxon (constant); flagged fallback = 1
+  inner_fold_without_positives: contributes log loss; AUC not computed
+  fit_failure: one retry with doubled iterations / default optimiser; then fallback; all logged
+  auc_cell_rule: cell enters a contrast only if both classes occur and neither model is fallback
+objectives:
+  probabilistic_models:
+    selection_metric: relative_log_loss_skill
+    formula: "1 - LL_model / LL_null"
+    direction: maximize
+    null_prevalence: "(inner_training_positives + 0.5) / (inner_training_n + 1)"
+    probability_clip_epsilon: 0.000001
+    aggregation: equal weight per taxon over evaluable inner-validation folds
+    sensitivity: raw mean log loss; mean inner within-taxon AUC
+  maxent:
+    selection_metric: mean inner within-taxon AUC
+    sensitivity: relative log loss of cloglog output
+search_spaces:
+  xgboost:
+    n_configs: 30
+    sampler: uniform random, seed 622 (identical 30 configs for every variant and outer fold)
+    max_depth: {int: [1, 6]}
+    learning_rate: {loguniform: [0.01, 0.3]}
+    min_child_weight: {loguniform: [0.5, 20]}
+    subsample: {uniform: [0.5, 1.0]}
+    colsample_bytree: {uniform: [0.5, 1.0]}
+    n_estimators: {choice: [50, 100, 200, 400, 800]}
+    fixed: {objective: "binary:logistic", tree_method: hist, seed: "100 + outer_fold"}
+  glmnet:
+    primary_quadratic: rain and temperature only
+    secondary_quadratic: all four numeric predictors
+    alpha: [0, 0.5, 1]
+    lambda: 30-value path per alpha (glmnet default ratio), chosen jointly with alpha on inner folds
+    standardise: training-fold moments
+  maxent:
+    regmult: [0.5, 1, 2, 3, 4]
+    features: [l, lq, lqh]
+final_fit: refit on full outer-training set with selected configuration; predict outer test only
+outputs:
+  oof: results/v622/oof_<model_id>_<scheme>.csv.gz
+  tuning_log: results/v622/tuning_<model_id>_<scheme>.csv
+  runtime_log: results/v622/runtime.csv
+  deviations: docs/EMS_v6.22_deviations.md
+statistics:
+  primary_metric: paired within-taxon-fold ROC AUC difference (model_a - model_b)
+  secondary_metrics: [average precision, log loss, Brier score, coverage]
+  model_primary: "diff ~ design + (1 | taxon) + (1 | fold:design)"
+  model_sensitivity_23: "diff ~ scheme_family + (1 | taxon) + (1 | fold:scheme)"
+  intervals: taxon-cluster bootstrap percentile 95%, 2000 resamples, seed 622; mixed-model Wald intervals secondary
+  sesoi_auc: 0.01
+  probability_scores: matched records, all eight taxa where both models are non-fallback; coverage reported
+decision_rules:
+  supported_effect: same sign in both primary designs, |marginal mean| >= 0.01 in both, and 95% interval excludes 0 in at least one
+  negligible_effect: "95% interval entirely within [-0.01, 0.01] in both primary designs"
+  small_but_uncertain: "absolute mean < 0.01 in both designs but at least one interval extends beyond +/-0.01"
+  sesoi_sensitivity: "+/-0.02 AUC secondary only"
+  otherwise: inconclusive
+  claim_spec_or_sharing_rivals_algorithm: "at least one supported C2/C3 primary contrast and all C4 primary contrasts negligible or inconclusive with smaller magnitude in both designs"
+  narrative_switch_to_sensitivity: any C1 contrast "supported", or any C4 contrast changes sign relative to v6.21 fixed-parameter results
+calibration:
+  per_taxon_reliability_bins: {">=50 positives": 10, "10-49": 5, "<10": 3}
+  report: bin n, positives, mean predicted, observed rate; calibration slope and intercept per taxon
+threshold_experiment:
+  partition: km15, outer buffer 10 km, inner folds as above
+  models: [glm_quad_rt, glmm_quad_rt]
+  target_inner_fpr: 0.02
+  report: TP, FP, FN, TN, recall, precision, FPR with Clopper-Pearson 95% CI; fold-level positive counts
+pilot:
+  timing: after frozen-plan commit and before formal analysis
+  scope: outer fold 1 of grid4_s2026_b0, all tuned models, inner tuning + final fit
+  outputs: runtime only; outer-fold predictions are not written and no outer metrics are computed
