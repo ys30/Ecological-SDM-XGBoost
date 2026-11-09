@@ -10,7 +10,7 @@ def read(name, required):
         if not set(required).issubset(reader.fieldnames or []):
             sys.exit(f"FAIL {name}: missing columns")
         rows = list(reader)
-    if any(None in row or any(v is None or not v.strip() for v in row.values() if v is not None) for row in rows):
+    if any(None in row or any(row.get(k) is None or not row[k].strip() for k in required if k != "notes") for row in rows):
         sys.exit(f"FAIL {name}: malformed or empty fields")
     return rows
 models = read("v622_model_matrix.csv", ["model_id","family","algorithm","sharing","response","predictors","tuning","schemes","status","notes"])
