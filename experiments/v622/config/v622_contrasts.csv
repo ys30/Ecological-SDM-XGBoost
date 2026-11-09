@@ -1,0 +1,21 @@
+contrast_id,tier,question,model_a,model_b
+C1a,primary,hyperparameter optimisation,xgb_species_tuned,xgb_species_fixed
+C1b,primary,hyperparameter optimisation,xgb_pooled_tuned,xgb_pooled_fixed
+C2a,primary,response shape,glmnet_quad_rt,glmnet_lin
+C2b,primary,response shape,glm_quad_rt,glm_lin
+C2c,primary,response shape,glmm_quad_rt,glmm_lin
+C2d,secondary (km15_b0 only),response shape,bayes_quad,bayes_lin
+C2e,secondary,response shape,glm_shared_quad_rt,glm_shared_lin
+C3a,primary,information sharing (partial vs none),glmm_quad_rt,glm_quad_rt
+C3b,primary,information sharing (full vs none),glm_shared_quad_rt,glm_quad_rt
+C3c,primary,information sharing (full vs partial),glm_shared_quad_rt,glmm_quad_rt
+C3d,primary,information sharing (XGBoost),xgb_pooled_tuned,xgb_species_tuned
+C3e,secondary,"information sharing, linear",glmm_lin,glm_lin
+C3f,secondary,"information sharing, linear",glm_shared_lin,glm_lin
+C4a,primary,"algorithm at matched raw predictors; different flexibility and assumptions (per taxon, 4 numeric, tuned)",xgb_species_tuned,glmnet_quad_rt
+C4b,primary,algorithm at matched raw predictors; different flexibility and assumptions,maxent_tuned,glmnet_quad_rt
+C4c,primary,algorithm at matched raw predictors; different flexibility and assumptions,xgb_species_tuned,maxent_tuned
+C4d,secondary,untuned regression baseline vs tuned,glm_quad_env,glmnet_quad_rt
+C4e,secondary,MaxEnt tuning,maxent_tuned,maxent_env
+C4f,secondary,pooled predictors,xgb_pooled_full_tuned,xgb_pooled_tuned
+C2f,secondary,quadratic all four versus quadratic rain/temp,glmnet_quad_env,glmnet_quad_rt

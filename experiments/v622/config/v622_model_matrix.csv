@@ -1,0 +1,20 @@
+model_id,family,algorithm,sharing,response,predictors,tuning,schemes,status,notes
+glm_lin,GLM,logistic ML,none,linear,4 numeric,none,primary,new,
+glm_quad_rt,GLM,logistic ML,none,"quadratic rain,temp",4 numeric,none,primary,existing (refit unchanged),
+glm_quad_env,GLM,logistic ML,none,quadratic all 4,4 numeric,none,primary + all 23,existing,untuned baseline in C4
+glm_shared_lin,GLM,logistic ML,"full: taxon intercepts, common slopes",linear,4 numeric + taxon,none,primary,new,
+glm_shared_quad_rt,GLM,logistic ML,"full: taxon intercepts, common slopes","quadratic rain,temp",4 numeric + taxon,none,primary,new,
+glmm_lin,GLMM,lme4 Laplace,"partial: taxon-varying intercept + rain,temp slopes",linear,4 numeric,none,primary,existing,
+glmm_quad_rt,GLMM,lme4 Laplace,partial,"quadratic rain,temp",4 numeric,none,primary,existing,
+bayes_lin,Bayes,brms,partial,linear,4 numeric,none,primary (archived),existing; no refit,
+bayes_quad,Bayes,brms,partial,"quadratic rain,temp",4 numeric,none,km15_b0 only (archived),existing; no refit,
+glmnet_lin,GLMnet,penalised logistic,none,linear,4 numeric,"nested: alpha, lambda",primary,new,
+glmnet_quad_env,GLMnet,penalised logistic,none,quadratic all 4,4 numeric,"nested: alpha, lambda",primary,new,
+maxent_tuned,MaxEnt,maxnet,none,"features tuned (l, lq, lqh)",4 numeric,nested: regmult x features,primary,new,
+maxent_env,MaxEnt,maxnet,none,"lq, regmult 2",4 numeric,none,primary + all 23,existing,fixed reference from v6.21
+xgb_species_fixed,XGBoost,boosted trees,none,flexible,4 numeric,fixed (v6.21 settings),primary + all 23,existing (= xgb_species_env),
+xgb_species_tuned,XGBoost,boosted trees,none,flexible,4 numeric,nested random search (30),primary,new,
+xgb_pooled_fixed,XGBoost,boosted trees,full: shared trees + taxon one-hot,flexible,4 numeric + taxon,fixed (v6.21 settings),primary + all 23,existing (= xgb_pooled_envsp),
+xgb_pooled_tuned,XGBoost,boosted trees,full: shared trees + taxon one-hot,flexible,4 numeric + taxon,nested random search (30),primary,new,
+xgb_pooled_full_tuned,XGBoost,boosted trees,full,flexible,4 numeric + taxon + soilfert + disturb,nested random search (30),primary,new,secondary only
+glmnet_quad_rt,GLMnet,penalised logistic,none,"quadratic rain,temp",4 numeric,"nested: alpha, lambda",primary,new,Primary C2a and C4 comparator; same response terms as GLM/GLMM
