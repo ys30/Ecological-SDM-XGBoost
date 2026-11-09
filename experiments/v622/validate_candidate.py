@@ -31,5 +31,7 @@ with (root / "config/v622_contrasts.csv").open(newline="") as f:
 ids = [m["model_id"] for m in models]
 assert len(models) == 19 and len(set(ids)) == 19
 assert len(contrasts) == 20 and len(set(c["contrast_id"] for c in contrasts)) == 20
-assert all(c["model_a"] in ids and c["model_b"] in ids for c in contrasts)
+assert all(c["model_a"] in ids and c["model_b"] in ids and c["model_a"] != c["model_b"] for c in contrasts)
+assert "glmnet_quad_rt" in ids and "C2f" in [c["contrast_id"] for c in contrasts]
+assert all(None not in row and all(value is not None for value in row.values()) for row in models + contrasts), "malformed CSV"
 print("PASS: manifest, YAML, 19 models, 20 contrasts, pinned base")
