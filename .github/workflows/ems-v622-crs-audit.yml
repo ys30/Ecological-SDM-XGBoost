@@ -1,0 +1,38 @@
+name: EMS v6.22 coordinate scale diagnostic
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/audit_crs.py'
+      - '.github/workflows/ems-v622-crs-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  crs-scale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scipy
+      - name: Verify pinned data input before diagnostics
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path("data/train.csv")
+          expected="f7eb81447e0e6deab1a10579ec1a6694587c6c61aa56947fe6a0d6012c3b1763"
+          actual=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert actual==expected, f"data/train.csv checksum mismatch: {actual}"
+          PY
+      - name: Execute coordinate distance-scale diagnostic
+        run: python experiments/v622/audit_crs.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ems-v622-coordinate-scale-diagnostic
+          path: results/v622/crs_diagnostic.json
+          if-no-files-found: warn
