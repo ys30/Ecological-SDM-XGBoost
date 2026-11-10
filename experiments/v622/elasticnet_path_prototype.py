@@ -32,21 +32,24 @@ def select_alpha_lambda(inner_splits,alphas=ALPHAS):
     splits=list(inner_splits)
     if not splits:
         raise ValueError("at least one inner split required")
+    # Candidate paths are constructed independently on every inner-training
+    # partition. The same path index (0..29), rather than a lambda value
+    # borrowed from a different fold, is evaluated across folds.
+    # This is an explicit engineering convention pending R glmnet path audit.
     paths={}
     for alpha in alphas:
-        # Use the first split for a shared candidate grid. This is an
-        # engineering convention pending the frozen path policy.
-        x,y,_,_=splits[0]
-        paths[alpha]=lambda_path(x,y,alpha)
+        paths[alpha]=[lambda_path(x,y,alpha) for x,y,_,_ in splits]
     records=[]
     for alpha in alphas:
-        for lam in paths[alpha]:
+        for index in range(30):
             skills=[]
-            for x,y,v,z in splits:
-                result=run_elasticnet_inner(y,z,x,v,alpha=alpha,lam=float(lam))
+            for (x,y,v,z),path in zip(splits,paths[alpha]):
+                lam=float(path[index])
+                result=run_elasticnet_inner(y,z,x,v,alpha=alpha,lam=lam)
                 skills.append(result.relative_log_loss_skill)
-            records.append((float(np.mean(skills)),alpha,float(lam)))
-    # Deterministic tie break: alpha then lambda.
+            records.append((float(np.mean(skills)),alpha,index))
+    # Deterministic tie break: alpha then path index.
     best=sorted(records,key=lambda row:(-row[0],row[1],row[2]))[0]
-    return {"alpha":best[1],"lambda":best[2],"mean_skill":best[0],
-            "n_candidates":len(records)}
+    return {"alpha":best[1],"lambda_index":best[2],
+            "mean_skill":best[0],"n_candidates":len(records),
+            "refit_lambda_policy":"recompute selected path index on full outer training"}
