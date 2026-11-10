@@ -15,3 +15,14 @@ Contrast C2a in config/v622_contrasts.csv compares glmnet_quad_rt against glmnet
 
 ## Required freeze decision
 Review all 20 contrast descriptions, model matrix definitions, projected CRS and whether the six fixed inputs are available to the eventual execution environment. Confirm the current candidate unchanged or amend and rerun CI before creating a separate freeze commit. No pilot or formal fitting until freeze.
+
+## 2026-11-10 execution checkpoint (verified)
+
+- Latest manifest / candidate preflight: SUCCESS, run [42927094974](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/42927094974).
+- Full 30-candidate C1 real-input **engineering profile**: SUCCESS, run [42927106602](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/42927106602).
+- Candidate set SHA-256: `c6d7690a58c779587f6895914addfd7175bd25e244fc11b6190caafb144bfa6c`.
+- Grid outer fold 1, 930 outer-training plots: species 780 fits / 180 insufficient-positive fallback cells / 37.55 s; pooled 120 fits / zero fallback cells / 16.73 s; 960 inner taxon-fold-candidate cells per variant.
+- These are engineering diagnostics only; selected configurations, inner validation scores, and outer-test predictions were not exported.
+- Pooled rare-taxon support has been prospectively amended in the draft YAML and plan; the six affected real-data cells now receive pooled predictions. Formal freeze and full-study execution have **not** occurred.
+- Remaining scientific gates: authoritative projected CRS and 10-km buffer interpretation; 20-contrast semantics; C2/C3/C4 implementation availability and input provenance. Passing CI is not a substitute for these decisions.
+- Historical timing notes above refer to earlier checkpoint commits, not the latest revision.
