@@ -1,0 +1,22 @@
+name: EMS v6.22 design matrix tests
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/design_matrix.py'
+      - 'experiments/v622/test_design_matrix.py'
+      - '.github/workflows/ems-v622-design-matrix.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  design:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas
+      - run: python -m unittest discover -s experiments/v622 -p 'test_design_matrix.py' -v
