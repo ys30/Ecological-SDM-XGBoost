@@ -13,11 +13,14 @@ SUPPORTED=QUADRATIC_RT|QUADRATIC_ALL|LINEAR
 BASE=("rainann","soildepth","tempann","topo")
 
 class FoldDesign:
-    def __init__(self,model_id,standardize=False):
+    def __init__(self,model_id,standardize=False,missing_policy="error"):
         if model_id not in SUPPORTED:
             raise ValueError("unsupported feature-design family; use separate model-specific implementation")
         self.model_id=model_id
         self.standardize=bool(standardize)
+        if missing_policy not in ("error", "train_median"):
+            raise ValueError("unknown missing policy")
+        self.missing_policy=missing_policy
         self.numeric,self.categorical=predictor_columns(model_id)
     def fit(self,train):
         if len(train)==0:
@@ -27,6 +30,8 @@ class FoldDesign:
         self.scale_={}
         for name in self.numeric:
             vals=pd.to_numeric(train[name],errors="coerce").replace([np.inf,-np.inf],np.nan)
+            if self.missing_policy=="error" and vals.isna().any():
+                raise ValueError("missing/nonfinite training predictor: "+name)
             med=float(vals.median())
             if not np.isfinite(med):
                 raise ValueError("no finite training data: "+name)
@@ -48,7 +53,10 @@ class FoldDesign:
             raise RuntimeError("fit on training partition first")
         out={}
         for c in BASE:
-            vals=pd.to_numeric(frame[c],errors="coerce").replace([np.inf,-np.inf],np.nan).fillna(self.median_[c]).to_numpy(float)
+            vals=pd.to_numeric(frame[c],errors="coerce").replace([np.inf,-np.inf],np.nan)
+            if self.missing_policy=="error" and vals.isna().any():
+                raise ValueError("missing/nonfinite predictor during transform: "+c)
+            vals=vals.fillna(self.median_[c]).to_numpy(float)
             if self.standardize:
                 vals=(vals-self.mean_[c])/self.scale_[c]
             out[c]=vals
@@ -68,7 +76,7 @@ class FoldDesign:
     def fit_transform(self,train):
         return self.fit(train).transform(train)
 
-def prepare_design_fold(frame,outer_test_plots,inner_validation_plots,model_id,standardize=False):
+def prepare_design_fold(frame,outer_test_plots,inner_validation_plots,model_id,standardize=False,missing_policy="error"):
     outer=set(outer_test_plots)
     inner=set(inner_validation_plots)
     plots=set(frame["plot"])
@@ -77,5 +85,5 @@ def prepare_design_fold(frame,outer_test_plots,inner_validation_plots,model_id,s
     tr=frame.loc[~frame["plot"].isin(outer|inner)]
     val=frame.loc[frame["plot"].isin(inner)]
     test=frame.loc[frame["plot"].isin(outer)]
-    design=FoldDesign(model_id,standardize=standardize).fit(tr)
+    design=FoldDesign(model_id,standardize=standardize,missing_policy=missing_policy).fit(tr)
     return design.transform(tr),design.transform(val),design.transform(test),design
