@@ -6,6 +6,7 @@ No outer predictions or scientific performance outputs.
 """
 import numpy as np
 from .elasticnet_prototype import run_elasticnet_inner
+from .class_support_policy import fallback_required, fallback_predict, relative_log_loss_skill
 
 ALPHAS=(0.,.5,1.)
 
@@ -122,20 +123,38 @@ def select_alpha_lambda_by_taxon(taxon_splits, alphas=ALPHAS):
         paths={}
         for taxon,entries in splits.items():
             for fold,x,y,v,z in entries:
-                paths[(taxon,fold)]=lambda_path(x,y,alpha)
+                paths[(taxon,fold)]=(None if fallback_required(y)
+                                     else lambda_path(x,y,alpha))
         for index in range(30):
             scored=[]
+            fallback_count=0
+            status_counts={}
             for taxon,entries in splits.items():
                 for fold,x,y,v,z in entries:
-                    lam=float(paths[(taxon,fold)][index])
-                    result=run_elasticnet_inner(
-                        y,z,x,v,alpha=alpha,lam=lam)
-                    scored.append((taxon,fold,result.relative_log_loss_skill))
+                    path=paths[(taxon,fold)]
+                    if path is None:
+                        # No optimizer or lambda path for <5 training positives.
+                        predictions=fallback_predict(y,len(z))
+                        skill=relative_log_loss_skill(y,z,predictions)
+                        status="insufficient_positives"
+                    else:
+                        lam=float(path[index])
+                        result=run_elasticnet_inner(
+                            y,z,x,v,alpha=alpha,lam=lam)
+                        skill=result.relative_log_loss_skill
+                        status=result.status
+                    fallback_count+=int(status in (
+                        "insufficient_positives","fit_failure_fallback"))
+                    status_counts[status]=status_counts.get(status,0)+1
+                    scored.append((taxon,fold,skill))
             summary=equal_taxon_mean_skill(scored)
-            records.append((summary["mean_skill"],alpha,index,summary))
+            records.append((summary["mean_skill"],alpha,index,summary,
+                            fallback_count,status_counts))
     best=sorted(records,key=lambda row:(-row[0],row[1],row[2]))[0]
     return {"alpha":best[1],"lambda_index":best[2],
             "mean_skill":best[0],"n_candidates":len(records),
             "n_taxa":best[3]["n_taxa"],
             "n_taxon_folds":best[3]["n_taxon_folds"],
+            "n_fallback_taxon_folds":best[4],
+            "fit_status_counts":best[5],
             "refit_lambda_policy":"recompute per taxon on full outer training"}

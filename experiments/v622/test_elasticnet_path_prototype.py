@@ -58,5 +58,19 @@ class PathPrototype(unittest.TestCase):
         with self.assertRaises(ValueError):
             select_alpha_lambda_by_taxon({
                 "a":[(0,x,y,x[:2],y[:2]),(0,x,y,x[:2],y[:2])]})
+    def test_rare_taxon_one_class_fallback_is_scored(self):
+        rng=np.random.default_rng(622)
+        x=rng.normal(size=(60,3))
+        y=np.array([0,1]*30)
+        rare=np.zeros(40,dtype=int)
+        rare[:3]=1
+        result=select_alpha_lambda_by_taxon({
+            "common":[(0,x[:40],y[:40],x[40:50],y[40:50])],
+            "rare":[(0,x[:40],rare,x[40:50],np.zeros(10,dtype=int))]})
+        self.assertEqual(result["n_candidates"],90)
+        self.assertEqual(result["n_fallback_taxon_folds"],1)
+        self.assertEqual(result["fit_status_counts"]["insufficient_positives"],1)
+        self.assertEqual(result["n_taxa"],2)
+        self.assertTrue(np.isfinite(result["mean_skill"]))
 if __name__=="__main__":
     unittest.main()
