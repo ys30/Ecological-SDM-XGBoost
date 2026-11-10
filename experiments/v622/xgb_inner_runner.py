@@ -76,7 +76,7 @@ def run_c1_inner_tuning(outer_train, inner_plot_to_fold, fit_predict,
                     return retry_predict(candidate, a, y, b, fold, str(taxon))
                 outcome = run_with_retry(y_taxon, y_val,
                     np.empty((len(y_taxon),0)), np.empty((len(y_val),0)),
-                    primary, retry)
+                    primary, retry, fitting_support_labels=y if variant == "pooled" else None)
                 cells.append({"taxon":str(taxon),"inner_fold":fold,
                     "relative_log_loss_skill":outcome.relative_log_loss_skill})
                 details.append({"candidate_id":candidate["candidate_id"],
