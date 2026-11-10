@@ -20,9 +20,7 @@ class TestGLMAdapter(unittest.TestCase):
     def test_feature_dimensions_guarded(self):
         x=np.arange(40,dtype=float).reshape(20,2)/40
         y=np.array([0,1]*10)
-        r=run_glm_inner(y,[0,1],x,np.zeros((2,3)))
-        self.assertEqual(r.status,"fit_failure_fallback")
-        self.assertEqual(r.attempt_count,2)
-        self.assertIn("incompatible design matrices",r.first_error)
+        with self.assertRaisesRegex(ValueError,"incompatible design matrices"):
+            run_glm_inner(y,[0,1],x,np.zeros((2,3)))
 if __name__=="__main__":
     unittest.main()
