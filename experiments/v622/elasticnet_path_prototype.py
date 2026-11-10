@@ -91,3 +91,51 @@ def equal_taxon_mean_skill(taxon_fold_scores):
             "n_taxa":len(means),
             "n_taxon_folds":sum(len(v) for v in scores.values()),
             "per_taxon_mean":means}
+
+def select_alpha_lambda_by_taxon(taxon_splits, alphas=ALPHAS):
+    """Engineering-only joint search with equal taxon weight.
+
+    taxon_splits: mapping taxon -> iterable of (fold_id, x_train, y_train,
+    x_validation, y_validation). Every split must already exclude outer rows.
+    Paths are local to each taxon/fold. Returns index, not a globally shared
+    lambda. Not R glmnet/cv.glmnet-equivalent.
+    """
+    if tuple(alphas)!=ALPHAS:
+        raise ValueError("preregistered alpha grid required")
+    splits={}
+    for taxon,items in taxon_splits.items():
+        entries=list(items)
+        if not entries:
+            raise ValueError("empty taxon")
+        seen=set()
+        for fold,x,y,v,z in entries:
+            if fold in seen:
+                raise ValueError("duplicate taxon/fold")
+            seen.add(fold)
+            if len(y)==0 or len(z)==0:
+                raise ValueError("empty inner partition")
+        splits[taxon]=entries
+    if not splits:
+        raise ValueError("no taxa")
+    records=[]
+    for alpha in alphas:
+        paths={}
+        for taxon,entries in splits.items():
+            for fold,x,y,v,z in entries:
+                paths[(taxon,fold)]=lambda_path(x,y,alpha)
+        for index in range(30):
+            scored=[]
+            for taxon,entries in splits.items():
+                for fold,x,y,v,z in entries:
+                    lam=float(paths[(taxon,fold)][index])
+                    result=run_elasticnet_inner(
+                        y,z,x,v,alpha=alpha,lam=lam)
+                    scored.append((taxon,fold,result.relative_log_loss_skill))
+            summary=equal_taxon_mean_skill(scored)
+            records.append((summary["mean_skill"],alpha,index,summary))
+    best=sorted(records,key=lambda row:(-row[0],row[1],row[2]))[0]
+    return {"alpha":best[1],"lambda_index":best[2],
+            "mean_skill":best[0],"n_candidates":len(records),
+            "n_taxa":best[3]["n_taxa"],
+            "n_taxon_folds":best[3]["n_taxon_folds"],
+            "refit_lambda_policy":"recompute per taxon on full outer training"}

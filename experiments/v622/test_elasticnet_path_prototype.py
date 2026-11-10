@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from experiments.v622.elasticnet_path_prototype import lambda_path,select_alpha_lambda,resolve_refit_lambda,equal_taxon_mean_skill
+from experiments.v622.elasticnet_path_prototype import lambda_path,select_alpha_lambda,resolve_refit_lambda,equal_taxon_mean_skill,select_alpha_lambda_by_taxon
 
 class PathPrototype(unittest.TestCase):
     def test_paths_and_monotonicity(self):
@@ -40,5 +40,23 @@ class PathPrototype(unittest.TestCase):
         self.assertEqual(result["n_taxon_folds"],3)
         with self.assertRaises(ValueError):
             equal_taxon_mean_skill(rows+[("rare",0,.1)])
+    def test_equal_taxon_joint_selection(self):
+        rng=np.random.default_rng(622)
+        x=rng.normal(size=(60,3))
+        y=np.array([0,1]*30)
+        splits={
+            "common":[(0,x[:40],y[:40],x[40:50],y[40:50]),
+                      (1,x[:40],y[:40],x[50:],y[50:])],
+            "rare":[(0,x[:40],y[:40],x[40:50],y[40:50])]}
+        result=select_alpha_lambda_by_taxon(splits)
+        self.assertEqual(result["n_candidates"],90)
+        self.assertEqual(result["n_taxa"],2)
+        self.assertEqual(result["n_taxon_folds"],3)
+        self.assertTrue(np.isfinite(result["mean_skill"]))
+    def test_duplicate_taxon_fold_rejected(self):
+        x=np.ones((12,2)); y=np.array([0,1]*6)
+        with self.assertRaises(ValueError):
+            select_alpha_lambda_by_taxon({
+                "a":[(0,x,y,x[:2],y[:2]),(0,x,y,x[:2],y[:2])]})
 if __name__=="__main__":
     unittest.main()
