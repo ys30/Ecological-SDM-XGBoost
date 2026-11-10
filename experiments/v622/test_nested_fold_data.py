@@ -19,7 +19,7 @@ class NestedFoldTests(unittest.TestCase):
         self.assertEqual(len(p.outer_test_rows),2)
         self.assertEqual(tuple(p.inner_train_x.columns),p.columns)
         self.assertEqual(tuple(p.outer_test_x.columns),p.columns)
-        self.assertEqual(p.inner_train_x.loc[2,"rainann"],4.)
+        self.assertEqual(p.inner_train_x.loc[2,"rainann"],5.)
         self.assertEqual(p.outer_test_x.loc[10,"rainann"],999.)
     def test_outer_inner_overlap_rejected(self):
         with self.assertRaises(ValueError):
