@@ -8,6 +8,7 @@ A retry doubles boosting rounds; the XGBoost tree booster has no separate
 optimizer choice. This interpretation must be approved before study freeze.
 """
 import hashlib
+import json
 import numpy as np
 
 class XGBoostC1Backend:
@@ -24,7 +25,7 @@ class XGBoostC1Backend:
         x = np.ascontiguousarray(x, dtype=np.float64)
         y = np.ascontiguousarray(y, dtype=np.float64)
         digest = hashlib.sha256(x.tobytes()+y.tobytes()+repr(x.shape).encode()).hexdigest()
-        return (int(config["candidate_id"]),int(fold),
+        return (json.dumps(config, sort_keys=True, allow_nan=False),int(fold),
                 None if self.variant=="pooled" else str(taxon),
                 digest, bool(retry))
 
