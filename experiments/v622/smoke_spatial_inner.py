@@ -1,4 +1,4 @@
-"""Real-data, outer-training-only spatial inner-fold smoke test; no model fitting."""
+"""Real-data preregistered spatial inner-fold smoke test; no model fitting."""
 import hashlib
 from pathlib import Path
 import pandas as pd
@@ -13,7 +13,7 @@ d=pd.read_csv("data/train.csv")
 a=pd.read_csv("results/spatial_2d_block_assignments.csv")
 outer_fold=sorted(a["fold"].unique())[0]
 outer=set(a.loc[a["fold"]==outer_fold,"plot"])
-inner=spatial_inner_folds(d,outer,n_clusters=12,n_folds=4,seed=2026)
+inner=spatial_inner_folds(d,outer,n_clusters=12,n_folds=4,outer_fold=outer_fold)
 mapping=dict(zip(inner["plot"],inner["inner_fold"]))
 validate_plot_folds(d,outer,mapping)
 for f in sorted(inner["inner_fold"].unique()):
@@ -21,5 +21,5 @@ for f in sorted(inner["inner_fold"].unique()):
     p=prepare_nested_fold(d,outer,val)
     assert len(p.inner_train_rows)+len(p.inner_validation_rows)+len(p.outer_test_rows)==len(d)
     print(f"inner_fold={f} train_rows={len(p.inner_train_rows)} val_rows={len(p.inner_validation_rows)} test_rows={len(p.outer_test_rows)}")
-print(f"PASS real-data spatial inner folds: outer={outer_fold}, clusters={inner.cluster.nunique()}, folds={inner.inner_fold.nunique()}")
-print("LIMITATION: single outer fold smoke; no tuning, no model scoring, no formal CRS verification.")
+print(f"PASS preregistered inner folds: outer={outer_fold}, clusters={inner.cluster.nunique()}, folds={inner.inner_fold.nunique()}")
+print("LIMITATION: one outer fold only; no model tuning, CRS formal verification, or model scoring.")

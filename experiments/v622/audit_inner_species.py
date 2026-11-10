@@ -12,7 +12,7 @@ assert set(d["pres.abs"].dropna().unique()) <= {0,1}
 records=[]
 for outer_fold in sorted(a["fold"].unique()):
     outer=set(a.loc[a["fold"]==outer_fold,"plot"])
-    inner=spatial_inner_folds(d,outer,n_clusters=12,n_folds=4,seed=2026)
+    inner=spatial_inner_folds(d,outer,n_clusters=12,n_folds=4,outer_fold=outer_fold)
     mapping=dict(zip(inner["plot"],inner["inner_fold"]))
     train=d.loc[~d["plot"].isin(outer)].copy()
     train["inner_fold"]=train["plot"].map(mapping)
@@ -35,6 +35,6 @@ summary={"outer_folds":int(a["fold"].nunique()),"inner_folds_per_outer":4,
  "undefined_validation_auc_rows":int(((out["partition"]=="validation")&(~out["auc_defined"])).sum()),
  "undefined_training_auc_rows":int(((out["partition"]=="train")&(~out["auc_defined"])).sum()),
  "smallest_validation_positives":int(out.loc[out["partition"]=="validation","positive"].min()),
- "scope":"Diagnostic only. Do not silently drop invalid taxon-fold AUC values."}
+ "scope":"Preregistered random-order greedy spatial folds. Diagnostic only; no model fit."}
 Path("results/v622/inner_species_class_summary.json").write_text(json.dumps(summary,indent=2)+"\n")
 print(json.dumps(summary,indent=2))
