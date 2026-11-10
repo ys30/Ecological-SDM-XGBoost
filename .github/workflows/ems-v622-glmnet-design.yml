@@ -1,0 +1,21 @@
+name: EMS v6.22 GLMnet design contract
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/test_glmnet_design_contract.py'
+      - '.github/workflows/ems-v622-glmnet-design.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas
+      - run: python -m unittest experiments.v622.test_glmnet_design_contract -v
