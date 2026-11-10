@@ -4,6 +4,8 @@ on:
     branches: [ems-v622-experiments]
     paths:
       - 'experiments/v622/smoke_real_xgb_c1.py'
+      - 'experiments/v622/xgb_inner_runner.py'
+      - 'experiments/v622/fit_retry_policy.py'
       - '.github/workflows/ems-v622-real-xgb-c1.yml'
   workflow_dispatch:
 permissions:
