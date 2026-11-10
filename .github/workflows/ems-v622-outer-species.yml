@@ -1,0 +1,29 @@
+name: EMS v6.22 outer species class audit
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/audit_outer_species.py'
+      - '.github/workflows/ems-v622-outer-species.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  outer-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pandas
+      - run: python -m experiments.v622.audit_outer_species
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ems-v622-outer-species-audit
+          path: |
+            results/v622/outer_species_class_counts.csv
+            results/v622/outer_species_class_summary.json
+          if-no-files-found: warn
