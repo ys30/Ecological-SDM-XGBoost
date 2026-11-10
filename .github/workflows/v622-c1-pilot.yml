@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Verify both frozen outer fold files and data integrity
+      - name: Rebuild outcome-blind km15 fold assignments if absent\n        run: |\n          if [ ! -f results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv ]; then\n            python -m pip install pandas numpy scikit-learn tabulate\n            python scripts/64_alternative_spatial_partition.py\n          fi\n      - name: Verify both frozen outer fold files and data integrity
         run: |
           python scripts/90_v622_preflight.py --folds results/spatial_2d_block_assignments.csv --design grid4_s2026_b0 --output results/v622/preflight_grid4.json
           python scripts/90_v622_preflight.py --folds results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv --design km15_b0 --output results/v622/preflight_km15.json
