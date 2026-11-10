@@ -25,6 +25,11 @@ inner_folds:
   buffer_km: 0
 eligibility_and_fallback:
   per_taxon_min_training_positives: 5
+  pooled_fit_min_training_positives: 5
+  pooled_fit_support: complete pooled inner-training partition; both outcome classes required
+  pooled_rare_taxon_predictions: permitted even when target taxon has fewer than five training positives
+  pooled_failure_fallback: target taxon training prevalence after failed primary and retry fits
+  pooled_scoring_null: target taxon inner-training prevalence, never pooled prevalence
   fallback_prediction: training prevalence of the taxon (constant); flagged fallback = 1
   inner_fold_without_positives: contributes log loss; AUC not computed
   fit_failure: one retry with doubled iterations / default optimiser; then fallback; all logged
