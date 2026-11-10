@@ -25,6 +25,13 @@ class TestBackend(unittest.TestCase):
         b.primary(self.config,self.x,self.y,self.v,0,"b")
         self.assertEqual(b.fit_count,2)
 
+    def test_same_candidate_id_different_parameters_do_not_share_fit(self):
+        b=XGBoostC1Backend("pooled")
+        b.primary(self.config,self.x,self.y,self.v,0,"a")
+        changed=dict(self.config, max_depth=3)
+        b.primary(changed,self.x,self.y,self.v,0,"b")
+        self.assertEqual(b.fit_count,2)
+
     def test_retry_uses_distinct_model(self):
         b=XGBoostC1Backend("pooled")
         b.primary(self.config,self.x,self.y,self.v,0,"a")
