@@ -33,7 +33,7 @@ class FoldDesign:
             clean=vals.fillna(med).to_numpy(float)
             self.median_[name]=med
             self.mean_[name]=float(clean.mean())
-            std=float(clean.std())
+            std=float(clean.std(ddof=1)) if len(clean)>1 else 0.0
             self.scale_[name]=std if std>0 else 1.
         self.levels_={c:tuple(sorted(str(x) for x in train[c].dropna().unique())) for c in self.categorical}
         self.columns_=list(BASE)
