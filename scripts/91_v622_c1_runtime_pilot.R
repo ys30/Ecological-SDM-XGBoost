@@ -11,15 +11,15 @@ stopifnot(all(c("plot","fold") %in% names(f)), !anyDuplicated(f$plot),
           !anyDuplicated(d$id), all(d$pres.abs %in% 0:1))
 stopifnot(setequal(unique(d$plot),f$plot), !anyNA(d[,c("rainann","soildepth","tempann","topo","easting","northing")]))
 d$outer_fold <- f$fold[match(d$plot,f$plot)]
-outer <- sort(unique(d$outer_fold))[1]
-train <- d[d$outer_fold != outer,,drop=FALSE]
-test_plots <- unique(d$plot[d$outer_fold == outer])
+outer_id <- sort(unique(d$outer_fold))[1]
+train <- d[d$outer_fold != outer_id,,drop=FALSE]
+test_plots <- unique(d$plot[d$outer_fold == outer_id])
 stopifnot(!length(intersect(unique(train$plot),test_plots)))
 plots <- train[!duplicated(train$plot),c("plot","easting","northing")]
 plots <- plots[order(plots$plot),,drop=FALSE]
 xy <- scale(as.matrix(plots[,c("easting","northing")]))
 stopifnot(all(is.finite(xy)),nrow(plots)>=12L)
-set.seed(6220L+as.integer(outer))
+set.seed(6220L+as.integer(outer_id))
 km <- kmeans(xy,centers=12L,nstart=30L,iter.max=100L)
 # Allocate whole clusters to 4 inner folds, balancing plot counts.
 counts <- sort(table(km$cluster),decreasing=TRUE)
@@ -43,7 +43,7 @@ ll <- function(y,p) -mean(y*log(clip(p))+(1-y)*log1p(-clip(p)))
 # Pooled and per-taxon variants; both use exactly the four environmental predictors.
 make_x <- function(z,pooled) {
   x <- as.matrix(z[,env,drop=FALSE]);storage.mode(x)<-"double"
-  if(pooled) {s <- outer(z$Species,taxa,`==`)*1.0;colnames(s)<-paste0("taxon_",taxa);x<-cbind(x,s)}
+  if(pooled) {s <- base::outer(z$Species,taxa,`==`)*1.0;colnames(s)<-paste0("taxon_",taxa);x<-cbind(x,s)}
   x
 }
 # Runtime-only: never score outer held-out records.
@@ -59,7 +59,7 @@ for(pooled in c(FALSE,TRUE)) for(i in seq_len(nrow(candidates))) {
       a <- if(pooled) tr else tr[tr$Species==sp,,drop=FALSE]
       b <- va[va$Species==sp,,drop=FALSE]
       if(!nrow(b)) next
-      prevalence <- mean(a$pres.abs)
+      prevalence <- mean(tr$pres.abs[tr$Species==sp])
       if(!is.finite(prevalence)) next
       if(sum(a$pres.abs)<5L || length(unique(a$pres.abs))<2L) {
         pred <- rep(prevalence,nrow(b))
@@ -84,7 +84,7 @@ dir.create(output_dir,recursive=TRUE,showWarnings=FALSE)
 # No outer predictions or metrics are created. Inner candidate scores are tuning diagnostics only.
 write.csv(candidates,file.path(output_dir,"candidate_grid.csv"),row.names=FALSE)
 write.csv(do.call(rbind,log_rows),file.path(output_dir,"inner_candidate_runtime.csv"),row.names=FALSE)
-write.csv(data.frame(design_fold_file=fold_file,outer_fold=outer,
+write.csv(data.frame(design_fold_file=fold_file,outer_fold=outer_id,
   elapsed_seconds=as.numeric(difftime(Sys.time(),start,units="secs")),
   outer_test_rows_not_scored=sum(d$outer_fold==outer)),
   file.path(output_dir,"runtime_summary.csv"),row.names=FALSE)
