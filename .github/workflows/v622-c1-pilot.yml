@@ -1,0 +1,56 @@
+name: EMS v6.22 preflight and C1 pilot
+on:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - scripts/90_v622_preflight.py
+      - scripts/91_v622_c1_runtime_pilot.R
+      - .github/workflows/v622-c1-pilot.yml
+  workflow_dispatch:
+    inputs:
+      run_pilot:
+        description: 'Run expensive C1 nested tuning pilot (30 candidates per variant)'
+        required: true
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify both frozen outer fold files and data integrity
+        run: |
+          python scripts/90_v622_preflight.py --folds results/spatial_2d_block_assignments.csv --design grid4_s2026_b0 --output results/v622/preflight_grid4.json
+          python scripts/90_v622_preflight.py --folds results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv --design km15_b0 --output results/v622/preflight_km15.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v622-preflight
+          path: results/v622/preflight_*.json
+          if-no-files-found: warn
+  pilot:
+    needs: preflight
+    if: github.event_name == 'workflow_dispatch' && inputs.run_pilot == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: any::xgboost
+      - name: Run grid4 runtime-only C1 pilot
+        run: Rscript scripts/91_v622_c1_runtime_pilot.R results/spatial_2d_block_assignments.csv results/v622/pilot_grid4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v622-c1-runtime-pilot
+          path: results/v622/pilot_grid4/
+          if-no-files-found: warn
