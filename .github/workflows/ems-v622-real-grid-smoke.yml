@@ -1,0 +1,23 @@
+name: EMS v6.22 real grid fold smoke
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/smoke_real_grid.py'
+      - 'experiments/v622/nested_fold_data.py'
+      - 'experiments/v622/fold_preprocessing.py'
+      - '.github/workflows/ems-v622-real-grid-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-grid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas
+      - run: python -m experiments.v622.smoke_real_grid
