@@ -53,3 +53,41 @@ def select_alpha_lambda(inner_splits,alphas=ALPHAS):
     return {"alpha":best[1],"lambda_index":best[2],
             "mean_skill":best[0],"n_candidates":len(records),
             "refit_lambda_policy":"recompute selected path index on full outer training"}
+
+def resolve_refit_lambda(outer_train_x,outer_train_y,selection):
+    """Resolve selected fold-local path index on outer-training data only.
+
+    Returns hyperparameters, not a fitted model or outer predictions.
+    """
+    if not isinstance(selection,dict):
+        raise ValueError("selection must be a dictionary")
+    alpha=selection.get("alpha")
+    index=selection.get("lambda_index")
+    if alpha not in ALPHAS or type(index) is not int or not 0<=index<30:
+        raise ValueError("invalid selected alpha or path index")
+    path=lambda_path(outer_train_x,outer_train_y,alpha)
+    return {"alpha":alpha,"lambda":float(path[index]),
+            "lambda_index":index,"n_outer_training":len(outer_train_y)}
+
+def equal_taxon_mean_skill(taxon_fold_scores):
+    """Equal taxon weighting, then equal evaluable folds within each taxon.
+
+    Input: iterable of (taxon_id, fold_id, relative_log_loss_skill).
+    Missing/unevaluable folds are excluded; taxon coverage is reported.
+    """
+    from collections import defaultdict
+    scores=defaultdict(dict)
+    for taxon,fold,skill in taxon_fold_scores:
+        if not np.isfinite(skill):
+            raise ValueError("nonfinite skill")
+        if fold in scores[taxon]:
+            raise ValueError("duplicate taxon/fold")
+        scores[taxon][fold]=float(skill)
+    if not scores:
+        raise ValueError("no evaluable taxon-fold scores")
+    means={taxon:float(np.mean(list(folds.values())))
+           for taxon,folds in scores.items()}
+    return {"mean_skill":float(np.mean(list(means.values()))),
+            "n_taxa":len(means),
+            "n_taxon_folds":sum(len(v) for v in scores.values()),
+            "per_taxon_mean":means}
