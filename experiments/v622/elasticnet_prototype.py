@@ -16,7 +16,7 @@ def _predict(x,y,v,alpha,lam,max_iter):
     # C=1/lambda is only a prototype, NOT glmnet penalty equivalence.
     clf=LogisticRegression(
         penalty="elasticnet",solver="saga",l1_ratio=alpha,
-        C=1.0/lam,max_iter=max_iter,tol=1e-5,
+        C=1.0/(len(y)*lam),max_iter=max_iter,tol=1e-5,
         random_state=622,fit_intercept=True)
     import warnings
     from sklearn.exceptions import ConvergenceWarning
