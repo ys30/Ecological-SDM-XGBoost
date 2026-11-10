@@ -27,7 +27,7 @@ outer_fold = sorted(assignments["fold"].unique())[0]
 outer_plots = set(assignments.loc[assignments["fold"] == outer_fold, "plot"])
 outer_train = data.loc[~data["plot"].isin(outer_plots)].copy()
 assert not set(outer_train["plot"]) & outer_plots
-inner = spatial_inner_folds(data, outer_plots, outer_fold=1)
+inner = spatial_inner_folds(data, outer_plots, outer_fold=int(outer_fold))
 inner_map = dict(zip(inner["plot"], inner["inner_fold"]))
 assert set(inner_map) == set(outer_train["plot"])
 candidate = generate_candidates()[0]
