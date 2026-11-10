@@ -15,5 +15,7 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m pip install pyyaml
+      - name: Show current candidate document checksums
+        run: cd experiments/v622 && sha256sum config/v622_experiment.yaml docs/EMS_v6.22_analysis_plan.md
       - name: Validate plan, references and manifest
         run: python experiments/v622/validate_candidate.py
