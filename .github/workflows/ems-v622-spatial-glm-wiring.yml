@@ -1,0 +1,21 @@
+name: EMS v6.22 nested spatial GLM wiring
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/check_spatial_glm_wiring.py'
+      - '.github/workflows/ems-v622-spatial-glm-wiring.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  wiring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scipy statsmodels scikit-learn
+      - run: python -m experiments.v622.check_spatial_glm_wiring
