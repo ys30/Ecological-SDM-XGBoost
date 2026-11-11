@@ -36,3 +36,20 @@ Across both prespecified spatial partitions, hyperparameter tuning showed a larg
 - Add leave-one-taxon-out interaction sensitivity, given n=8 taxa.
 - Verify original R fixed-model equivalence (or state that it was not achieved).
 - Reconcile preregistered primary endpoints and multiple comparisons; update full manuscript and figures only after this audit.
+
+## Verified nonfallback and LOTO sensitivities (2026-11-11)
+
+Nonfallback run [43050953967](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/43050953967): retain only OOF rows for which all four arms avoided fallback. grid4 retained 8,866/9,336 records (38 taxon-fold cells); km15 retained 8,639/9,336 (37 cells).
+
+| Nonfallback interaction | grid4 mean [95% CI] | km15 mean [95% CI] |
+|---|---|---|
+| Log loss | −0.018200 [−0.030736, −0.004413] | −0.024566 [−0.040621, −0.007265] |
+| Brier | −0.005687 [−0.009006, −0.002272] | −0.005453 [−0.009883, −0.001520] |
+
+LOTO run [42967072873](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/42967072873): log-loss interaction ranges grid4 [−0.021143, −0.015174], km15 [−0.026785, −0.019331]; Brier ranges grid4 [−0.006191, −0.004254], km15 [−0.005785, −0.003255]. All 16 leave-one-taxon-out values per proper-score metric remain negative. AUC interaction signs are **not** stable under leave-one-taxon-out.
+
+## Explicit preregistration reconciliation
+
+Read `experiments/v622/docs/EMS_v6.22_analysis_plan.md`: **the prespecified primary evaluation is paired ROC AUC**, with log loss and Brier **secondary**. Its supported-effect gate requires same AUC sign in both designs, |mean AUC effect| >= 0.01 in both designs, and a 95% interval excluding zero in at least one. The tuning-by-sharing difference-in-differences in this note is an **exploratory post-freeze interaction**, not an automatically preregistered primary contrast. Its AUC intervals include zero in both designs, and grid4 mean +0.0059 falls below 0.01. Therefore **the preregistered AUC support gate is not met**; robust secondary proper-score patterns must not be described as confirmation of the primary hypothesis. Multiple comparisons remain unadjusted.
+
+Suggested manuscript wording: “Exploratory interaction analyses indicated more favorable changes in log loss and Brier score following tuning of taxon-specific versus pooled XGBoost models; this pattern persisted after exclusion of fallback predictions and in leave-one-taxon-out analyses. However, the prespecified primary AUC-based support criterion was not satisfied, and the interaction findings should be interpreted as secondary and hypothesis-generating.”
