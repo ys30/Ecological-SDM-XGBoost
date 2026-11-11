@@ -1,0 +1,48 @@
+name: EMS v6.22 recover pinned km15 spatial folds
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-recover-km15.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn tabulate
+      - name: Regenerate km15 with archived deterministic script
+        run: python scripts/64_alternative_spatial_partition.py
+      - name: Compare pinned preregistration SHA256 and validate coverage
+        run: |
+          python - <<'PY'
+          import hashlib
+          import pandas as pd
+          from pathlib import Path
+          path=Path("results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv")
+          sha=hashlib.sha256(path.read_bytes()).hexdigest()
+          expected="04686634473d51b5c63dcbd4474659fe864a114ae0885c5c5f55736522c798ce"
+          df=pd.read_csv(path)
+          source=pd.read_csv("data/train.csv")
+          assert len(df)==1167 and df.plot.is_unique
+          assert set(df["plot"])==set(source["plot"])
+          assert df.fold.nunique()==5 and df.groupby("fold").size().min()>=100
+          assert df.groupby("cluster").fold.nunique().max()==1
+          print("KM15 GENERATED SHA256",sha,flush=True)
+          print("KM15 PINNED SHA256",expected,flush=True)
+          print("KM15 HASH MATCH",sha==expected,flush=True)
+          if sha!=expected:
+              print("HASH MISMATCH: do not treat generated assignments as preregistered km15; investigate historical sklearn version / original artifact.",flush=True)
+          else:
+              print("PASS EXACT PINNED KM15 RECOVERY",flush=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-km15-recovery-${{ github.run_id }}
+          path: results/alternative_spatial_validation/
+          if-no-files-found: error
