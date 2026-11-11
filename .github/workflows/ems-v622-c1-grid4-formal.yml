@@ -1,5 +1,10 @@
 name: EMS v6.22 frozen C1 grid4 OOF
 on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c1-grid4-formal.yml'
+      - 'experiments/v622/docs/FROZEN_C1.json'
   workflow_dispatch:
 permissions:
   contents: read
