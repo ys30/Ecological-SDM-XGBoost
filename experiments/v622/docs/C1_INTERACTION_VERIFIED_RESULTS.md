@@ -53,3 +53,20 @@ LOTO run [42967072873](https://github.com/ys30/Ecological-SDM-XGBoost/actions/ru
 Read `experiments/v622/docs/EMS_v6.22_analysis_plan.md`: **the prespecified primary evaluation is paired ROC AUC**, with log loss and Brier **secondary**. Its supported-effect gate requires same AUC sign in both designs, |mean AUC effect| >= 0.01 in both designs, and a 95% interval excluding zero in at least one. The tuning-by-sharing difference-in-differences in this note is an **exploratory post-freeze interaction**, not an automatically preregistered primary contrast. Its AUC intervals include zero in both designs, and grid4 mean +0.0059 falls below 0.01. Therefore **the preregistered AUC support gate is not met**; robust secondary proper-score patterns must not be described as confirmation of the primary hypothesis. Multiple comparisons remain unadjusted.
 
 Suggested manuscript wording: “Exploratory interaction analyses indicated more favorable changes in log loss and Brier score following tuning of taxon-specific versus pooled XGBoost models; this pattern persisted after exclusion of fallback predictions and in leave-one-taxon-out analyses. However, the prespecified primary AUC-based support criterion was not satisfied, and the interaction findings should be interpreted as secondary and hypothesis-generating.”
+
+
+## R fixed baseline implementation sensitivity (2026-11-11)
+
+Actions run **43108252039** succeeded (artifact **13894209261**). This *grid4-only*, post-freeze exploratory comparison substitutes actual R `xgb.train` fixed predictions with explicitly specified `tree_method="hist"` for the Python fixed baseline, while keeping tuned Python predictions unchanged. It does **not** reproduce the historical unspecified-tree-method R runtime exactly.
+
+The four-arm common nonfallback population contains **8,866/9,336 observations**, 38 taxon-fold cells; AUC is evaluable in 28 cells. Both baselines are scored on the **same retained records**. The interaction is (species tuned − species fixed) − (pooled tuned − pooled fixed), with 2,000 paired taxon bootstrap resamples (seed 622).
+
+| Metric | Python fixed mean [95% CI] | R-hist fixed mean [95% CI] |
+|---|---|---|
+| AUC | +0.005923 [−0.047252, +0.043001] | −0.004352 [−0.081923, +0.036301] |
+| Log loss | −0.018200 [−0.030736, −0.004413] | −0.019375 [−0.031705, −0.005729] |
+| Brier | −0.005687 [−0.009006, −0.002272] | −0.005992 [−0.009221, −0.002669] |
+
+**Interpretation:** The direction and bootstrap interval exclusion of zero for *secondary* proper-score interactions persist when using R-hist fixed controls. AUC interaction changes sign and both intervals cross zero; **no primary AUC support claim is justified**. This analysis is not a new independent spatial replication (grid4 only), and its exploratory status, eight-taxon uncertainty, multiple testing, and R/Python numerical non-equivalence must be disclosed. The historical R default tree method is not established by this experiment.
+
+Suggested manuscript wording: “In a grid4 sensitivity analysis using fixed controls refitted with the R XGBoost interface, the exploratory tuning-by-sharing interactions remained negative for log loss and Brier score, whereas the AUC interaction changed sign and remained statistically uncertain. This strengthens the interpretation of the probability-score pattern as a secondary, implementation-robust observation, without satisfying the prespecified primary AUC criterion.”
