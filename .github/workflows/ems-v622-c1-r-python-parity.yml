@@ -1,0 +1,41 @@
+name: EMS v6.22 C1 R Python fixed parity
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c1-r-python-parity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install R XGBoost
+        run: Rscript -e 'install.packages("xgboost",repos="https://cloud.r-project.org")'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas
+      - name: Retrieve frozen Python fixed OOF
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download 42962847733 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-fixed-controls-42962847733 -D results/v622
+      - name: Run R grid4 hist fixed controls
+        run: Rscript experiments/v622/run_c1_r_fixed_parity.R
+      - name: Compare R and Python per-record predictions
+        run: python experiments/v622/compare_c1_r_python_fixed.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ems-v622-c1-r-python-parity-${{ github.run_id }}
+          path: |
+            results/v622/c1_r_fixed_hist_oof_grid4.csv
+            results/v622/c1_r_python_fixed_hist_parity.json
+          if-no-files-found: warn
