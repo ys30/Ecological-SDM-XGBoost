@@ -32,3 +32,19 @@ Run original R and Python on identical grid4 nonfallback folds, pin package vers
 
 ## Current scientific interpretation
 The C1 interaction remains an **exploratory within-Python comparison**, and log loss/Brier are secondary endpoints. The preregistered AUC support gate is not met. The nonfallback sensitivity (Actions 43050953967) and LOTO analysis (Actions 42967072873) improve internal robustness but do not establish R/Python equivalence.
+
+## Executed numerical parity experiment — 2026-11-11
+
+The first run (43057838997) failed during R installation due to Ubuntu apt DNS errors, **before modeling**. A pinned Ubuntu 24.04 / R 4.4.3 rerun **43079394306 succeeded**, artifact **13884406679**. R and Python used the same fixed hyperparameters and explicitly specified histogram tree construction; the comparison is a **hist-aligned diagnostic**, not a literal rerun of the historical unspecified-tree-method R environment.
+
+| Per-record grid4 comparison | Per-species nonfallback | Pooled |
+|---|---:|---:|
+| Matched records | 8,866 | 9,336 |
+| Mean absolute probability difference | 0.00758112 | 0.00630022 |
+| Maximum absolute probability difference | 0.42882314 | 0.10920951 |
+| Fraction abs diff < 1e-3 | 0.588653 | 0.328085 |
+| Pearson correlation | 0.994077 | 0.996139 |
+
+**Decision: numeric equivalence rejected at tight tolerances.** High correlation is not numerical equivalence. These diagnostics alone do not identify whether default parameters, software versions, or RNG differences dominate. Do not infer which is responsible without targeted ablation.
+
+The R-side 18,202 rows are 8,866 nonfallback per-species and 9,336 pooled, with R OOF and diagnostic JSON uploaded as the artifact. The Python fixed control should continue to be described as a reimplementation sensitivity, not an exact historical replication. The interaction's proper-score findings remain within-Python and exploratory; the prespecified AUC gate is not met.
