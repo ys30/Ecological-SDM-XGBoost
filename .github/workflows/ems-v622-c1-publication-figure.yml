@@ -24,7 +24,7 @@ jobs:
           mkdir -p results/v622
           gh run download 42965741281 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-tuning-sharing-interaction-42965741281 -D results/v622
           gh run download 43108252039 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-r-baseline-sensitivity-43108252039 -D results/v622
-      - name: Generate C1 forest figure
+      # Figure script no longer depends on the unused nonfallback JSON.\n      - name: Generate C1 forest figure
         run: python experiments/v622/plot_c1_interaction_implementation.py
       - uses: actions/upload-artifact@v4
         with:
