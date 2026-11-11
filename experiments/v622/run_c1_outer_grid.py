@@ -32,6 +32,15 @@ def main():
         raise SystemExit("REFUSED: invalid C1 freeze marker")
     if lock.get("inputs")!=INPUTS:
         raise SystemExit("REFUSED: frozen input hashes differ")
+    manifest=ROOT/"docs/EMS_v6.22_manifest_sha256.txt"
+    manifest_sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+    if lock.get("manifest_sha256")!=manifest_sha:
+        raise SystemExit("REFUSED: freeze marker does not pin current manifest")
+    for line in manifest.read_text().splitlines():
+        if line.strip():
+            expected,relative=line.split("  ",1)
+            if hashlib.sha256((ROOT/relative).read_bytes()).hexdigest()!=expected:
+                raise SystemExit(f"REFUSED: modified preregistration file {relative}")
     for path,expected in INPUTS.items():
         if hashlib.sha256(Path(path).read_bytes()).hexdigest()!=expected:
             raise SystemExit(f"REFUSED: SHA mismatch {path}")
@@ -94,8 +103,12 @@ def main():
             raise ValueError("OOF coverage/uniqueness failure")
         if not np.isfinite(df["pred"]).all() or not df["pred"].between(0,1).all():
             raise ValueError("invalid probabilities")
-        df.to_csv(outdir/f"oof_xgb_{variant}_tuned_grid4_s2026_b0.csv.gz",index=False,compression="gzip")
-        pd.DataFrame(tuning).to_csv(outdir/f"tuning_xgb_{variant}_tuned_grid4_s2026_b0.csv",index=False)
+        oof_path=outdir/f"oof_xgb_{variant}_tuned_grid4_s2026_b0.csv.gz"
+        tuning_path=outdir/f"tuning_xgb_{variant}_tuned_grid4_s2026_b0.csv"
+        if oof_path.exists() or tuning_path.exists():
+            raise FileExistsError("refusing to overwrite existing formal output")
+        df.to_csv(oof_path,index=False,compression="gzip")
+        pd.DataFrame(tuning).to_csv(tuning_path,index=False)
         print(f"PASS FROZEN ONLY variant={variant} rows={len(df)} fallback={df['fallback'].sum()}",flush=True)
 
 if __name__=="__main__":
