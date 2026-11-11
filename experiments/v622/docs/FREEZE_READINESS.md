@@ -26,3 +26,11 @@ Review all 20 contrast descriptions, model matrix definitions, projected CRS and
 - Pooled rare-taxon support has been prospectively amended in the draft YAML and plan; the six affected real-data cells now receive pooled predictions. Formal freeze and full-study execution have **not** occurred.
 - Remaining scientific gates: authoritative projected CRS and 10-km buffer interpretation; 20-contrast semantics; C2/C3/C4 implementation availability and input provenance. Passing CI is not a substitute for these decisions.
 - Historical timing notes above refer to earlier checkpoint commits, not the latest revision.
+
+## 2026-11-10 final CI and CRS evidence review
+
+- Contrast semantics CI SUCCESS: [42943984024](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/42943984024); preflight SUCCESS: [42943984087](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/42943984087).
+- Coordinate audit already exists at [CRS_SCALE_DIAGNOSTIC_RESULT.md](CRS_SCALE_DIAGNOSTIC_RESULT.md): 1,167 nearest-neighbor pairs; planar/spherical distance median 1.004112, p05 1.001164, p95 1.006896. This supports approximate metre scale, **not** authoritative CRS verification or exact 10-km buffers.
+- Decision for prospective analysis: keep both **unbuffered primary designs** (grid4_s2026_b0 and km15_b0) as the executable priority. Hold buffered designs and threshold experiment as conditional, with explicit nominal-distance wording and provenance limitation if authoritative CRS metadata cannot be obtained. Do not relabel nominal buffers as verified geographic buffers.
+- 20 contrast metadata assertions pass, but this only establishes internal consistency, not equivalence of algorithms or proof of all implementation details.
+- Before formal C1: lock study-wide final-fit/outer-OOF output schema, candidate selection logging, model failure policy, and separate freeze commit. No results are claimed from the engineering profile.
