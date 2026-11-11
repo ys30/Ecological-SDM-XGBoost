@@ -11,6 +11,7 @@ permissions:
   actions: read
 jobs:
   audit:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -34,4 +35,28 @@ jobs:
           path: |
             results/v622/c1_grid4_tuned_pooled_vs_species_descriptive.csv
             results/v622/c1_grid4_descriptive_summary.json
+          if-no-files-found: error
+
+  km15-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas scikit-learn
+      - name: Retrieve verified km15 formal OOF
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42960556320 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-km15-oof-42960556320 -D results/v622
+      - name: Analyze km15 paired AUC
+        run: python -m experiments.v622.analyze_c1_km15_oof
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c1-km15-descriptive-${{ github.run_id }}
+          path: |
+            results/v622/c1_km15_tuned_pooled_vs_species_descriptive.csv
+            results/v622/c1_km15_descriptive_summary.json
           if-no-files-found: error
