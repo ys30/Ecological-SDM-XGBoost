@@ -1,0 +1,26 @@
+name: EMS v6.22 C1 outer freeze guard
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - 'experiments/v622/run_c1_outer_grid.py'
+      - '.github/workflows/ems-v622-c1-outer-guard.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas scikit-learn xgboost
+      - name: Verify formal runner refuses pre-freeze execution
+        run: |
+          if python -m experiments.v622.run_c1_outer_grid > guard.log 2>&1; then
+            echo "FAIL: formal runner ran without freeze"; exit 1
+          fi
+          cat guard.log
+          grep -q "REFUSED: C1 plan is PRE-FREEZE" guard.log
