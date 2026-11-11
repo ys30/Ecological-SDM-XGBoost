@@ -1,0 +1,15 @@
+{
+  "status": "FROZEN",
+  "scope": "C1 tuned XGBoost species and pooled; historical grid4_s2026_b0 only",
+  "design": "grid4_s2026_b0",
+  "manifest_sha256": "80c4bb7d1edceec88e168837d1f221ac6e3c161c04b9235ae53b002866f150b9",
+  "inputs": {
+    "data/train.csv": "f7eb81447e0e6deab1a10579ec1a6694587c6c61aa56947fe6a0d6012c3b1763",
+    "results/spatial_2d_block_assignments.csv": "4e9c2d698ab44cf11282d12429d7a8e016f95e4e50baa1cf2653f558a7af2a81"
+  },
+  "limitations": [
+    "This is a scoped engineering/prospective C1 lock, not a freeze of all 19 models and 20 contrasts.",
+    "km15 and buffered designs remain outside this lock.",
+    "No performance claim until OOF quality gates pass."
+  ]
+}
