@@ -1,0 +1,16 @@
+{
+  "status": "FROZEN",
+  "scope": "C1 tuned XGBoost species and pooled; original km15_b0 only",
+  "design": "km15_b0",
+  "manifest_sha256": "80c4bb7d1edceec88e168837d1f221ac6e3c161c04b9235ae53b002866f150b9",
+  "inputs": {
+    "data/train.csv": "f7eb81447e0e6deab1a10579ec1a6694587c6c61aa56947fe6a0d6012c3b1763",
+    "results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv": "04686634473d51b5c63dcbd4474659fe864a114ae0885c5c5f55736522c798ce"
+  },
+  "recovery_run": 42959606626,
+  "limitations": [
+    "This is a scoped C1 km15 lock, not a freeze of all v6.22 analyses.",
+    "Only original pinned km15 folds, unbuffered; no new spatial design.",
+    "No fixed-parameter comparisons or inferential claims before corresponding analyses."
+  ]
+}
