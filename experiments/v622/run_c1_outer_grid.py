@@ -13,6 +13,7 @@ from experiments.v622.spatial_inner_folds import spatial_inner_folds
 from experiments.v622.xgb_inner_runner import run_c1_inner_tuning, _features
 from experiments.v622.xgb_backend import XGBoostC1Backend
 from experiments.v622.xgb_candidate_sampler import generate_candidates
+from experiments.v622.validate_c1_oof import validate_oof
 
 ROOT=Path("experiments/v622")
 INPUTS={
@@ -101,8 +102,8 @@ def main():
         df=pd.DataFrame(oof)
         if len(df)!=len(data) or df[["plot","Species"]].duplicated().any():
             raise ValueError("OOF coverage/uniqueness failure")
-        if not np.isfinite(df["pred"]).all() or not df["pred"].between(0,1).all():
-            raise ValueError("invalid probabilities")
+        audit=validate_oof(df,data,assignments)
+        print(f"OOF AUDIT variant={variant} {audit}",flush=True)
         oof_path=outdir/f"oof_xgb_{variant}_tuned_grid4_s2026_b0.csv.gz"
         tuning_path=outdir/f"tuning_xgb_{variant}_tuned_grid4_s2026_b0.csv"
         if oof_path.exists() or tuning_path.exists():
