@@ -1,0 +1,32 @@
+name: EMS v6.22 C1 grid4 taxon bootstrap
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c1-grid4-bootstrap.yml'
+      - 'experiments/v622/bootstrap_c1_grid4_descriptive.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas
+      - name: Retrieve immutable descriptive results
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42957373610 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-grid4-descriptive-42957373610 -D results/v622
+      - name: Bootstrap paired AUC over taxa
+        run: python -m experiments.v622.bootstrap_c1_grid4_descriptive
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c1-grid4-bootstrap-${{ github.run_id }}
+          path: results/v622/c1_grid4_descriptive_taxon_bootstrap.json
+          if-no-files-found: error
