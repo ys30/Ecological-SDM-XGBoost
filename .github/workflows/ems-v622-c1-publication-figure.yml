@@ -1,0 +1,35 @@
+name: EMS v6.22 C1 publication figure
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c1-publication-figure.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  plot:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install matplotlib
+      - name: Retrieve immutable interaction analyses
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p results/v622
+          gh run download 42965741281 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-tuning-sharing-interaction-42965741281 -D results/v622
+          gh run download 43108252039 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-r-baseline-sensitivity-43108252039 -D results/v622
+      - name: Generate C1 forest figure
+        run: python experiments/v622/plot_c1_interaction_implementation.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c1-publication-figure-${{ github.run_id }}
+          path: |
+            results/v622/c1_interaction_implementation_forest.png
+            results/v622/c1_interaction_implementation_forest.pdf
+          if-no-files-found: error
