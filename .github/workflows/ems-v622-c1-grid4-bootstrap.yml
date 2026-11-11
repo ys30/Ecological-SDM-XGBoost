@@ -11,6 +11,7 @@ permissions:
   actions: read
 jobs:
   bootstrap:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,4 +30,25 @@ jobs:
         with:
           name: ems-v622-c1-grid4-bootstrap-${{ github.run_id }}
           path: results/v622/c1_grid4_descriptive_taxon_bootstrap.json
+          if-no-files-found: error
+
+  km15-bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas
+      - name: Retrieve km15 descriptive results
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42961361405 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-km15-descriptive-42961361405 -D results/v622
+      - name: Bootstrap km15 paired AUC over taxa
+        run: python -m experiments.v622.bootstrap_c1_km15_descriptive
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c1-km15-bootstrap-${{ github.run_id }}
+          path: results/v622/c1_km15_descriptive_taxon_bootstrap.json
           if-no-files-found: error
