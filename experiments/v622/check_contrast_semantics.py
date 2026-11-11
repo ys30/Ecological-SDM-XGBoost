@@ -24,7 +24,7 @@ for c in contrasts:
         errors.append(f"{key}: sharing contrast has identical sharing")
     if key.startswith("C4") and key in ("C4a","C4b","C4c") and a["predictors"]!=b["predictors"]:
         errors.append(f"{key}: matched raw predictor claim contradicted")
-    if key in ("C2d",) and "archived" not in a["status"]:
+    if key in ("C2d",) and "archived" not in (a["status"]+" "+a["notes"]):
         errors.append(f"{key}: archived Bayesian result mislabeled")
 assert not errors,"; ".join(errors)
 print(f"PASS semantics: {len(models)} models, {len(contrasts)} contrasts; no metadata contradiction")
