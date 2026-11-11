@@ -80,6 +80,7 @@ jobs:
           if-no-files-found: error
 
   fixed-vs-tuned-bootstrap:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -98,4 +99,25 @@ jobs:
         with:
           name: ems-v622-c1-fixed-vs-tuned-bootstrap-${{ github.run_id }}
           path: results/v622/c1_fixed_vs_tuned_bootstrap.json
+          if-no-files-found: error
+
+  tuning-sharing-interaction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas
+      - name: Download paired C1 fixed-vs-tuned cells
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42964164261 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-fixed-vs-tuned-42964164261 -D results/v622
+      - name: Paired interaction and taxon-cluster bootstrap
+        run: python -m experiments.v622.analyze_c1_tuning_sharing_interaction
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c1-tuning-sharing-interaction-${{ github.run_id }}
+          path: results/v622/c1_tuning_sharing_interaction.json
           if-no-files-found: error
