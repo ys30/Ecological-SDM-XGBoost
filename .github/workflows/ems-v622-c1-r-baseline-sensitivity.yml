@@ -1,0 +1,36 @@
+name: EMS v6.22 C1 R fixed baseline sensitivity
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c1-r-baseline-sensitivity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas scikit-learn
+      - name: Download frozen tuned and fixed OOF and R parity OOF
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42955194925 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-grid4-oof-42955194925 -D results/v622
+          gh run download 42962847733 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-fixed-controls-42962847733 -D results/v622
+          gh run download 43079394306 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c1-r-python-parity-43079394306 -D results/v622
+      - name: Compare R and Python fixed baselines on identical nonfallback records
+        run: python experiments/v622/analyze_c1_r_baseline_sensitivity.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c1-r-baseline-sensitivity-${{ github.run_id }}
+          path: |
+            results/v622/c1_r_baseline_interaction_paired_cells.csv
+            results/v622/c1_r_baseline_interaction_sensitivity.json
+          if-no-files-found: error
