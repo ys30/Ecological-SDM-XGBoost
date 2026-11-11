@@ -7,9 +7,7 @@ import matplotlib.pyplot as plt
 ROOT=Path("results/v622")
 def main():
     original=json.loads((ROOT/"c1_tuning_sharing_interaction.json").read_text())
-    nonfallback=json.loads((ROOT/"c1_interaction_nonfallback_sensitivity.json").read_text())
     r=json.loads((ROOT/"c1_r_baseline_interaction_sensitivity.json").read_text())
-    print("nonfallback schema",list(nonfallback.keys()))
     # Two-design primary exploratory interaction; R implementation check is grid4 only.
     fig,axes=plt.subplots(1,3,figsize=(12,4.2),layout="constrained")
     metrics=("auc","logloss","brier")
