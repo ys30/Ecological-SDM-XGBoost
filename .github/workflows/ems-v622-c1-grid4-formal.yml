@@ -6,6 +6,7 @@ on:
       - '.github/workflows/ems-v622-c1-grid4-formal.yml'
       - 'experiments/v622/docs/FROZEN_C1.json'
       - 'experiments/v622/docs/FROZEN_C1_KM15.json'
+      - 'experiments/v622/docs/FROZEN_C1_FIXED.json'
   workflow_dispatch:
 permissions:
   contents: read
@@ -56,3 +57,28 @@ jobs:
           path: results/v622/
           if-no-files-found: warn
           retention-days: 90
+
+  fixed-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy pandas scikit-learn xgboost
+      - name: Download pinned km15 folds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42959606626 -R ys30/Ecological-SDM-XGBoost -n ems-v622-km15-recovery-42959606626 -D results/alternative_spatial_validation
+      - name: Fixed historical controls on grid4
+        run: python -m experiments.v622.run_c1_fixed_controls --design grid4_s2026_b0
+      - name: Fixed historical controls on km15
+        run: python -m experiments.v622.run_c1_fixed_controls --design km15_b0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ems-v622-c1-fixed-controls-${{ github.run_id }}
+          path: results/v622/oof_xgb_*_fixed_*.csv.gz
+          if-no-files-found: warn
