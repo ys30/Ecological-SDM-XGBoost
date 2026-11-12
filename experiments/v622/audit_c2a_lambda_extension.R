@@ -2,8 +2,6 @@ suppressPackageStartupMessages(library(glmnet))
 base <- "results/v622/c2a_r_native"
 model <- "glmnet_quad_rt"
 alpha <- 0.5
-traces <- read.csv(paste0(base,"/native_glmnet_shared_grid_trace.csv"))
-old <- subset(traces,model==model & alpha==0.5)
 # Use the exact baseline selected lambda; sensitivity is NOT a primary grid change.
 lambda0 <- 8.59802678336364e-05
 multipliers <- c(1,0.5,0.25,0.1,0.05,0.01)
