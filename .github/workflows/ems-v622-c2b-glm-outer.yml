@@ -1,0 +1,29 @@
+name: EMS v6.22 C2b GLM outer OOF
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2b-glm-outer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  c2b:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        design: [grid4_s2026_b0, km15_b0]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scipy statsmodels scikit-learn
+      - name: Frozen C2b GLM outer predictions
+        run: python -m experiments.v622.run_c2b_outer_glm --design ${{ matrix.design }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c2b-oof-${{ matrix.design }}-${{ github.run_id }}
+          path: results/v622/oof_glm_*_${{ matrix.design }}.csv.gz
+          if-no-files-found: error
