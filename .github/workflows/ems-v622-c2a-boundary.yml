@@ -1,4 +1,5 @@
 name: EMS v6.22 C2a lambda boundary diagnostic
+# Rerun after fixing Python reserved-keyword syntax.
 on:
   push:
     branches: [ems-v622-experiments]
