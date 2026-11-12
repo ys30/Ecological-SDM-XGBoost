@@ -22,7 +22,7 @@ def main():
             if len(part)!=120 or set(part.inner_fold)!=set(range(4)):raise ValueError("incomplete alpha/fold grid")
             for fold,f in part.groupby("inner_fold"):
                 if len(f)!=30 or set(f.candidate_index)!=set(range(1,31)):raise ValueError("incomplete lambda path")
-            if part.groupby("candidate_index").lambda.nunique().max()!=1:raise ValueError("lambda grid differs across folds")
+            if part.groupby("candidate_index")["lambda"].nunique().max()!=1:raise ValueError("lambda grid differs across folds")
         agg=g.groupby(["alpha","candidate_index","lambda"],as_index=False).skill.mean()
         agg=agg.sort_values(["skill","alpha","candidate_index"],ascending=[False,True,True])
         best=agg.iloc[0]
