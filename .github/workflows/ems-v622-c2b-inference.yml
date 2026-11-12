@@ -1,0 +1,35 @@
+name: EMS v6.22 C2b paired inference
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2b-inference.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inference:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn
+      - name: Retrieve verified C2b outer predictions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p results/v622
+          gh run download 43269143843 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c2b-oof-grid4_s2026_b0-43269143843 -D results/v622
+          gh run download 43269143843 -R ys30/Ecological-SDM-XGBoost -n ems-v622-c2b-oof-km15_b0-43269143843 -D results/v622
+      - name: C2b paired statistics and 2000 taxon bootstrap draws
+        run: python -m experiments.v622.analyze_c2b_glm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c2b-inference-${{ github.run_id }}
+          path: |
+            results/v622/c2b_paired_taxon_fold_cells.csv
+            results/v622/c2b_bootstrap_summary.json
+          if-no-files-found: error
