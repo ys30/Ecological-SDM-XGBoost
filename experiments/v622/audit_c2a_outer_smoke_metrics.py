@@ -22,9 +22,18 @@ def main():
                          ap=float(average_precision_score(y,pred)) if len(np.unique(y))==2 else np.nan,
                          log_loss=float(log_loss(y,pred,labels=[0,1])),brier=float(brier_score_loss(y,pred))))
     out=pd.DataFrame(rows)
+    # Detect winner on the predeclared diagnostic lambda lower boundary.
+    for model,part in [("glmnet_lin",a),("glmnet_quad_rt",b)]:
+        selected=part["lambda"].to_numpy(float)
+        if not np.allclose(selected,selected[0],rtol=1e-10,atol=0):
+            raise RuntimeError("inconsistent lambda across outer predictions")
+        out.loc[out.model==model,"selected_lambda"]=float(selected[0])
+        out.loc[out.model==model,"lower_lambda_boundary"]=bool(np.isclose(selected[0],1e-6,rtol=1e-8,atol=1e-14))
     out["diagnostic_only"]=True
     target=p.parent/"outer_smoke_metrics_DIAGNOSTIC_ONLY.csv"
     out.to_csv(target,index=False)
     print("PASS paired C2a diagnostic outer metrics; NOT confirmatory",flush=True)
     print(out.to_string(index=False),flush=True)
+    if out.lower_lambda_boundary.any():
+        print("WARNING lambda lower-bound winner; diagnostic grid not confirmatory",flush=True)
 if __name__=="__main__":main()
