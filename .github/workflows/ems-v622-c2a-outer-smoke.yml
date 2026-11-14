@@ -1,4 +1,4 @@
-name: EMS v6.22 C2a native outer OOF smoke
+name: EMS v6.22 C2a native outer OOF smoke and boundary gate
 on:
   push:
     branches: [ems-v622-experiments]
