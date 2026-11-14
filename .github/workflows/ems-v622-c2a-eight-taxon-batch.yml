@@ -1,0 +1,61 @@
+name: EMS v6.22 C2a eight-taxon outer batch diagnostic
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2a-eight-taxon-batch.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python -m experiments.v622.audit_c2a_all_partitions
+      - run: python -m experiments.v622.prepare_c2a_batch --design grid4_s2026_b0 --fold 1
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.3'
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: glmnet
+          cache: true
+      - name: Fit eight taxa with independent inner-training lambda paths
+        run: |
+          set -euo pipefail
+          for dir in results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1/*; do
+            export C2A_BASE="$dir"
+            export C2A_TAXON="$(basename "$dir")"
+            export C2A_OUTER_FOLD=1
+            Rscript experiments/v622/run_c2a_train_only_path_smoke.R
+          done
+      - name: Audit eight paired prediction arms
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          root=Path("results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1")
+          paths=sorted(root.glob("*/outer_train_only_path_DIAGNOSTIC_ONLY.csv"))
+          assert len(paths)==8, f"expected eight taxa; found {len(paths)}"
+          frames=[pd.read_csv(p) for p in paths]
+          for p,d in zip(paths,frames):
+              assert len(d)==2*d["plot"].nunique(),p
+              assert d.groupby("plot").model_id.nunique().eq(2).all(),p
+              assert d.diagnostic_only.astype(str).str.lower().eq("true").all(),p
+              assert d.pred.between(0,1).all(),p
+          print("PASS eight-taxon C2a diagnostic batch",sum(map(len,frames)),"OOF rows")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: c2a-eight-taxon-batch-diagnostic-${{ github.run_id }}
+          path: |
+            results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1/*/outer_train_only_path_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1/*/*train_only_path_trace.csv
+          if-no-files-found: error
