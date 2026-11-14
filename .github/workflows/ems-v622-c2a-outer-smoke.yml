@@ -1,0 +1,37 @@
+name: EMS v6.22 C2a native outer OOF smoke
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2a-outer-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python -m experiments.v622.audit_c2a_all_partitions
+      - run: python -m experiments.v622.prepare_c2a_outer_smoke
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.3'
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: glmnet
+          cache: true
+      - run: Rscript experiments/v622/run_c2a_outer_smoke.R
+      - uses: actions/upload-artifact@v4
+        with:
+          name: c2a-outer-oof-smoke-diagnostic-${{ github.run_id }}
+          path: |
+            results/v622/c2a_outer_smoke/outer_smoke_oof_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_outer_smoke/*_inner_trace.csv
+          if-no-files-found: error
