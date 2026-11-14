@@ -28,6 +28,7 @@ jobs:
           packages: glmnet
           cache: true
       - run: Rscript experiments/v622/run_c2a_extended_path_sensitivity.R
+      - run: python -m experiments.v622.audit_c2a_extended_path_metrics
       - uses: actions/upload-artifact@v4
         with:
           name: c2a-extended-path-sensitivity-${{ github.run_id }}
