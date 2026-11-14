@@ -1,0 +1,25 @@
+name: EMS v6.22 C2a all-partition preflight
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2a-all-partitions.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn
+      - run: python -m experiments.v622.audit_c2a_all_partitions
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ems-v622-c2a-all-partitions-${{ github.run_id }}
+          path: results/v622/c2a_partition_preflight.csv
+          if-no-files-found: error
