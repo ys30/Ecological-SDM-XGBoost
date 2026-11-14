@@ -2,7 +2,9 @@
 # Each inner glmnet path uses ONLY its own training labels.
 # Compare path positions by normalized log-lambda progress, never numeric lambda across folds.
 suppressPackageStartupMessages(library(glmnet))
-base <- "results/v622/c2a_outer_smoke"
+base <- Sys.getenv("C2A_BASE", "results/v622/c2a_outer_smoke")
+taxon <- Sys.getenv("C2A_TAXON", "nsw18")
+outer_fold <- as.integer(Sys.getenv("C2A_OUTER_FOLD", "1"))
 progress <- seq(0,1,length.out=30)
 rows <- list()
 for(model in c("glmnet_lin","glmnet_quad_rt")) {
@@ -62,7 +64,7 @@ for(model in c("glmnet_lin","glmnet_quad_rt")) {
   }
   if(length(pred)!=nrow(te) || any(!is.finite(pred)) ||
      any(pred<0|pred>1)) stop("invalid predictions")
-  rows[[model]] <- data.frame(plot=te$plot,Species="nsw18",outer_fold=1,
+  rows[[model]] <- data.frame(plot=te$plot,Species=taxon,outer_fold=outer_fold,
       y=te$y,pred=pred,model_id=model,alpha=best$alpha,
       lambda=chosen_lambda,lambda_progress=best$progress,
       fallback=outer_fallback,diagnostic_only=TRUE)
@@ -72,6 +74,6 @@ for(model in c("glmnet_lin","glmnet_quad_rt")) {
       "skill",best$skill,"fallback",outer_fallback,"\n")
 }
 out <- do.call(rbind,rows)
-if(nrow(out)!=474) stop("unexpected OOF count")
+if(nrow(out)!=2*nrow(te)) stop("unexpected OOF count")
 write.csv(out,paste0(base,"/outer_train_only_path_DIAGNOSTIC_ONLY.csv"),row.names=FALSE)
 cat("PASS train-only glmnet lambda-path diagnostic",nrow(out),"rows; NOT formal C2a\n")
