@@ -34,8 +34,11 @@ jobs:
           print("KM15_DUPLICATE_PLOTS",int(d["plot"].duplicated().sum()),flush=True)
           PY
       - run: python -m experiments.v622.audit_c2a_all_partitions
+      - run: python -m experiments.v622.build_c2a_execution_manifest
       - uses: actions/upload-artifact@v4
         with:
           name: ems-v622-c2a-all-partitions-${{ github.run_id }}
-          path: results/v622/c2a_partition_preflight.csv
+          path: |
+            results/v622/c2a_partition_preflight.csv
+            results/v622/c2a_full_execution_manifest_DIAGNOSTIC_ONLY.csv
           if-no-files-found: error
