@@ -52,10 +52,12 @@ jobs:
               assert d.pred.between(0,1).all(),p
           print("PASS eight-taxon C2a diagnostic batch",sum(map(len,frames)),"OOF rows")
           PY
+      - run: python -m experiments.v622.audit_c2a_eight_taxon_metrics
       - uses: actions/upload-artifact@v4
         with:
           name: c2a-eight-taxon-batch-diagnostic-${{ github.run_id }}
           path: |
             results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1/*/outer_train_only_path_DIAGNOSTIC_ONLY.csv
             results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1/*/*train_only_path_trace.csv
+            results/v622/c2a_batch_DIAGNOSTIC_ONLY/grid4_s2026_b0/fold1/eight_taxon_metrics_DIAGNOSTIC_ONLY.csv
           if-no-files-found: error
