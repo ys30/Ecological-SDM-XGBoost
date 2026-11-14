@@ -28,6 +28,7 @@ jobs:
           packages: glmnet
           cache: true
       - run: Rscript experiments/v622/run_c2a_train_only_path_smoke.R
+      - run: python -m experiments.v622.audit_c2a_train_only_path_metrics
       - uses: actions/upload-artifact@v4
         with:
           name: c2a-train-only-path-diagnostic-${{ github.run_id }}
