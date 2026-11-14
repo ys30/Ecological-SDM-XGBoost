@@ -18,6 +18,21 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install numpy pandas scikit-learn tabulate
       - run: python scripts/64_alternative_spatial_partition.py
+      - name: Diagnose km15 partition reproducibility
+        run: |
+          python - <<'PY'
+          import hashlib
+          import pandas as pd
+          from pathlib import Path
+          p=Path("results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv")
+          d=pd.read_csv(p)
+          print("KM15_SHA256_ACTUAL",hashlib.sha256(p.read_bytes()).hexdigest(),flush=True)
+          print("KM15_SHA256_EXPECTED","04686634473d51b5c63dcbd4474659fe864a114ae0885c5f55736522c798ce",flush=True)
+          print("KM15_SHAPE",d.shape,"KM15_COLUMNS",list(d.columns),flush=True)
+          print("KM15_FOLD_COUNTS",d.groupby("fold").size().to_dict(),flush=True)
+          print("KM15_CLUSTER_COUNTS",d.groupby("fold")["cluster"].nunique().to_dict(),flush=True)
+          print("KM15_DUPLICATE_PLOTS",int(d["plot"].duplicated().sum()),flush=True)
+          PY
       - run: python -m experiments.v622.audit_c2a_all_partitions
       - uses: actions/upload-artifact@v4
         with:
