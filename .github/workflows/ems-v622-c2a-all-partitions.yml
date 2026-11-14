@@ -27,7 +27,7 @@ jobs:
           p=Path("results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv")
           d=pd.read_csv(p)
           print("KM15_SHA256_ACTUAL",hashlib.sha256(p.read_bytes()).hexdigest(),flush=True)
-          print("KM15_SHA256_EXPECTED","04686634473d51b5c63dcbd4474659fe864a114ae0885c5f55736522c798ce",flush=True)
+          print("KM15_SHA256_EXPECTED","04686634473d51b5c63dcbd4474659fe864a114ae0885c5c5f55736522c798ce",flush=True)
           print("KM15_SHAPE",d.shape,"KM15_COLUMNS",list(d.columns),flush=True)
           print("KM15_FOLD_COUNTS",d.groupby("fold").size().to_dict(),flush=True)
           print("KM15_CLUSTER_COUNTS",d.groupby("fold")["cluster"].nunique().to_dict(),flush=True)
