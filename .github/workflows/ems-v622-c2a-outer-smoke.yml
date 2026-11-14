@@ -28,10 +28,12 @@ jobs:
           packages: glmnet
           cache: true
       - run: Rscript experiments/v622/run_c2a_outer_smoke.R
+      - run: python -m experiments.v622.audit_c2a_outer_smoke_metrics
       - uses: actions/upload-artifact@v4
         with:
           name: c2a-outer-oof-smoke-diagnostic-${{ github.run_id }}
           path: |
             results/v622/c2a_outer_smoke/outer_smoke_oof_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_outer_smoke/outer_smoke_metrics_DIAGNOSTIC_ONLY.csv
             results/v622/c2a_outer_smoke/*_inner_trace.csv
           if-no-files-found: error
