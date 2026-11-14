@@ -9,7 +9,7 @@ from experiments.v622.spatial_inner_folds import spatial_inner_folds
 HASHES={
  "data/train.csv":"f7eb81447e0e6deab1a10579ec1a6694587c6c61aa56947fe6a0d6012c3b1763",
  "results/spatial_2d_block_assignments.csv":"4e9c2d698ab44cf11282d12429d7a8e016f95e4e50baa1cf2653f558a7af2a81",
- "results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv":"04686634473d51b5c63dcbd4474659fe864a114ae0885c5f55736522c798ce",
+ "results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv":"04686634473d51b5c63dcbd4474659fe864a114ae0885c5c5f55736522c798ce",
 }
 DESIGNS={"grid4_s2026_b0":"results/spatial_2d_block_assignments.csv",
          "km15_b0":"results/alternative_spatial_validation/kmeans15_five_fold_assignments.csv"}
