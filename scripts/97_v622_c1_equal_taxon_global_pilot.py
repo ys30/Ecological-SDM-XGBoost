@@ -65,6 +65,23 @@ def main():
     with (OUT/"c1_inner_fold_diagnostics.csv").open("w",newline="") as fh:
         writer=csv.DictWriter(fh,fieldnames=list(diagnostics[0]))
         writer.writeheader();writer.writerows(diagnostics)
+    # Outer-fold feasibility is checked before the 960 inner model fits.
+    outer_diagnostics=[]
+    for taxon in taxa:
+        tr=[r for r in rows if r["Species"]==taxon and fmap[r["plot"]]!=OUTER]
+        te=[r for r in rows if r["Species"]==taxon and fmap[r["plot"]]==OUTER]
+        trpos=sum(int(r["pres.abs"]) for r in tr)
+        tepos=sum(int(r["pres.abs"]) for r in te)
+        outer_diagnostics.append(dict(taxon=taxon,outer_fold=OUTER,
+            train_n=len(tr),train_positive=trpos,test_n=len(te),
+            test_positive=tepos,auc_ap_eligible=(0<tepos<len(te)),
+            status="PASS" if 0<trpos<len(tr) and len(te)>0 else "FAIL_OUTER_TRAIN"))
+    with (OUT/"c1_outer_fold_diagnostics.csv").open("w",newline="") as fh:
+        writer=csv.DictWriter(fh,fieldnames=list(outer_diagnostics[0]))
+        writer.writeheader();writer.writerows(outer_diagnostics)
+    outer_failed=[r for r in outer_diagnostics if r["status"]!="PASS"]
+    if outer_failed:
+        raise ValueError(str(len(outer_failed))+" outer training splits invalid; see c1_outer_fold_diagnostics.csv")
     failed=[r for r in diagnostics if r["status"]!="PASS"]
     if failed:
         raise ValueError(str(len(failed))+" inner training splits single-class; see c1_inner_fold_diagnostics.csv")
