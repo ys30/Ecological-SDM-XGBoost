@@ -43,6 +43,24 @@ def main():
     inner={p:int(c) for p,c in zip(plots,km.labels_)}
     assert set(inner.values())==set(range(INNER))
     configs=candidates(); assert len(configs)==30
+    OUT.mkdir(parents=True,exist_ok=True)
+    diagnostics=[]
+    for taxon in taxa:
+        train=[r for r in rows if r["Species"]==taxon and fmap[r["plot"]]!=OUTER]
+        for innerfold in range(INNER):
+            tr=[r for r in train if inner[r["plot"]]!=innerfold]
+            va=[r for r in train if inner[r["plot"]]==innerfold]
+            diagnostics.append(dict(taxon=taxon,inner_fold=innerfold,
+                train_n=len(tr),train_positive=sum(int(r["pres.abs"]) for r in tr),
+                validation_n=len(va),validation_positive=sum(int(r["pres.abs"]) for r in va),
+                train_classes=len({r["pres.abs"] for r in tr}),
+                status="PASS" if len({r["pres.abs"] for r in tr})==2 else "FAIL_SINGLE_CLASS"))
+    with (OUT/"c1_inner_fold_diagnostics.csv").open("w",newline="") as fh:
+        writer=csv.DictWriter(fh,fieldnames=list(diagnostics[0]))
+        writer.writeheader();writer.writerows(diagnostics)
+    failed=[r for r in diagnostics if r["status"]!="PASS"]
+    if failed:
+        raise ValueError(str(len(failed))+" inner training splits single-class; see c1_inner_fold_diagnostics.csv")
     innerout=[]; outerout=[]; chosen=[]
     for taxon in taxa:
         tax=[r for r in rows if r["Species"]==taxon]
