@@ -3,14 +3,12 @@
 import unittest
 import numpy as np
 
-def choose_global(scores):
-    """One row per taxon; one column per candidate; maximize equal-taxon mean."""
-    x=np.asarray(scores,dtype=float)
-    if x.ndim!=2 or x.shape[0]!=8 or x.shape[1]!=30:
-        raise ValueError("Expected 8 taxa by 30 candidates")
-    if not np.isfinite(x).all():
-        raise ValueError("Nonfinite candidate scores")
-    return int(np.argmax(x.mean(axis=0)))
+import importlib.util
+from pathlib import Path
+spec=importlib.util.spec_from_file_location("c1",Path(__file__).resolve().parents[1]/"scripts"/"97_v622_c1_equal_taxon_global_pilot.py")
+module=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+choose_global=module.choose_global
 
 class EqualTaxonTuningTests(unittest.TestCase):
     def test_equal_taxon_not_pooled_by_counts(self):
