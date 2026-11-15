@@ -11,6 +11,12 @@ spec.loader.exec_module(module)
 choose_global=module.choose_global
 
 class EqualTaxonTuningTests(unittest.TestCase):
+    def test_candidate_grid_constructs_thirty_configs(self):
+        configs=module.candidates()
+        self.assertEqual(len(configs),30)
+        self.assertTrue(all(c["min_child_weight"]==1 for c in configs))
+        self.assertEqual(len({tuple(sorted(c.items())) for c in configs}),30)
+
     def test_equal_taxon_not_pooled_by_counts(self):
         x=np.zeros((8,30))
         x[0,0]=8.0
