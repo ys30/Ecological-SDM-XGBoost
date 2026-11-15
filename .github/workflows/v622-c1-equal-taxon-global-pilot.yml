@@ -28,6 +28,45 @@ jobs:
         run: python scripts/95_v622_c1_input_preflight.py
       - name: Run global equal-taxon tuning pilot
         run: python scripts/97_v622_c1_equal_taxon_global_pilot.py
+      - name: Publish C1 diagnostic summary even after failure
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv, json, os
+          from pathlib import Path
+          lines=['## C1 equal-taxon pilot diagnostic summary']
+          for file in [
+              'results/v622_c1_preflight/input_gate.json',
+              'results/v622_c1_global_pilot/c1_outer_fold_diagnostics.csv',
+              'results/v622_c1_global_pilot/c1_inner_fold_diagnostics.csv',
+              'results/v622_c1_global_pilot/c1_candidate_summary.csv',
+              'results/v622_c1_global_pilot/c1_manifest.json']:
+              p=Path(file)
+              lines.append(f'### {file}')
+              if not p.exists():
+                  lines.append('Not produced (check earlier job step).')
+                  continue
+              if p.suffix=='.json':
+                  try:
+                      d=json.loads(p.read_text())
+                      lines.append('Status: '+str(d.get('status','not specified')))
+                      lines.append('Rows: '+str(d.get('data_rows',d.get('outer_oof_rows','unknown'))))
+                  except Exception as e:
+                      lines.append('JSON read failed: '+str(e))
+              else:
+                  with p.open(newline='') as f:
+                      rows=list(csv.DictReader(f))
+                  lines.append(f'Rows: {len(rows)}')
+                  failures=[x for x in rows if str(x.get('status','')).startswith('FAIL')]
+                  lines.append(f'FAIL rows: {len(failures)}')
+                  for row in failures[:12]:
+                      lines.append('- '+str(row))
+          summary='\\n\\n'.join(lines)+'\\n'
+          print(summary)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write(summary)
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
