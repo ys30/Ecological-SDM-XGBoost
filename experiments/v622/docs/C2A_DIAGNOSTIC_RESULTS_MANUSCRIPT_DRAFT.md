@@ -21,6 +21,12 @@ This contrasts with the spatial-design reversal in AUC. In particular, a lack of
 
 These figures are diagnostic and not confirmatory; they use the implemented train-only lambda-path search and are subject to the preregistration reconciliation gate.
 
+## Regularization-path diagnostic (audit run 43669803499)
+
+Across 160 model arms, 38 recorded selected lambda-progress values at the minimum-lambda endpoint: grid4 linear 10/40, grid4 quadratic 10/40, km15 linear 11/40, and km15 quadratic 7/40. The corresponding counts of arms affected by at least one inner-fold fallback were 14, 14, 12, and 12. Outer-model fallback occurred in 2, 2, 3, and 3 arms, respectively. These figures are preliminary **arm-level trace counts**; because a fallback arm uses constant predictions, its stored selected path progress must not be interpreted as a successful glmnet lambda choice. A nonfallback-only denominator audit has therefore been added and its output must supersede these raw rates before any manuscript freeze.
+
+Boundary concentration does not itself demonstrate that the search range was insufficient, nor establish that it explains observed differences in predictive performance. A dedicated lambda-path sensitivity experiment would be needed to evaluate either hypothesis.
+
 ## Discussion — cautious interpretation
 
 Quadratic RT's apparent discrimination benefit depended strongly on the spatial validation design. nsw24 had positive AUC differences in all five folds under both designs, whereas nsw25 reversed direction between designs. For rare taxa, several outer folds lacked positive test examples or required model fallback, reducing the number of interpretable AUC comparisons. Log loss and Brier score should be presented separately from AUC because their evaluability and weighting differ.
