@@ -1,0 +1,43 @@
+name: EMS v6.22 C2a 160-arm diagnostic aggregate
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2a-aggregate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  aggregate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn
+      - name: Retrieve all 10 archived fold artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p results/v622/c2a_combined_DIAGNOSTIC_ONLY
+          gh run download 43659611145 -n c2a-eight-taxon-batch-diagnostic-43659611145 -D results/v622/c2a_combined_DIAGNOSTIC_ONLY/grid4/fold1
+          gh run download 43659681832 -n c2a-grid4-fold2-diagnostic-43659681832 -D results/v622/c2a_combined_DIAGNOSTIC_ONLY/grid4/fold2
+          for fold in 3 4 5; do
+            gh run download 43659940609 -n c2a-grid4-fold${fold}-diagnostic-43659940609 -D results/v622/c2a_combined_DIAGNOSTIC_ONLY/grid4/fold${fold}
+          done
+          for fold in 1 2 3 4 5; do
+            gh run download 43660565582 -n c2a-km15-fold${fold}-diagnostic-43660565582 -D results/v622/c2a_combined_DIAGNOSTIC_ONLY/km15/fold${fold}
+          done
+          find results/v622/c2a_combined_DIAGNOSTIC_ONLY -name 'outer_train_only_path_DIAGNOSTIC_ONLY.csv' | wc -l
+      - run: python -m experiments.v622.aggregate_c2a_all_diagnostic
+      - uses: actions/upload-artifact@v4
+        with:
+          name: c2a-160-arm-paired-metrics-diagnostic-${{ github.run_id }}
+          path: |
+            results/v622/c2a_combined_DIAGNOSTIC_ONLY/all_arm_metrics_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_combined_DIAGNOSTIC_ONLY/paired_cell_metrics_DIAGNOSTIC_ONLY.csv
+          if-no-files-found: error
