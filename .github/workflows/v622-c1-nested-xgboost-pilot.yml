@@ -1,0 +1,28 @@
+name: v6.22 C1 single-fold nested XGBoost pilot
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  c1-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned major dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.5,<2' 'xgboost>=2.1,<4'
+      - name: Canonical input preflight
+        run: python scripts/95_v622_c1_input_preflight.py
+      - name: Nested XGBoost pilot
+        run: python scripts/96_v622_c1_nested_xgboost_pilot.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v622-c1-nested-xgboost-pilot
+          path: |
+            results/v622_c1_preflight/
+            results/v622_c1_pilot/
+          if-no-files-found: warn
