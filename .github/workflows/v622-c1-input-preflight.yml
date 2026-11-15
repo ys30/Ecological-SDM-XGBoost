@@ -1,0 +1,19 @@
+name: v6.22 C1 canonical input preflight
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  input-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify canonical dataset and outer spatial fold assignments
+        run: python3 scripts/95_v622_c1_input_preflight.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v622-c1-input-gate
+          path: results/v622_c1_preflight/
+          if-no-files-found: warn
