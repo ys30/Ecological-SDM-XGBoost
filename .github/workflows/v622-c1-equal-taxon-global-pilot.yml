@@ -8,6 +8,7 @@ on:
       - '.github/workflows/v622-c1-equal-taxon-global-pilot.yml'
       - 'scripts/95_v622_c1_input_preflight.py'
       - 'scripts/97_v622_c1_equal_taxon_global_pilot.py'
+      - 'tests/test_v622_equal_taxon_selection.py'
 permissions:
   contents: read
 jobs:
