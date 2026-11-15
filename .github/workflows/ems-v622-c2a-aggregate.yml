@@ -39,6 +39,7 @@ jobs:
       - run: python -m experiments.v622.bootstrap_c2a_taxon_design_exploratory
       - run: python -m experiments.v622.summarize_c2a_proper_scores
       - run: python -m experiments.v622.audit_c2a_lambda_boundaries
+      - run: python -m experiments.v622.summarize_c2a_lambda_nonfallback
       - uses: actions/upload-artifact@v4
         with:
           name: c2a-160-arm-paired-metrics-diagnostic-${{ github.run_id }}
@@ -53,4 +54,5 @@ jobs:
             results/v622/c2a_combined_DIAGNOSTIC_ONLY/proper_score_design_summary_DIAGNOSTIC_ONLY.csv
             results/v622/c2a_combined_DIAGNOSTIC_ONLY/lambda_boundary_and_inner_fallback_DIAGNOSTIC_ONLY.csv
             results/v622/c2a_combined_DIAGNOSTIC_ONLY/lambda_boundary_summary_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_combined_DIAGNOSTIC_ONLY/lambda_nonfallback_boundary_sensitivity_DIAGNOSTIC_ONLY.csv
           if-no-files-found: error
