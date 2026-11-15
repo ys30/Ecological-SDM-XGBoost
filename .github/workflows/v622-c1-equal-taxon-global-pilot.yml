@@ -1,0 +1,35 @@
+name: v6.22 C1 equal-taxon global tuning pilot
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - '.github/workflows/v622-c1-equal-taxon-global-pilot.yml'
+      - 'scripts/95_v622_c1_input_preflight.py'
+      - 'scripts/97_v622_c1_equal_taxon_global_pilot.py'
+permissions:
+  contents: read
+jobs:
+  c1-global-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.5,<2' 'xgboost>=2.1,<4'
+      - name: Validate canonical inputs
+        run: python scripts/95_v622_c1_input_preflight.py
+      - name: Run global equal-taxon tuning pilot
+        run: python scripts/97_v622_c1_equal_taxon_global_pilot.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v622-c1-equal-taxon-global-pilot
+          path: |
+            results/v622_c1_preflight/
+            results/v622_c1_global_pilot/
+          if-no-files-found: warn
