@@ -12,6 +12,15 @@ After averaging evaluable folds within each taxon and then weighting taxa equall
 
 For taxa with at least three evaluable AUC folds in **both** designs (n=5), the paired mean design difference was +0.0549 (exploratory percentile interval [+0.0248, +0.0982]); requiring all five folds in both designs (n=4) yielded +0.0598 ([+0.0223, +0.1072]). These subset analyses change the target population of taxa and should not be treated as equivalent estimates of the full eight-taxon mean.
 
+
+## Additional results — probability scoring (audit run 43669427024)
+
+Using only nonfallback paired folds, but retaining single-class test folds where proper scoring rules remain defined, the equal-taxon mean difference in log loss (quadratic minus linear) was −0.018686 for grid4 and −0.017948 for km15. Corresponding Brier-score differences were −0.006688 and −0.005812. Grid4 contributed 38 nonfallback paired cells, including 10 single-class test cells; km15 contributed 37 nonfallback paired cells, including six single-class test cells. Under grid4, five of eight taxa had lower mean log loss and five had lower mean Brier score with quadratic RT; under km15, the respective counts were five and four of eight.
+
+This contrasts with the spatial-design reversal in AUC. In particular, a lack of rank-discrimination advantage under km15 does not imply an absence of average improvement in proper probability scores. The magnitude and consistency of these differences should not be conflated with statistical significance or calibration quality. Log loss and Brier measure overall probabilistic accuracy and do not, by themselves, establish calibration. Nonfallback-only selection also changes the estimand relative to analyses including fallback predictions.
+
+These figures are diagnostic and not confirmatory; they use the implemented train-only lambda-path search and are subject to the preregistration reconciliation gate.
+
 ## Discussion — cautious interpretation
 
 Quadratic RT's apparent discrimination benefit depended strongly on the spatial validation design. nsw24 had positive AUC differences in all five folds under both designs, whereas nsw25 reversed direction between designs. For rare taxa, several outer folds lacked positive test examples or required model fallback, reducing the number of interpretable AUC comparisons. Log loss and Brier score should be presented separately from AUC because their evaluability and weighting differ.
