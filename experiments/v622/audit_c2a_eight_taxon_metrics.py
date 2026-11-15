@@ -10,7 +10,7 @@ records=[]
 for path in paths:
     d=pd.read_csv(path)
     if len(d)!=474 or d.duplicated(["plot","model_id"]).any():raise RuntimeError(f"invalid OOF {path}")
-    if set(d.model_id)!={"glmnet_lin","glmnet_quad_rt"} or d.plot.nunique()!=237:
+    if set(d.model_id)!={"glmnet_lin","glmnet_quad_rt"} or d['plot'].nunique()!=237:
         raise RuntimeError(f"unpaired OOF {path}")
     if not d.diagnostic_only.astype(str).str.lower().eq("true").all():
         raise RuntimeError(f"missing diagnostic tag {path}")
