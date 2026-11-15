@@ -29,7 +29,7 @@ def choose_global(scores):
 def candidates():
     # Exactly 30 deterministic candidates.
     return [dict(max_depth=depth,learning_rate=eta,n_estimators=rounds,
-                 min_child_weight=weight,subsample=.8,colsample_bytree=.8)
+                 min_child_weight=1,subsample=.8,colsample_bytree=.8)
       for depth in [2,3,4] for eta in [.03,.10] for rounds in [100,250,400,600,800]]
 def main():
     source="data/train.csv"; foldpath="results/spatial_2d_block_assignments.csv"
