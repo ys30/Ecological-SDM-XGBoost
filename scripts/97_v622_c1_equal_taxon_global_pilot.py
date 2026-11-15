@@ -103,6 +103,18 @@ def main():
                     positive_validation=int(yv.sum()),logloss=ll,relative_logloss=rel))
             scores.append(float(np.mean(foldvalues)))
         taxon_scores[taxon]=scores
+    # Persist all inner-fold scores before global selection/refits; artifacts
+    # remain available if a later stage fails.
+    with (OUT/"c1_inner_scores.csv").open("w",newline="") as fh:
+        writer=csv.DictWriter(fh,fieldnames=list(innerout[0]))
+        writer.writeheader()
+        writer.writerows(innerout)
+    with (OUT/"c1_candidate_summary.csv").open("w",newline="") as fh:
+        writer=csv.DictWriter(fh,fieldnames=["candidate","taxon","mean_relative_logloss"])
+        writer.writeheader()
+        for taxon in taxa:
+            for ci,value in enumerate(taxon_scores[taxon]):
+                writer.writerow(dict(candidate=ci,taxon=taxon,mean_relative_logloss=value))
     # Global candidate selected once from equal-weighted taxon scores.
     matrix=np.array([taxon_scores[t] for t in taxa],dtype=float)
     assert matrix.shape==(8,30) and np.isfinite(matrix).all()
