@@ -37,6 +37,7 @@ jobs:
       - run: python -m experiments.v622.summarize_c2a_taxon_design_robustness
       - run: python -m experiments.v622.summarize_c2a_coverage_sensitivity
       - run: python -m experiments.v622.bootstrap_c2a_taxon_design_exploratory
+      - run: python -m experiments.v622.summarize_c2a_proper_scores
       - uses: actions/upload-artifact@v4
         with:
           name: c2a-160-arm-paired-metrics-diagnostic-${{ github.run_id }}
@@ -47,4 +48,6 @@ jobs:
             results/v622/c2a_combined_DIAGNOSTIC_ONLY/taxon_cross_design_sensitivity_DIAGNOSTIC_ONLY.csv
             results/v622/c2a_combined_DIAGNOSTIC_ONLY/auc_coverage_sensitivity_DIAGNOSTIC_ONLY.csv
             results/v622/c2a_combined_DIAGNOSTIC_ONLY/taxon_cluster_bootstrap_EXPLORATORY_ONLY.csv
+            results/v622/c2a_combined_DIAGNOSTIC_ONLY/proper_score_taxon_design_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_combined_DIAGNOSTIC_ONLY/proper_score_design_summary_DIAGNOSTIC_ONLY.csv
           if-no-files-found: error
