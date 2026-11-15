@@ -19,6 +19,13 @@ def score(y,p,base):
     ll=float(log_loss(y,p,labels=[0,1]))
     null=float(log_loss(y,np.repeat(np.clip(base,1e-12,1-1e-12),len(y)),labels=[0,1]))
     return ll, (1-ll/null if null>1e-10 else float("nan"))
+def choose_global(scores):
+    """Select a single candidate by equal-taxon mean of inner-fold mean scores."""
+    x=np.asarray(scores,dtype=float)
+    if x.shape!=(8,30) or not np.isfinite(x).all():
+        raise ValueError("Expected finite 8 taxa x 30 candidates")
+    return int(np.argmax(x.mean(axis=0)))
+
 def candidates():
     # Exactly 30 deterministic candidates.
     return [dict(max_depth=depth,learning_rate=eta,n_estimators=rounds,
@@ -100,7 +107,7 @@ def main():
     matrix=np.array([taxon_scores[t] for t in taxa],dtype=float)
     assert matrix.shape==(8,30) and np.isfinite(matrix).all()
     global_scores=matrix.mean(axis=0)
-    best=int(np.argmax(global_scores))
+    best=choose_global(matrix)
     chosen=[dict(scope="equal_taxon_global",candidate=best,
                  mean_relative_logloss=float(global_scores[best]),**configs[best])]
     for taxon in taxa:
