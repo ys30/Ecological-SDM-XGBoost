@@ -4,6 +4,7 @@ on:
     branches: [ems-v622-experiments]
     paths:
       - '.github/workflows/ems-v622-c2a-eight-taxon-batch.yml'
+      - 'experiments/v622/audit_c2a_eight_taxon_metrics.py'
   workflow_dispatch:
 permissions:
   contents: read
