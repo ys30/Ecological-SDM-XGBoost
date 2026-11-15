@@ -1,0 +1,73 @@
+name: EMS v6.22 C2a km15 five folds diagnostic
+on:
+  push:
+    branches: [ems-v622-experiments]
+    paths:
+      - '.github/workflows/ems-v622-c2a-km15.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        fold: [1, 2, 3, 4, 5]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas scikit-learn tabulate
+      - run: python scripts/64_alternative_spatial_partition.py
+      - run: python -m experiments.v622.audit_c2a_all_partitions
+      - run: python -m experiments.v622.prepare_c2a_batch --design km15_b0 --fold ${{ matrix.fold }}
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.3'
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: glmnet
+          cache: true
+      - name: Fit eight taxa with train-only tuning
+        env:
+          FOLD: ${{ matrix.fold }}
+        run: |
+          set -euo pipefail
+          for dir in results/v622/c2a_batch_DIAGNOSTIC_ONLY/km15_b0/fold"$FOLD"/*; do
+            export C2A_BASE="$dir"
+            export C2A_TAXON="$(basename "$dir")"
+            export C2A_OUTER_FOLD="$FOLD"
+            Rscript experiments/v622/run_c2a_train_only_path_smoke.R
+          done
+      - name: Verify paired held-out predictions
+        env:
+          FOLD: ${{ matrix.fold }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import pandas as pd
+          fold=int(os.environ["FOLD"])
+          root=Path(f"results/v622/c2a_batch_DIAGNOSTIC_ONLY/km15_b0/fold{fold}")
+          paths=sorted(root.glob("*/outer_train_only_path_DIAGNOSTIC_ONLY.csv"))
+          assert len(paths)==8,(fold,len(paths))
+          for path in paths:
+              d=pd.read_csv(path)
+              assert not d.duplicated(["plot","model_id"]).any(),path
+              assert d.groupby("plot").model_id.nunique().eq(2).all(),path
+              assert set(d.model_id)=={"glmnet_lin","glmnet_quad_rt"},path
+              assert d.outer_fold.eq(fold).all(),path
+              assert d.pred.between(0,1).all(),path
+              assert d.diagnostic_only.astype(str).str.lower().eq("true").all(),path
+          print("PASS km15 fold",fold,"eight taxa paired diagnostic OOF",sum(len(pd.read_csv(p)) for p in paths),flush=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: c2a-km15-fold${{ matrix.fold }}-diagnostic-${{ github.run_id }}
+          path: |
+            results/v622/c2a_batch_DIAGNOSTIC_ONLY/km15_b0/fold${{ matrix.fold }}/*/outer_train_only_path_DIAGNOSTIC_ONLY.csv
+            results/v622/c2a_batch_DIAGNOSTIC_ONLY/km15_b0/fold${{ matrix.fold }}/*/*train_only_path_trace.csv
+          if-no-files-found: error
