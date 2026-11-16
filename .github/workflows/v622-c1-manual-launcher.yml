@@ -1,6 +1,9 @@
 name: C1 v6.22 research branch manual launcher
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/v622-c1-manual-launcher.yml']
 permissions:
   contents: read
 jobs:
@@ -24,9 +27,10 @@ jobs:
       - name: Preflight canonical inputs
         run: python scripts/95_v622_c1_input_preflight.py
       - name: Train C1 single-fold global pilot
+        if: github.event_name == 'workflow_dispatch'
         run: python -u scripts/97_v622_c1_equal_taxon_global_pilot.py
       - name: Upload diagnostics even when training fails
-        if: always()
+        if: always() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: c1-v622-manual-launcher-diagnostics
