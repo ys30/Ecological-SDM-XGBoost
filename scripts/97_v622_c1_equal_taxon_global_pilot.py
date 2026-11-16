@@ -135,7 +135,7 @@ def main():
                "expected_inner_score_rows":len(taxa)*len(configs)*INNER,
                "outer_fold":OUTER,"seed":SEED}
         state_tmp=OUT/"c1_progress.json.tmp"
-        state_tmp.write_text(json.dumps(state,indent=2)+"\\n")
+        state_tmp.write_text(json.dumps(state,indent=2)+chr(10))
         state_tmp.replace(OUT/"c1_progress.json")
     # Persist all inner-fold scores before global selection/refits; artifacts
     # remain available if a later stage fails.
