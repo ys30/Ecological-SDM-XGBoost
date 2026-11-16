@@ -120,6 +120,23 @@ def main():
                     positive_validation=int(yv.sum()),logloss=ll,relative_logloss=rel))
             scores.append(float(np.mean(foldvalues)))
         taxon_scores[taxon]=scores
+        # Save completed taxon scores immediately, before the next taxon's fits.
+        # A later timeout/failure must not discard prior completed taxon work.
+        checkpoint=OUT/"c1_inner_scores_partial.csv"
+        temp=OUT/"c1_inner_scores_partial.csv.tmp"
+        with temp.open("w",newline="") as fh:
+            writer=csv.DictWriter(fh,fieldnames=list(innerout[0]))
+            writer.writeheader()
+            writer.writerows(innerout)
+        temp.replace(checkpoint)
+        state={"status":"PARTIAL_INNER_TUNING","completed_taxa":list(taxon_scores),
+               "completed_taxa_count":len(taxon_scores),
+               "inner_score_rows":len(innerout),
+               "expected_inner_score_rows":len(taxa)*len(configs)*INNER,
+               "outer_fold":OUTER,"seed":SEED}
+        state_tmp=OUT/"c1_progress.json.tmp"
+        state_tmp.write_text(json.dumps(state,indent=2)+"\\n")
+        state_tmp.replace(OUT/"c1_progress.json")
     # Persist all inner-fold scores before global selection/refits; artifacts
     # remain available if a later stage fails.
     with (OUT/"c1_inner_scores.csv").open("w",newline="") as fh:
