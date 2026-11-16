@@ -29,6 +29,46 @@ jobs:
       - name: Train C1 single-fold global pilot
         if: github.event_name == 'workflow_dispatch'
         run: python -u scripts/97_v622_c1_equal_taxon_global_pilot.py
+      - name: Report C1 stage diagnostics
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv, json, os
+          from pathlib import Path
+          lines=['## C1 workflow diagnostics']
+          files=[
+              Path('results/v622_c1_preflight/input_gate.json'),
+              Path('results/v622_c1_global_pilot/c1_outer_fold_diagnostics.csv'),
+              Path('results/v622_c1_global_pilot/c1_inner_fold_diagnostics.csv'),
+              Path('results/v622_c1_global_pilot/c1_progress.json'),
+              Path('results/v622_c1_global_pilot/c1_manifest.json'),
+          ]
+          for p in files:
+              lines.append('### '+str(p))
+              if not p.exists():
+                  lines.append('Not generated')
+                  continue
+              try:
+                  if p.suffix=='.json':
+                      data=json.loads(p.read_text())
+                      lines.append('Status: '+str(data.get('status','unknown')))
+                      if 'completed_taxa_count' in data:
+                          lines.append('Completed taxa: '+str(data['completed_taxa_count']))
+                  else:
+                      with p.open(newline='') as f:
+                          rows=list(csv.DictReader(f))
+                      bad=[r for r in rows if str(r.get('status','')).startswith('FAIL')]
+                      lines.append(f'Rows: {len(rows)}; failures: {len(bad)}')
+                      for row in bad[:8]:
+                          lines.append('- '+str(row))
+              except Exception as exc:
+                  lines.append('Diagnostic read error: '+str(exc))
+          report='\\n\\n'.join(lines)+'\\n'
+          print(report)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write(report)
+          PY
       - name: Upload diagnostics even when training fails
         if: always() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
