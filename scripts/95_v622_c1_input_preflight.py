@@ -35,8 +35,24 @@ def main():
         labels[(r["Species"],fmap[r["plot"]])]+=int(r["pres.abs"])
     if any(v!=set(taxa) for v in perplot.values()): fail("Incomplete taxon panel")
     if len(cells)!=40: fail("Missing taxon-fold cells")
+    # Check outer-training class feasibility across all five spatial folds.
+    outer_train=[]
+    for s in taxa:
+        total_n=sum(cells[(s,k)] for k in ("1","2","3","4","5"))
+        total_pos=sum(labels[(s,k)] for k in ("1","2","3","4","5"))
+        for k in ("1","2","3","4","5"):
+            n=total_n-cells[(s,k)]
+            pos=total_pos-labels[(s,k)]
+            outer_train.append({"taxon":s,"outer_fold":k,"train_n":n,
+                "train_positive":pos,"test_n":cells[(s,k)],
+                "test_positive":labels[(s,k)],
+                "train_binary":0<pos<n,
+                "test_auc_ap_eligible":0<labels[(s,k)]<cells[(s,k)]})
+    if any(not z["train_binary"] for z in outer_train):
+        fail("At least one outer training fold single-class")
     summary={"status":"PASS_INPUT_AND_OUTER_FOLDS_ONLY","data_rows":len(d),"plots":len(perplot),"taxa":taxa,
       "data_sha256":sha(DATA),"folds_sha256":sha(FOLDS),"fold_sizes":dict(Counter(fmap.values())),
+      "outer_training_diagnostics":outer_train,
       "taxon_fold":[{"taxon":s,"fold":k,"n":cells[(s,k)],"positive":labels[(s,k)],
       "auc_ap_eligible":0<labels[(s,k)]<cells[(s,k)]} for s in taxa for k in sorted(set(fmap.values()))],
       "not_checked":["inner folds","buffer CRS","30 candidate tuning","model fit","outer OOF","CI model success"]}
