@@ -31,16 +31,21 @@ jobs:
           test -s scripts/97_v622_c1_equal_taxon_global_pilot.py
           test -s scripts/98_v622_c1_inner_spatial_preflight.py
           test -s tests/test_v622_equal_taxon_selection.py
+          test -s tests/test_v622_inner_feasibility.py
       - name: Compile C1 Python sources without dependencies
-        run: python -m py_compile scripts/95_v622_c1_input_preflight.py scripts/97_v622_c1_equal_taxon_global_pilot.py scripts/98_v622_c1_inner_spatial_preflight.py tests/test_v622_equal_taxon_selection.py
+        run: python -m py_compile scripts/95_v622_c1_input_preflight.py scripts/97_v622_c1_equal_taxon_global_pilot.py scripts/98_v622_c1_inner_spatial_preflight.py tests/test_v622_equal_taxon_selection.py tests/test_v622_inner_feasibility.py
       - name: Preflight canonical inputs without dependencies
         run: python scripts/95_v622_c1_input_preflight.py
       - name: Install C1 dependencies
         run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.5,<2' 'xgboost>=2.1,<4'
       - name: Gate inner spatial rare-class feasibility before 960 fits
+        id: inner_gate
+        continue-on-error: true
         run: python scripts/98_v622_c1_inner_spatial_preflight.py
-      - name: Validate actual C1 selector and candidate grid
-        run: python -m unittest discover -s tests -p 'test_v622_equal_taxon_selection.py' -v
+      - name: Validate C1 selector and rare-class feasibility
+        run: |
+          python -m unittest discover -s tests -p 'test_v622_equal_taxon_selection.py' -v
+          python -m unittest discover -s tests -p 'test_v622_inner_feasibility.py' -v
       - name: Smoke-test installed XGBoost runtime
         shell: bash
         run: |
@@ -60,7 +65,7 @@ jobs:
           print('XGBOOST_RUNTIME_SMOKE_PASS',xgboost.__version__)
           PY
       - name: Train C1 single-fold global pilot
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && steps.inner_gate.outcome == 'success'
         run: python -u scripts/97_v622_c1_equal_taxon_global_pilot.py
       - name: Report C1 stage diagnostics
         if: always()
@@ -72,6 +77,7 @@ jobs:
           lines=['## C1 workflow diagnostics']
           files=[
               Path('results/v622_c1_preflight/input_gate.json'),
+              Path('results/v622_c1_preflight/mathematical_impossibility.json'),
               Path('results/v622_c1_preflight/inner_spatial_gate.json'),
               Path('results/v622_c1_global_pilot/c1_outer_fold_diagnostics.csv'),
               Path('results/v622_c1_global_pilot/c1_inner_fold_diagnostics.csv'),
@@ -87,6 +93,10 @@ jobs:
                   if p.suffix=='.json':
                       data=json.loads(p.read_text())
                       lines.append('Status: '+str(data.get('status','unknown')))
+                      if 'certificates' in data:
+                          lines.append('Structural impossibility certificates: '+str(data['certificates']))
+                      if 'pilot_failed_splits' in data:
+                          lines.append('Pilot invalid splits: '+str(data['pilot_failed_splits']))
                       if 'completed_taxa_count' in data:
                           lines.append('Completed taxa: '+str(data['completed_taxa_count']))
                   else:
@@ -104,7 +114,7 @@ jobs:
               f.write(report)
           PY
       - name: Upload diagnostics even when training fails
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: c1-v622-manual-launcher-diagnostics
