@@ -59,6 +59,21 @@ def check_outer(rows,fmap,outer,taxa):
         for t in taxa if sum(len(positive_plots[(t,g)]) for g in range(INNER))<=10}
     return result,rare
 
+def one_positive_certificates(rows,fmap,taxa):
+    """Return structural single-class inner-CV obstructions, without fitting."""
+    if INNER<2:
+        raise ValueError("The proof requires at least two nonempty inner groups")
+    result=[]
+    for outer in range(1,6):
+        for taxon in taxa:
+            subset=[r for r in rows if r["Species"]==taxon and fmap[r["plot"]]!=outer]
+            n_positive=sum(int(r["pres.abs"]) for r in subset)
+            if n_positive==1:
+                result.append(dict(outer_fold=outer,taxon=taxon,
+                    train_n=len(subset),train_positive=n_positive,
+                    reason="ONE_POSITIVE_CANNOT_SUPPORT_NONEMPTY_INNER_CV"))
+    return result
+
 def main():
     rows=read("data/train.csv")
     folds=read("results/spatial_2d_block_assignments.csv")
@@ -70,19 +85,9 @@ def main():
     taxa=sorted({r["Species"] for r in rows})
     if len(taxa)!=8 or set(fmap.values())!=set(range(1,6)):
         raise ValueError("Expected 8 taxa and 5 outer folds")
-    # Deterministic impossibility certificate, independent of KMeans.
-    # With one positive in outer training and >=2 nonempty inner groups,
-    # the validation group containing that positive has a zero-positive
-    # training complement. No clustering seed can repair this.
-    impossibility=[]
-    for outer in range(1,6):
-        for taxon in taxa:
-            subset=[r for r in rows if r["Species"]==taxon and fmap[r["plot"]]!=outer]
-            n_positive=sum(int(r["pres.abs"]) for r in subset)
-            if n_positive==1:
-                impossibility.append(dict(outer_fold=outer,taxon=taxon,
-                    train_n=len(subset),train_positive=n_positive,
-                    reason="ONE_POSITIVE_CANNOT_SUPPORT_NONEMPTY_INNER_CV"))
+    # Deterministic proof independent of KMeans: a lone training positive
+    # must be withheld by one of >=2 nonempty inner validation groups.
+    impossibility=one_positive_certificates(rows,fmap,taxa)
     OUT.mkdir(parents=True,exist_ok=True)
     (OUT/"mathematical_impossibility.json").write_text(
         json.dumps(dict(status="IMPOSSIBLE_FOR_FULL_NESTED_CV" if impossibility else "NO_ONE_POSITIVE_OBSTRUCTION",
