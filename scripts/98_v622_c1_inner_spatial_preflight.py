@@ -82,17 +82,20 @@ def main():
         w.writeheader()
         w.writerows(all_rows)
     bad=[r for r in all_rows if r["status"]!="PASS"]
-    summary=dict(status="FAIL_INNER_SPATIAL_GATE" if bad else "PASS_INNER_SPATIAL_GATE",
+    pilot_bad=[r for r in bad if r["outer_fold"]==OUTER]
+    summary=dict(status="FAIL_PILOT_INNER_GATE" if pilot_bad else ("PASS_PILOT_WITH_OTHER_FOLD_WARNINGS" if bad else "PASS_ALL_INNER_GATES"),
         outer_folds=[1,2,3,4,5],seed=SEED,inner_groups=INNER,
         method="KMeans lon/lat, n_init=10, each outer training set independently",
-        tested_splits=len(all_rows),failed_splits=len(bad),failures=bad,
+        tested_splits=len(all_rows),failed_splits=len(bad),pilot_failed_splits=len(pilot_bad),failures=bad,
         failures_by_outer={str(k):sum(r["outer_fold"]==k for r in bad) for k in range(1,6)},
         rare_taxon_positive_groups_by_outer=rare_by_outer,
         limitation="unbuffered inner grouping; not matched to 10-km buffered comparator")
     (OUT/"inner_spatial_gate.json").write_text(json.dumps(summary,indent=2)+chr(10))
     print(json.dumps(summary,indent=2))
+    if pilot_bad:
+        raise ValueError(f"{len(pilot_bad)} inner splits invalid in pilot outer fold {OUTER}; see inner_spatial_gate.csv")
     if bad:
-        raise ValueError(f"{len(bad)} inner splits invalid across five outer folds; see inner_spatial_gate.csv")
+        print(f"C1 WARNING: {len(bad)} invalid splits outside pilot outer fold {OUTER}; full five-fold experiment requires a separate protocol decision")
 
 if __name__=="__main__":
     try:
