@@ -29,13 +29,16 @@ jobs:
           test -s results/spatial_2d_block_assignments.csv
           test -s scripts/95_v622_c1_input_preflight.py
           test -s scripts/97_v622_c1_equal_taxon_global_pilot.py
+          test -s scripts/98_v622_c1_inner_spatial_preflight.py
           test -s tests/test_v622_equal_taxon_selection.py
       - name: Compile C1 Python sources without dependencies
-        run: python -m py_compile scripts/95_v622_c1_input_preflight.py scripts/97_v622_c1_equal_taxon_global_pilot.py tests/test_v622_equal_taxon_selection.py
+        run: python -m py_compile scripts/95_v622_c1_input_preflight.py scripts/97_v622_c1_equal_taxon_global_pilot.py scripts/98_v622_c1_inner_spatial_preflight.py tests/test_v622_equal_taxon_selection.py
       - name: Preflight canonical inputs without dependencies
         run: python scripts/95_v622_c1_input_preflight.py
       - name: Install C1 dependencies
         run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.5,<2' 'xgboost>=2.1,<4'
+      - name: Gate inner spatial rare-class feasibility before 960 fits
+        run: python scripts/98_v622_c1_inner_spatial_preflight.py
       - name: Validate actual C1 selector and candidate grid
         run: python -m unittest discover -s tests -p 'test_v622_equal_taxon_selection.py' -v
       - name: Smoke-test installed XGBoost runtime
@@ -69,6 +72,7 @@ jobs:
           lines=['## C1 workflow diagnostics']
           files=[
               Path('results/v622_c1_preflight/input_gate.json'),
+              Path('results/v622_c1_preflight/inner_spatial_gate.json'),
               Path('results/v622_c1_global_pilot/c1_outer_fold_diagnostics.csv'),
               Path('results/v622_c1_global_pilot/c1_inner_fold_diagnostics.csv'),
               Path('results/v622_c1_global_pilot/c1_progress.json'),
