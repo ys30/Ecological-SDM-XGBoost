@@ -48,6 +48,7 @@ jobs:
           lines=['## C1 equal-taxon pilot diagnostic summary']
           for file in [
               'results/v622_c1_preflight/input_gate.json',
+              'results/v622_c1_preflight/mathematical_impossibility.json',
               'results/v622_c1_preflight/inner_spatial_gate.json',
               'results/v622_c1_global_pilot/c1_outer_fold_diagnostics.csv',
               'results/v622_c1_global_pilot/c1_inner_fold_diagnostics.csv',
@@ -63,6 +64,13 @@ jobs:
                       d=json.loads(p.read_text())
                       lines.append('Status: '+str(d.get('status','not specified')))
                       lines.append('Rows: '+str(d.get('data_rows',d.get('outer_oof_rows','unknown'))))
+                      if 'certificates' in d:
+                          lines.append('Impossibility certificates: '+str(len(d['certificates'])))
+                          for certificate in d['certificates']:
+                              lines.append('- '+str(certificate))
+                      if 'pilot_failed_splits' in d:
+                          lines.append('Pilot invalid inner splits: '+str(d['pilot_failed_splits']))
+                          lines.append('All outer-fold invalid inner splits: '+str(d.get('failed_splits','unknown')))
                   except Exception as e:
                       lines.append('JSON read failed: '+str(e))
               else:
