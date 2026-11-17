@@ -70,6 +70,23 @@ def main():
     taxa=sorted({r["Species"] for r in rows})
     if len(taxa)!=8 or set(fmap.values())!=set(range(1,6)):
         raise ValueError("Expected 8 taxa and 5 outer folds")
+    # Deterministic impossibility certificate, independent of KMeans.
+    # With one positive in outer training and >=2 nonempty inner groups,
+    # the validation group containing that positive has a zero-positive
+    # training complement. No clustering seed can repair this.
+    impossibility=[]
+    for outer in range(1,6):
+        for taxon in taxa:
+            subset=[r for r in rows if r["Species"]==taxon and fmap[r["plot"]]!=outer]
+            n_positive=sum(int(r["pres.abs"]) for r in subset)
+            if n_positive==1:
+                impossibility.append(dict(outer_fold=outer,taxon=taxon,
+                    train_n=len(subset),train_positive=n_positive,
+                    reason="ONE_POSITIVE_CANNOT_SUPPORT_NONEMPTY_INNER_CV"))
+    OUT.mkdir(parents=True,exist_ok=True)
+    (OUT/"mathematical_impossibility.json").write_text(
+        json.dumps(dict(status="IMPOSSIBLE_FOR_FULL_NESTED_CV" if impossibility else "NO_ONE_POSITIVE_OBSTRUCTION",
+                        inner_groups=INNER,certificates=impossibility),indent=2)+chr(10))
     all_rows=[]
     rare_by_outer={}
     for outer in range(1,6):
@@ -88,6 +105,7 @@ def main():
         method="KMeans lon/lat, n_init=10, each outer training set independently",
         tested_splits=len(all_rows),failed_splits=len(bad),pilot_failed_splits=len(pilot_bad),failures=bad,
         failures_by_outer={str(k):sum(r["outer_fold"]==k for r in bad) for k in range(1,6)},
+        mathematical_impossibility_certificates=impossibility,
         rare_taxon_positive_groups_by_outer=rare_by_outer,
         limitation="unbuffered inner grouping; not matched to 10-km buffered comparator")
     (OUT/"inner_spatial_gate.json").write_text(json.dumps(summary,indent=2)+chr(10))
