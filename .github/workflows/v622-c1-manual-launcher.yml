@@ -122,3 +122,8 @@ jobs:
             results/v622_c1_preflight/
             results/v622_c1_global_pilot/
           if-no-files-found: warn
+      - name: Mark infeasible pilot as failed after preserving diagnostics
+        if: always() && steps.inner_gate.outcome == 'failure'
+        run: |
+          echo "::error::C1 pilot inner spatial feasibility gate failed; diagnostics were retained."
+          exit 1
