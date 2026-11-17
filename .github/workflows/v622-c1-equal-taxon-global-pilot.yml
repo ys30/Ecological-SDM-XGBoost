@@ -30,9 +30,11 @@ jobs:
       - name: Test equal-taxon selection invariants
         run: python -m unittest discover -s tests -p 'test_v622_equal_taxon_selection.py' -v
       - name: Gate inner spatial rare-class feasibility
+        id: inner_gate
+        continue-on-error: ${{ github.event_name == 'push' }}
         run: python scripts/98_v622_c1_inner_spatial_preflight.py
       - name: Run global equal-taxon tuning pilot
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && steps.inner_gate.outcome == 'success'
         run: python scripts/97_v622_c1_equal_taxon_global_pilot.py
       - name: Publish C1 diagnostic summary even after failure
         if: always()
