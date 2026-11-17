@@ -10,6 +10,7 @@ on:
       - 'scripts/97_v622_c1_equal_taxon_global_pilot.py'
       - 'scripts/98_v622_c1_inner_spatial_preflight.py'
       - 'tests/test_v622_equal_taxon_selection.py'
+      - 'tests/test_v622_inner_feasibility.py'
 permissions:
   contents: read
 jobs:
@@ -34,7 +35,9 @@ jobs:
       - name: Install XGBoost for selection tests
         run: python -m pip install 'xgboost>=2.1,<4'
       - name: Test equal-taxon selection invariants
-        run: python -m unittest discover -s tests -p 'test_v622_equal_taxon_selection.py' -v
+        run: |
+          python -m unittest discover -s tests -p 'test_v622_equal_taxon_selection.py' -v
+          python -m unittest discover -s tests -p 'test_v622_inner_feasibility.py' -v
       - name: Run global equal-taxon tuning pilot
         if: github.event_name == 'workflow_dispatch' && steps.inner_gate.outcome == 'success'
         run: python scripts/97_v622_c1_equal_taxon_global_pilot.py
