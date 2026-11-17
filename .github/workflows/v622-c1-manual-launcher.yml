@@ -94,7 +94,7 @@ jobs:
                           lines.append('- '+str(row))
               except Exception as exc:
                   lines.append('Diagnostic read error: '+str(exc))
-          report='\\n\\n'.join(lines)+'\\n'
+          report='\n\n'.join(lines)+'\n'
           print(report)
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
               f.write(report)
