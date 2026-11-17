@@ -89,7 +89,7 @@ def main():
         failures_by_outer={str(k):sum(r["outer_fold"]==k for r in bad) for k in range(1,6)},
         rare_taxon_positive_groups_by_outer=rare_by_outer,
         limitation="unbuffered inner grouping; not matched to 10-km buffered comparator")
-    (OUT/"inner_spatial_gate.json").write_text(json.dumps(summary,indent=2)+"\\n")
+    (OUT/"inner_spatial_gate.json").write_text(json.dumps(summary,indent=2)+chr(10))
     print(json.dumps(summary,indent=2))
     if bad:
         raise ValueError(f"{len(bad)} inner splits invalid across five outer folds; see inner_spatial_gate.csv")
