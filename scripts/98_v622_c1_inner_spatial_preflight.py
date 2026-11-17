@@ -39,12 +39,15 @@ def main():
     if set(inner.values())!=set(range(INNER)):
         raise ValueError("Missing inner KMeans group")
     counts=defaultdict(lambda:[0,0])
+    positive_plots=defaultdict(list)
     for r in rows:
         if fmap[r["plot"]]==OUTER:
             continue
         key=(r["Species"],inner[r["plot"]])
         counts[key][0]+=1
         counts[key][1]+=int(r["pres.abs"])
+        if int(r["pres.abs"])==1:
+            positive_plots[key].append(r["plot"])
     taxa=sorted({r["Species"] for r in rows})
     result=[]
     for taxon in taxa:
@@ -55,7 +58,8 @@ def main():
             train_n=total_n-n
             train_p=total_p-p
             result.append(dict(taxon=taxon,inner_fold=g,validation_n=n,
-                validation_positive=p,train_n=train_n,train_positive=train_p,
+                validation_positive=p,validation_positive_plots=";".join(positive_plots[(taxon,g)]),
+                train_n=train_n,train_positive=train_p,
                 status="PASS" if n>0 and 0<train_p<train_n else "FAIL_SINGLE_CLASS_OR_EMPTY"))
     OUT.mkdir(parents=True,exist_ok=True)
     with (OUT/"inner_spatial_gate.csv").open("w",newline="") as f:
@@ -66,6 +70,8 @@ def main():
     summary=dict(status="FAIL_INNER_SPATIAL_GATE" if bad else "PASS_INNER_SPATIAL_GATE",
         outer_fold=OUTER,seed=SEED,inner_groups=INNER,method="KMeans lon/lat, n_init=10, outer training plots only",
         tested_splits=len(result),failed_splits=len(bad),failures=bad,
+        rare_taxon_positive_groups={t:{str(g):len(positive_plots[(t,g)]) for g in range(INNER)}
+            for t in taxa if sum(len(positive_plots[(t,g)]) for g in range(INNER))<=10},
         limitation="unbuffered inner grouping; not matched to 10-km buffered comparator")
     (OUT/"inner_spatial_gate.json").write_text(json.dumps(summary,indent=2)+"\n")
     print(json.dumps(summary,indent=2))
