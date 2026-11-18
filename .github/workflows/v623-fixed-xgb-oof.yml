@@ -1,0 +1,31 @@
+name: v6.23 fixed XGBoost 10-km buffered OOF
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - 'scripts/102_v623_fixed_xgb_outer_oof.py'
+      - '.github/workflows/v623-fixed-xgb-oof.yml'
+permissions:
+  contents: read
+jobs:
+  fixed-oof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned major dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.4,<2' 'xgboost>=2,<4'
+      - name: Run 40 fixed-config spatial outer fits
+        run: python scripts/102_v623_fixed_xgb_outer_oof.py
+      - name: Upload OOF predictions, metrics, manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v623-fixed-xgb-10km-oof
+          path: results/v623_fixed_xgb_outer_oof/
+          if-no-files-found: warn
