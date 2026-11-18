@@ -7,6 +7,7 @@ on:
     paths:
       - 'scripts/102_v623_fixed_xgb_outer_oof.py'
       - 'scripts/103_v623_oof_integrity_gate.py'
+      - 'scripts/104_v623_performance_report.py'
       - '.github/workflows/v623-fixed-xgb-oof.yml'
 permissions:
   contents: read
@@ -25,6 +26,8 @@ jobs:
         run: python scripts/102_v623_fixed_xgb_outer_oof.py
       - name: Verify OOF integrity and metric eligibility
         run: python scripts/103_v623_oof_integrity_gate.py
+      - name: Summarize pooled OOF performance by taxon
+        run: python scripts/104_v623_performance_report.py
       - name: Upload OOF predictions, metrics, manifest
         if: always()
         uses: actions/upload-artifact@v4
