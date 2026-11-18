@@ -7,6 +7,7 @@ on:
     paths:
       - 'scripts/99_v623_spatial_geometry_audit.py'
       - 'scripts/100_v623_10km_buffer_feasibility.py'
+      - 'scripts/101_v623_outer_10km_feasibility.py'
       - '.github/workflows/v623-spatial-geometry-audit.yml'
 permissions:
   contents: read
@@ -25,6 +26,8 @@ jobs:
         run: python scripts/99_v623_spatial_geometry_audit.py
       - name: Audit 10-km buffered inner feasibility (no model training)
         run: python scripts/100_v623_10km_buffer_feasibility.py
+      - name: Audit 10-km outer train/test buffer (no model training)
+        run: python scripts/101_v623_outer_10km_feasibility.py
       - name: Summarize diagnostic result
         if: always()
         run: |
@@ -47,4 +50,5 @@ jobs:
           path: |
             results/v623_geometry_audit/
             results/v623_buffer_audit/
+            results/v623_outer_buffer_audit/
           if-no-files-found: warn
