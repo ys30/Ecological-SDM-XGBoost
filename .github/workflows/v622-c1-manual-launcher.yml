@@ -65,7 +65,7 @@ jobs:
           print('XGBOOST_RUNTIME_SMOKE_PASS',xgboost.__version__)
           PY
       - name: Train C1 single-fold global pilot
-        if: github.event_name == 'workflow_dispatch' && steps.inner_gate.outcome == 'success'
+        if: steps.inner_gate.outcome == 'success' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[run-c1-pilot]')))
         run: python -u scripts/97_v622_c1_equal_taxon_global_pilot.py
       - name: Report C1 stage diagnostics
         if: always()
