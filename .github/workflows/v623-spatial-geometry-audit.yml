@@ -1,0 +1,45 @@
+name: v6.23 spatial geometry audit (no fitting)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - 'scripts/99_v623_spatial_geometry_audit.py'
+      - '.github/workflows/v623-spatial-geometry-audit.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install geometry dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.4,<2'
+      - name: Audit fixed geographic partitions (no model training)
+        run: python scripts/99_v623_spatial_geometry_audit.py
+      - name: Summarize diagnostic result
+        if: always()
+        run: |
+          if [ -f results/v623_geometry_audit/summary.json ]; then
+            python - <<'PY'
+          import json,os
+          d=json.load(open('results/v623_geometry_audit/summary.json'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('## v6.23 geography-first audit (no fitting)\n\n')
+              f.write(f"Tested cells: {d['tested_cells']}; failed: {d['failed_cells']}\n\n")
+              f.write(f"Minimum observed nearest-training distance: {d['min_distance_km_all_cells']:.3f} km\n\n")
+              f.write('These distances do not establish a spatial buffer or valid CV.\n')
+          PY
+          fi
+      - name: Preserve diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v623-spatial-geometry-diagnostics
+          path: results/v623_geometry_audit/
+          if-no-files-found: warn
