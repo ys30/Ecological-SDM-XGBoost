@@ -8,6 +8,7 @@ on:
       - 'scripts/109_v623_matched_three_model_comparison.py'
       - 'scripts/110_v623_manuscript_figures.py'
       - 'scripts/111_v623_rare_taxon_sensitivity.py'
+      - 'scripts/112_v623_leave_one_taxon_out.py'
       - '.github/workflows/v623-matched-three-model.yml'
 permissions:
   contents: read
@@ -32,6 +33,8 @@ jobs:
         run: python scripts/109_v623_matched_three_model_comparison.py
       - name: Analyze lower-prevalence taxa separately
         run: python scripts/111_v623_rare_taxon_sensitivity.py
+      - name: Audit leave-one-taxon-out influence
+        run: python scripts/112_v623_leave_one_taxon_out.py
       - name: Generate manuscript figures
         run: python scripts/110_v623_manuscript_figures.py
       - name: Upload full comparison artifacts
