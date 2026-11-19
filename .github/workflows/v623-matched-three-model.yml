@@ -28,6 +28,8 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.4,<2' 'xgboost>=2,<4' 'matplotlib>=3.8,<4'
+      - name: Compile-check model and audit scripts
+        run: python -m py_compile scripts/102_v623_fixed_xgb_outer_oof.py scripts/108_v623_matched_buffer_glm.py scripts/117_v623_exact_training_id_audit.py
       - name: Refit fixed 10-km buffered XGBoost
         run: python scripts/102_v623_fixed_xgb_outer_oof.py
       - name: Check XGBoost OOF integrity
