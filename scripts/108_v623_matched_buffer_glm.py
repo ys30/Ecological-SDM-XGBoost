@@ -75,7 +75,6 @@ def main():
         scaling="fold-local train-only StandardScaler",C=100,solver="lbfgs",
         quadratic_terms=["standardized_rainann_squared","standardized_tempann_squared"],
         caveat="Quadratic feature set prespecified from historical GLM implementation; not optimized on v6.23 held-out outcomes.")
-    (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"
-")
+    (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
     print(json.dumps(dict(fits=len(metrics),oof_rows=len(pred),per_variant=len(data)),indent=2))
 if __name__=="__main__":main()
