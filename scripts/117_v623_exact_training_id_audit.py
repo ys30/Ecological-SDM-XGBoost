@@ -15,9 +15,7 @@ O=Path("results/v623_matched_three_model")
 def read(p):
     with p.open(newline="",encoding="utf-8-sig") as f:return list(csv.DictReader(f))
 def digest(ids):
-    payload="
-".join(sorted(map(str,ids)))+"
-"
+    payload="\n".join(sorted(map(str,ids)))+"\n"
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 def main():
     data=read(Path("data/train.csv"))
@@ -71,7 +69,6 @@ def main():
     status=dict(status="PASS",cells=len(out),fold_taxon_cells=40,
         interpretation="Independent reconstruction matches fit-time train/test ID SHA-256 digests emitted by both XGBoost and GLM, as well as saved class counts.",
         caveat="Fit-time train/test ID hashes emitted by both model scripts are compared against independently reconstructed membership; this verifies the ID sets, not all preprocessing or feature values.")
-    (O/"reconstructed_training_id_audit.json").write_text(json.dumps(status,indent=2)+"
-")
+    (O/"reconstructed_training_id_audit.json").write_text(json.dumps(status,indent=2)+"\n")
     print(json.dumps(status,indent=2))
 if __name__=="__main__":main()
