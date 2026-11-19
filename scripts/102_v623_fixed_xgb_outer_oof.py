@@ -21,7 +21,7 @@ def read(path):
     with open(path,newline="",encoding="utf-8-sig") as f:return list(csv.DictReader(f))
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def ids_sha256(ids):
-    return hashlib.sha256(("\\n".join(sorted(map(str,ids)))+"\\n").encode("utf-8")).hexdigest()
+    return hashlib.sha256(("\n".join(sorted(map(str,ids)))+"\n").encode("utf-8")).hexdigest()
 def km(a,b):
     lo1,la1=np.radians(a[:,0])[:,None],np.radians(a[:,1])[:,None]
     lo2,la2=np.radians(b[:,0])[None,:],np.radians(b[:,1])[None,:]
