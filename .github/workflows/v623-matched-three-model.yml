@@ -1,0 +1,39 @@
+name: v6.23 matched three-model comparison
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - 'scripts/109_v623_matched_three_model_comparison.py'
+      - '.github/workflows/v623-matched-three-model.yml'
+permissions:
+  contents: read
+jobs:
+  matched-three-model:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.4,<2' 'xgboost>=2,<4'
+      - name: Refit fixed 10-km buffered XGBoost
+        run: python scripts/102_v623_fixed_xgb_outer_oof.py
+      - name: Check XGBoost OOF integrity
+        run: python scripts/103_v623_oof_integrity_gate.py
+      - name: Refit matched linear and quadratic GLMs
+        run: python scripts/108_v623_matched_buffer_glm.py
+      - name: Verify row-level alignment and compare three models
+        run: python scripts/109_v623_matched_three_model_comparison.py
+      - name: Upload full comparison artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v623-matched-three-model-comparison
+          path: |
+            results/v623_matched_three_model/
+            results/v623_matched_glm_10km/
+          if-no-files-found: warn
