@@ -10,6 +10,7 @@ on:
       - 'scripts/104_v623_performance_report.py'
       - 'scripts/105_v623_calibration_diagnostics.py'
       - 'scripts/106_v623_historical_comparator_alignment.py'
+      - 'scripts/107_v623_bayesian_oof_alignment.py'
       - '.github/workflows/v623-fixed-xgb-oof.yml'
 permissions:
   contents: read
@@ -34,6 +35,8 @@ jobs:
         run: python scripts/105_v623_calibration_diagnostics.py
       - name: Audit archived historical OOF identity (not protocol equivalence)
         run: python scripts/106_v623_historical_comparator_alignment.py
+      - name: Audit historical Bayesian OOF metadata alignment
+        run: python scripts/107_v623_bayesian_oof_alignment.py
       - name: Upload OOF predictions, metrics, manifest
         if: always()
         uses: actions/upload-artifact@v4
