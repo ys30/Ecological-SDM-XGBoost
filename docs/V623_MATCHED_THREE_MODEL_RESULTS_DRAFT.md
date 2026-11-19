@@ -101,3 +101,14 @@ The XGBoost improvement over linear GLM in proper probability scores was directi
 | Quadratic GLM | +0.003384 | 0.003887 | 0.004270 | 0.187524 | 0.054642 |
 
 Calibration bias is defined **per taxon** as mean predicted probability minus observed prevalence; absolute biases are computed before averaging across taxa. Positive signed values indicate modest mean overprediction. The smallest average absolute bias and log loss occurred with XGBoost; quadratic GLM had the smallest Brier score. These are descriptive comparisons, not inferential significance tests. Calibration-in-the-large does not establish reliability across probability ranges; the 240 model–taxon–decile observations require graphical inspection, especially for taxa with very few detections. The median absolute bias is across eight taxa, not across individual records.
+
+## Reliability diagrams and figure placement — verified
+
+[Successful CI #44452488604](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44452488604) executed the plotting step and produced four figure files in the downloadable matched-model artifact:
+
+- `figure_reliability_by_taxon.png` and `.svg`: full 0–1 axes, eight taxon panels, three model curves and ideal calibration reference.
+- `figure_reliability_low_probability.png` and `.svg`: corresponding 0–0.3 view, explicitly clipped for visual inspection of low probabilities.
+
+**Proposed main-text placement:** use the full-range reliability figure only if legible at journal column width; otherwise use a selected two-panel calibration figure with a clearly disclosed selection criterion and place the eight-panel plot in the supplement. **Supplement:** low-probability zoom and underlying 240 decile rows. Figure generation passed CI, but image appearance has not yet been visually inspected by an author; publication suitability remains to be checked. Because the rarest taxon has only six positives, zero-event deciles must not be interpreted as evidence of structural miscalibration. Deciles were computed separately for each model and taxon, so corresponding x-axis bin ranges are not identical across models.
+
+Suggested caption: "Out-of-fold reliability diagnostics for three models under matched spatially buffered validation. Each panel represents one taxon; plotted points summarize ten approximately equal-count groups of held-out predicted probabilities. The dashed line indicates ideal agreement. Curves are descriptive, and bin-level frequencies are especially variable for rare taxa."
