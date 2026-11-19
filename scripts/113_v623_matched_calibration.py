@@ -48,6 +48,18 @@ def main():
     BASE.mkdir(parents=True,exist_ok=True)
     write(BASE/"calibration_equal_count_deciles.csv",bins)
     write(BASE/"calibration_taxon_summary.csv",summaries)
+    # Equal-taxon calibration bias and absolute bias: descriptive summaries, not confidence intervals.
+    macro=[]
+    for name in models:
+        group=[r for r in summaries if r["model"]==name]
+        macro.append(dict(model=name,taxa=len(group),
+            mean_signed_bias=float(np.mean([r["calibration_in_large"] for r in group])),
+            mean_absolute_bias=float(np.mean([abs(r["calibration_in_large"]) for r in group])),
+            median_absolute_bias=float(np.median([abs(r["calibration_in_large"]) for r in group])),
+            mean_logloss=float(np.mean([r["logloss"] for r in group])),
+            mean_brier=float(np.mean([r["brier"] for r in group]))))
+    write(BASE/"calibration_macro_summary.csv",macro)
+    print(json.dumps({"calibration_macro_summary":macro},indent=2))
     (BASE/"calibration_notes.json").write_text(json.dumps(dict(
         status="DESCRIPTIVE_OOF_CALIBRATION",n_models=3,n_taxa=8,n_deciles_per_taxon=10,
         n_bin_rows=len(bins),n_summary_rows=len(summaries),
