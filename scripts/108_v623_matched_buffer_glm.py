@@ -60,7 +60,9 @@ def main():
                     ap=float(average_precision_score(yte,pp)) if eligible else "",
                     auc_ap_eligible=eligible))
                 diag.append(dict(variant=variant,taxon=taxon,outer_fold=fold,
-                    n_excluded_train_plots=len(pool)-len(keep),n_train_plots=len(keep),\n                    train_id_sha256=xgb.ids_sha256(r["id"] for r in tr),\n                    test_id_sha256=xgb.ids_sha256(r["id"] for r in te)))
+                    n_excluded_train_plots=len(pool)-len(keep),n_train_plots=len(keep),
+                    train_id_sha256=xgb.ids_sha256(r["id"] for r in tr),
+                    test_id_sha256=xgb.ids_sha256(r["id"] for r in te)))
     assert len(pred)==2*len(data)
     OUT.mkdir(parents=True,exist_ok=True)
     write(OUT/"glm_oof_predictions.csv",pred)
@@ -73,6 +75,7 @@ def main():
         scaling="fold-local train-only StandardScaler",C=100,solver="lbfgs",
         quadratic_terms=["standardized_rainann_squared","standardized_tempann_squared"],
         caveat="Quadratic feature set prespecified from historical GLM implementation; not optimized on v6.23 held-out outcomes.")
-    (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
+    (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"
+")
     print(json.dumps(dict(fits=len(metrics),oof_rows=len(pred),per_variant=len(data)),indent=2))
 if __name__=="__main__":main()
