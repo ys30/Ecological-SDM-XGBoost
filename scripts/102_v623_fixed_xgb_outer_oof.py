@@ -102,8 +102,7 @@ def main():
         limitations=["Fixed configuration, NOT nested tuned","Inner spatial validation not used",
             "10-km outer buffer is not proof of protocol equivalence to historical comparator",
             "AUC/AP undefined for single-class outer tests"])
-    (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"
-")
+    (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
     print(json.dumps(dict(fits=len(metrics),oof_rows=len(preds),
         auc_ap_ineligible=sum(not r["auc_ap_eligible"] for r in metrics)),indent=2))
 if __name__=="__main__":main()
