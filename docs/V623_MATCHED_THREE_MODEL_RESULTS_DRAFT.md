@@ -38,3 +38,37 @@ Exploratory exact taxon sign-flip tail fractions for log loss differences were 0
 - Future: calibration reliability and rare-taxon focused panels; plot-level uncertainty assessment.
 
 Generated figure files will be attached to the [matched three-model workflow](https://github.com/ys30/Ecological-SDM-XGBoost/actions/workflows/v623-matched-three-model.yml) after its updated CI succeeds.
+
+## Rare-taxon sensitivity — verified
+
+[Successful CI #44430257669](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44430257669) stratified taxa into the four lowest observed prevalence taxa (6–39 detections per taxon) and four higher-prevalence taxa (53–270 detections). The threshold is descriptive and outcome-defined, not a preregistered ecological rarity cutoff. Equal-taxon mean differences (XGBoost minus comparator):
+
+| Comparator | Prevalence stratum | Log loss | Brier | AUC | AP |
+|---|---|---:|---:|---:|---:|
+| Linear GLM | lower four | -0.002174 | -0.001124 | -0.058402 | +0.005871 |
+| Linear GLM | upper four | -0.033197 | -0.012382 | +0.032073 | +0.042110 |
+| Quadratic GLM | lower four | -0.011809 | -0.001203 | -0.027724 | +0.003728 |
+| Quadratic GLM | upper four | +0.010571 | +0.003885 | -0.016088 | -0.036325 |
+
+The apparent XGBoost improvement over linear GLM in proper probability scores is concentrated in the higher-prevalence group. Against quadratic GLM, log-loss contrast changes direction between strata. With only four taxa per stratum these patterns are hypothesis-generating, not evidence of an ecological effect modification.
+
+## Leave-one-taxon-out influence — verified
+
+[Successful CI #44433165003](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44433165003) calculated 64 seven-taxon contrasts. The ranges below are the **minimum and maximum observed seven-taxon estimates**, not confidence intervals.
+
+| Comparator | Metric | Full 8-taxon difference | Seven-taxon range | Sign reversals (of 8) |
+|---|---|---:|---:|---:|
+| Linear GLM | Log loss | -0.017686 | [-0.022554, -0.005312] | 0 |
+| Linear GLM | Brier | -0.006753 | [-0.008236, -0.002003] | 0 |
+| Linear GLM | AUC | -0.013164 | [-0.027507, +0.012681] | 1 |
+| Linear GLM | AP | +0.023991 | [+0.010584, +0.033328] | 0 |
+| Quadratic GLM | Log loss | -0.000619 | [-0.006134, +0.005858] | 1 |
+| Quadratic GLM | Brier | +0.001341 | [-0.000475, +0.001918] | 1 |
+| Quadratic GLM | AUC | -0.021906 | [-0.029985, -0.010865] | 0 |
+| Quadratic GLM | AP | -0.016299 | [-0.021652, -0.004596] | 0 |
+
+The XGBoost versus linear GLM log loss, Brier and AP contrast signs were unchanged after excluding any single taxon. XGBoost versus quadratic GLM log loss and Brier were sensitive to a single taxon, reinforcing the absence of a robust proper-score winner between those two models. Direction stability does not imply statistical significance.
+
+## Editorial decision for manuscript
+
+**Main text:** matched primary-fold 10-km protocol; eight-taxon pooled OOF contrasts; rare-taxon stratification as a concise descriptive sensitivity; model non-dominance. **Supplement:** all 64 leave-one-taxon-out contrasts, fold-level one-class diagnostics, training exclusions, per-taxon figures, exact sign-flip exploratory tails. **Do not claim:** Bayesian buffered equivalence, tuned-XGBoost superiority, independent-row confidence intervals, external validation, or causal effects of prevalence.
