@@ -72,3 +72,20 @@ The XGBoost versus linear GLM log loss, Brier and AP contrast signs were unchang
 ## Editorial decision for manuscript
 
 **Main text:** matched primary-fold 10-km protocol; eight-taxon pooled OOF contrasts; rare-taxon stratification as a concise descriptive sensitivity; model non-dominance. **Supplement:** all 64 leave-one-taxon-out contrasts, fold-level one-class diagnostics, training exclusions, per-taxon figures, exact sign-flip exploratory tails. **Do not claim:** Bayesian buffered equivalence, tuned-XGBoost superiority, independent-row confidence intervals, external validation, or causal effects of prevalence.
+
+## Spatial outer-fold influence — verified
+
+[Successful CI #44451175135](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44451175135) removed each of five held-out spatial outer folds in turn **from the scored OOF rows**, without refitting models. Differences are XGBoost minus GLM, equally averaged over eight taxon-specific pooled OOF scores after each omission.
+
+| Comparator | Metric | Full eight-taxon delta | Min five fold-deletion delta | Max five fold-deletion delta | Sign reversals |
+|---|---|---:|---:|---:|---:|
+| Linear GLM | Log loss | -0.017686 | -0.021376 | -0.014430 | 0/5 |
+| Linear GLM | Brier | -0.006753 | -0.008726 | -0.005572 | 0/5 |
+| Quadratic GLM | Log loss | -0.000619 | -0.003030 | +0.005290 | 1/5 |
+| Quadratic GLM | Brier | +0.001341 | +0.000557 | +0.001951 | 0/5 |
+
+The XGBoost improvement over linear GLM in proper probability scores was directionally stable across all five fold deletions. XGBoost versus quadratic GLM log loss was sensitive to a single held-out region; quadratic GLM's lower Brier score remained directionally stable. This is a **descriptive influence analysis**, not a spatial bootstrap, and the five folds must not be treated as independent replicates. No confidence intervals or statistical significance claims follow from these ranges.
+
+## Calibration data availability — verified
+
+[Successful CI #44448864403](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44448864403) generated 240 equal-count calibration decile records and 24 model–taxon summaries for XGBoost, linear GLM, and quadratic GLM. The pipeline computes observed fraction, mean predicted probability, bin positive count, and calibration-in-the-large. The CI success establishes artifact production and identity checks, **not** a finding of satisfactory calibration. Quantitative calibration interpretation requires examining those outputs; avoid stating which model is best calibrated without that audit.
