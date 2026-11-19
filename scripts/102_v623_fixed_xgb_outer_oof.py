@@ -20,7 +20,7 @@ OUT=Path("results/v623_fixed_xgb_outer_oof")
 def read(path):
     with open(path,newline="",encoding="utf-8-sig") as f:return list(csv.DictReader(f))
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-def km(a,b):
+def ids_sha256(ids):\n    return hashlib.sha256(("\\n".join(sorted(map(str,ids)))+"\\n").encode("utf-8")).hexdigest()\ndef km(a,b):
     lo1,la1=np.radians(a[:,0])[:,None],np.radians(a[:,1])[:,None]
     lo2,la2=np.radians(b[:,0])[None,:],np.radians(b[:,1])[None,:]
     q=np.sin((la2-la1)/2)**2+np.cos(la1)*np.cos(la2)*np.sin((lo2-lo1)/2)**2
@@ -83,7 +83,7 @@ def main():
                 auc_ap_eligible=eligible))
             diagnostics.append(dict(outer_fold=outer,taxon=taxon,train_n=len(ytr),
                 train_positive=int(ytr.sum()),test_n=len(yte),test_positive=int(yte.sum()),
-                buffered_out_train_plots=len(pool)-len(keep)))
+                buffered_out_train_plots=len(pool)-len(keep),\n                train_id_sha256=ids_sha256(r["id"] for r in train),\n                test_id_sha256=ids_sha256(r["id"] for r in test)))
     if len(preds)!=len(rows) or len({r["id"] for r in preds})!=len(rows):
         raise AssertionError("OOF coverage incomplete")
     write(OUT/"outer_oof_predictions.csv",preds)
