@@ -60,7 +60,7 @@ def main():
                     ap=float(average_precision_score(yte,pp)) if eligible else "",
                     auc_ap_eligible=eligible))
                 diag.append(dict(variant=variant,taxon=taxon,outer_fold=fold,
-                    n_excluded_train_plots=len(pool)-len(keep),n_train_plots=len(keep)))
+                    n_excluded_train_plots=len(pool)-len(keep),n_train_plots=len(keep),\n                    train_id_sha256=xgb.ids_sha256(r["id"] for r in tr),\n                    test_id_sha256=xgb.ids_sha256(r["id"] for r in te)))
     assert len(pred)==2*len(data)
     OUT.mkdir(parents=True,exist_ok=True)
     write(OUT/"glm_oof_predictions.csv",pred)
