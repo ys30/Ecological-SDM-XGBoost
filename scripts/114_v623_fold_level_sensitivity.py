@@ -56,7 +56,7 @@ def main():
                     sign_reversal=bool(np.sign(delta)!=np.sign(full))))
             print(json.dumps(dict(comparison=comparator,metric=metric,full_delta=float(full),
                 minimum=float(min(vals)),maximum=float(max(vals)),
-                sign_reversals=sum(np.sign(v)!=np.sign(full) for v in vals))))
+                sign_reversals=int(sum(np.sign(v)!=np.sign(full) for v in vals)))))
     write(BASE/"leave_one_outer_fold_out_contrasts.csv",summary)
     (BASE/"fold_influence_notes.json").write_text(json.dumps(dict(
         status="DESCRIPTIVE_SPATIAL_FOLD_INFLUENCE",n_folds=len(folds),n_taxa=len(taxa),
