@@ -7,6 +7,7 @@ on:
     paths:
       - 'scripts/109_v623_matched_three_model_comparison.py'
       - 'scripts/110_v623_manuscript_figures.py'
+      - 'scripts/111_v623_rare_taxon_sensitivity.py'
       - '.github/workflows/v623-matched-three-model.yml'
 permissions:
   contents: read
@@ -29,6 +30,8 @@ jobs:
         run: python scripts/108_v623_matched_buffer_glm.py
       - name: Verify row-level alignment and compare three models
         run: python scripts/109_v623_matched_three_model_comparison.py
+      - name: Analyze lower-prevalence taxa separately
+        run: python scripts/111_v623_rare_taxon_sensitivity.py
       - name: Generate manuscript figures
         run: python scripts/110_v623_manuscript_figures.py
       - name: Upload full comparison artifacts
