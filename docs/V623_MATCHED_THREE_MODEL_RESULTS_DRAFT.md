@@ -89,3 +89,15 @@ The XGBoost improvement over linear GLM in proper probability scores was directi
 ## Calibration data availability — verified
 
 [Successful CI #44448864403](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44448864403) generated 240 equal-count calibration decile records and 24 model–taxon summaries for XGBoost, linear GLM, and quadratic GLM. The pipeline computes observed fraction, mean predicted probability, bin positive count, and calibration-in-the-large. The CI success establishes artifact production and identity checks, **not** a finding of satisfactory calibration. Quantitative calibration interpretation requires examining those outputs; avoid stating which model is best calibrated without that audit.
+
+## Quantitative calibration results — verified
+
+[Successful CI #44451628271](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44451628271) computed the following descriptive equal-taxon means using the same spatially held-out predictions and unaltered observed labels:
+
+| Model | Mean signed calibration bias | Mean absolute calibration bias | Median absolute calibration bias | Mean log loss | Mean Brier |
+|---|---:|---:|---:|---:|---:|
+| XGBoost | +0.001365 | 0.002923 | 0.001180 | 0.186905 | 0.055984 |
+| Linear GLM | +0.003877 | 0.004033 | 0.003486 | 0.204591 | 0.062737 |
+| Quadratic GLM | +0.003384 | 0.003887 | 0.004270 | 0.187524 | 0.054642 |
+
+Calibration bias is defined **per taxon** as mean predicted probability minus observed prevalence; absolute biases are computed before averaging across taxa. Positive signed values indicate modest mean overprediction. The smallest average absolute bias and log loss occurred with XGBoost; quadratic GLM had the smallest Brier score. These are descriptive comparisons, not inferential significance tests. Calibration-in-the-large does not establish reliability across probability ranges; the 240 model–taxon–decile observations require graphical inspection, especially for taxa with very few detections. The median absolute bias is across eight taxa, not across individual records.
