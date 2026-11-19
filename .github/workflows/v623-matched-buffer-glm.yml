@@ -1,0 +1,29 @@
+name: v6.23 matched primary-fold 10km GLM
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - scripts/108_v623_matched_buffer_glm.py
+      - .github/workflows/v623-matched-buffer-glm.yml
+permissions:
+  contents: read
+jobs:
+  matched-glm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scikit-learn>=1.4,<2' 'xgboost>=2,<4'
+      - name: Fit primary-fold 10km buffered GLM comparators
+        run: python scripts/108_v623_matched_buffer_glm.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v623-matched-primary-10km-glm
+          path: results/v623_matched_glm_10km/
+          if-no-files-found: error
