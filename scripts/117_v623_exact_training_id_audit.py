@@ -47,13 +47,13 @@ def main():
             assert len(tr)==int(a["train_n"]) and len(te)==int(a["test_n"])
             assert sum(int(r["pres.abs"]) for r in tr)==int(a["train_positive"])
             assert sum(int(r["pres.abs"]) for r in te)==int(a["test_positive"])
-            assert len(pool)-len(keep)==int(a["buffered_out_train_plots"])
+            assert len(pool)-len(keep)==int(a["buffered_out_train_plots"])\n            assert digest(r["id"] for r in tr)==a["train_id_sha256"]\n            assert digest(r["id"] for r in te)==a["test_id_sha256"]
             for variant in ("linear","quadratic"):
                 b=gmetrics[fold,taxon,variant];d=gdiag[fold,taxon,variant]
                 assert len(tr)==int(b["n_train"]) and len(te)==int(b["n_test"])
                 assert sum(int(r["pres.abs"]) for r in tr)==int(b["positives_train"])
                 assert sum(int(r["pres.abs"]) for r in te)==int(b["positives_test"])
-                assert len(pool)-len(keep)==int(d["n_excluded_train_plots"])
+                assert len(pool)-len(keep)==int(d["n_excluded_train_plots"])\n                assert digest(r["id"] for r in tr)==d["train_id_sha256"]==a["train_id_sha256"]\n                assert digest(r["id"] for r in te)==d["test_id_sha256"]==a["test_id_sha256"]
                 out.append(dict(outer_fold=fold,taxon=taxon,glm_variant=variant,
                     reconstructed_train_id_sha256=digest(r["id"] for r in tr),
                     reconstructed_test_id_sha256=digest(r["id"] for r in te),
@@ -63,8 +63,8 @@ def main():
     with (O/"reconstructed_training_id_hashes.csv").open("w",newline="") as f:
         w=csv.DictWriter(f,fieldnames=list(out[0]));w.writeheader();w.writerows(out)
     status=dict(status="PASS",cells=len(out),fold_taxon_cells=40,
-        interpretation="Independent deterministic reconstruction using the shared source dataset and fold map; matches saved per-model counts and class counts.",
-        caveat="Training-ID digests are reconstructed from code and inputs, not compared against training-ID digests emitted independently by each original fit. Exact fitted membership is inferred from audited deterministic source code, not independently attested by fit-time hashes.")
+        interpretation="Independent reconstruction matches fit-time train/test ID SHA-256 digests emitted by both XGBoost and GLM, as well as saved class counts.",
+        caveat="Fit-time train/test ID hashes emitted by both model scripts are compared against independently reconstructed membership; this verifies the ID sets, not all preprocessing or feature values.")
     (O/"reconstructed_training_id_audit.json").write_text(json.dumps(status,indent=2)+"\n")
     print(json.dumps(status,indent=2))
 if __name__=="__main__":main()
