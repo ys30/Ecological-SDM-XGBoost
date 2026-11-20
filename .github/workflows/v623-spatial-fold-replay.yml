@@ -1,0 +1,30 @@
+name: v6.23 independent spatial fold replay
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - 'scripts/120_v623_replay_spatial_folds.R'
+      - '.github/workflows/v623-spatial-fold-replay.yml'
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.3'
+          use-public-rspm: true
+      - name: Replay geographic block allocation without outcomes
+        run: Rscript scripts/120_v623_replay_spatial_folds.R
+      - name: Upload replay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v623-spatial-fold-replay
+          path: results/v623_fold_replay/
+          if-no-files-found: warn
