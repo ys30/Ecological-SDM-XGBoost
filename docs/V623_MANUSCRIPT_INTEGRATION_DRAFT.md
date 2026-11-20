@@ -97,7 +97,7 @@ Primary workflow: `.github/workflows/v623-matched-three-model.yml`.
 
 CI-verified runs: [three-model comparison](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44428289030), [calibration macro summaries](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44451628271), [spatial fold influence](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44451175135), [reliability figures](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44452488604).
 
-**Publication gate:** complete Methods provenance, inspect figures, audit any preprocessing leakage and training-set equality, and decide a defensible uncertainty approach before calling this submission-ready.
+**Publication gate:** complete original survey metadata, license and environmental units; inspect figures; audit upstream leakage; decide a defensible uncertainty approach before calling this submission-ready. Training-set equality and geographic fold replay have passed independent CI checks.
 
 ## Verified fit-time membership audit (2026-11-18)
 
@@ -111,6 +111,18 @@ The dataset's NSW `disdat` identity is **verified**, not merely suspected: archi
 
 1. Resolve original data redistribution rights, source survey dates and the exact primary-source citation.
 2. Resolve the environmental-variable data dictionary and units, particularly `rainann`. The source-geometry report cites provisional definitions of `tempann` (°C ×10), `soildepth` (m ×1000) and `topo` (m); do not silently reinterpret raw values.
-3. Reproduce the archived spatial block assignment mapping using a pinned R environment; audit upstream target-dependent feature selection and joins.
-4. Freeze descriptive tables and figures from the same successful v6.23 CI run, then harmonize figure numbers and Results text.
+3. **Spatial-fold replay completed:** pinned R 4.4.3 workflow [#44681382736](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44681382736) successfully reconstructed the archived mapping. **Still open:** audit upstream target-dependent feature selection and joins.
+4. **Analysis protocol frozen:** see `docs/V623_VALIDATED_PROTOCOL_FREEZE.md` and successful full comparison [#44678216771](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44678216771). Still freeze manuscript-ready tables and figures from one named run, visually inspect all figures, and harmonize captions with Results.
 5. Retain the fixed-configuration, within-dataset and non-significance-test limitations. Do not merge historical Bayesian results into the matched three-model numerical claims.
+
+## Draft manuscript figure captions (protocol-frozen; visual QC pending)
+
+**Figure 1.** Out-of-fold predictive performance for eight anonymous taxa under identical five-fold spatial validation with a 10-km training exclusion buffer. Panels show taxon-level log loss, Brier score, ROC AUC and average precision for fixed-configuration XGBoost, linear logistic GLM and quadratic logistic GLM. Each point represents pooled outer-fold predictions for one taxon. The models share outer test observations and eligible training row identities. Values are descriptive; the figure does not display confidence intervals. ROC AUC and average precision should be interpreted in light of the markedly different event prevalences.
+
+**Figure 2.** Within-taxon paired differences in log loss and Brier score (XGBoost minus GLM) for the same held-out observations and outer folds. Negative values favor XGBoost; positive values favor the indicated GLM. Zero is the no-difference reference line. Contrasts with linear and quadratic GLMs are shown separately; do not equate differences in log loss with differences in Brier units. No significance tests or spatially valid uncertainty intervals are implied.
+
+**Supplementary Figure S1.** Taxon-specific out-of-fold reliability diagrams on the full predicted-probability range, comparing XGBoost with both GLMs. Observed event frequency is shown against binned predicted probability; sparse bins for low-prevalence taxa may be highly unstable. Calibration-in-the-large alone does not establish local reliability.
+
+**Supplementary Figure S2.** The same taxon-specific reliability diagnostics restricted to predicted probabilities between 0 and 0.3. The restricted x-axis is a visualization choice and must not be interpreted as full-range calibration; the full-range counterpart is provided in Supplementary Figure S1.
+
+**Editorial gate:** Caption text above is ready for layout review, **not proof that the generated plots were visually inspected**. Check legends, axis limits, sample sizes, panel labels, resolution and accessibility against the successful CI artifact before final submission.
