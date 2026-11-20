@@ -18,6 +18,7 @@ on:
       - 'scripts/119_v623_frozen_spatial_fold_audit.py'
       - 'scripts/121_v623_manuscript_consistency_gate.py'
       - 'scripts/122_v623_figure_technical_qc.py'
+      - 'scripts/123_v623_supplement_inventory.py'
       - '.github/workflows/v623-matched-three-model.yml'
 permissions:
   contents: read
@@ -66,6 +67,8 @@ jobs:
         run: python scripts/121_v623_manuscript_consistency_gate.py
       - name: Check publication figure technical quality
         run: python scripts/122_v623_figure_technical_qc.py
+      - name: Inventory actual supplement artifacts and checksums
+        run: python scripts/123_v623_supplement_inventory.py
       - name: Upload full comparison artifacts
         if: always()
         uses: actions/upload-artifact@v4
