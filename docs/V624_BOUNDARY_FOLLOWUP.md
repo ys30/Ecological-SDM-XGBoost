@@ -1,0 +1,7 @@
+# v6.24 search boundary follow-up
+
+The initial buffered search selected the minimum tested depth (2), learning rate (0.03) and tree count (100) on all 30 fold-by-seed fits. Prediction identity follows from choosing the same setting as the buffered fixed control. It offers no evidence about performance outside the grid. The historical main-table XGBoost pipeline used depth 4, 300 rounds and learning rate 0.03.
+
+The v6.22 draft proposed a randomized six-parameter search, k-means-derived inner folds, two unbuffered outer designs and a 0.01 AUC criterion. The initial v6.24 analysis changed these to a three-parameter grid, quartile-cell inner validation, one buffered outer design, and a later descriptive 0.01 log-loss threshold. Do not describe this work as preregistered or use the historical main-model scores to represent the tuned pipeline.
+
+[Expanded five-fold run](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44920866986) retains the original candidates and adds shallow depths, lower rates, shorter sequences and variations in child weight and row subsampling. Expanded fold 2 passed and chose child weight 0.5, the minimum tested value. [Lower-child-weight run](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44921380391) adds 0, 0.1 and 0.25 to the candidates at that boundary. Model replacement requires verified predictions for the historical information sets and both historical spatial designs. Buffered fold-specific parameters must not simply be copied to the historical OOF tasks.
