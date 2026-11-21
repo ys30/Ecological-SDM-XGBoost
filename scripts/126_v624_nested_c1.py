@@ -52,11 +52,16 @@ def main():
     parser.add_argument("--seed", type=int, default=622)
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--expanded", action="store_true")
+    parser.add_argument("--lower-child", action="store_true")
     args = parser.parse_args()
+    if args.lower_child and not args.expanded:
+        parser.error("--lower-child requires --expanded")
     source = "data/train.csv"
     folds = "results/spatial_2d_block_assignments.csv"
     rows = fixed.read(source)
     root = "v624_c1_expanded" if args.expanded else "v624_c1"
+    if args.lower_child:
+        root = "v624_c1_lower_child"
     output = Path(f"results/{root}/{'pilot' if args.pilot else args.seed}/fold{args.outer}")
     output.mkdir(parents=True, exist_ok=True)
     if len({r["id"] for r in rows}) != len(rows):
@@ -75,6 +80,10 @@ def main():
     scores = []
     eligible = []
     candidates = expanded_candidates() if args.expanded else grid.candidates()
+    if args.lower_child:
+        candidates += [dict(config, min_child_weight=child)
+                       for config in candidates if config["min_child_weight"] == .5
+                       for child in (0, .1, .25)]
     for taxon in taxa:
         taxon_splits = splits[taxon]
         usable = [(r, tr, va) for r, tr, va in taxon_splits if r["usable"]]
