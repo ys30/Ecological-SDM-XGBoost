@@ -1,0 +1,31 @@
+name: v6.24 inner geographic feasibility audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/v6.22-nested-spatial-tuning
+    paths:
+      - 'scripts/124_v624_inner_feasibility_matrix.py'
+      - '.github/workflows/v624-inner-feasibility.yml'
+permissions:
+  contents: read
+jobs:
+  no-fit-feasibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile feasibility audit
+        run: python -m py_compile scripts/124_v624_inner_feasibility_matrix.py
+      - name: Compute five-fold geographic no-fit feasibility matrix
+        run: python scripts/124_v624_inner_feasibility_matrix.py
+      - name: Upload complete audit outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v624-inner-feasibility
+          path: results/v624_inner_feasibility/
+          if-no-files-found: error
