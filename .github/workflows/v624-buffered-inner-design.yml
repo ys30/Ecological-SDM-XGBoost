@@ -1,0 +1,25 @@
+name: v6.24 buffered inner spatial feasibility
+on:
+  push:
+    branches: [research/v6.22-nested-spatial-tuning]
+    paths:
+      - 'scripts/125_v624_buffered_inner_design.py'
+      - '.github/workflows/v624-buffered-inner-design.yml'
+permissions:
+  contents: read
+jobs:
+  feasibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy==2.3.5
+      - run: python scripts/125_v624_buffered_inner_design.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v624-buffered-inner-design
+          path: results/v624_buffered_inner_design/
+          if-no-files-found: error
