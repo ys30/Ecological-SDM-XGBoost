@@ -10,7 +10,7 @@
 | Spatial-fold R replay | PASS | [#44681382736](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44681382736), `scripts/120_v623_replay_spatial_folds.R` |
 | Three-model matched 10-km protocol | PASS | [#44763794431](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44763794431) |
 | Frozen metric/figure-file consistency | PASS | [#44763794431](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44763794431), `scripts/121_v623_manuscript_consistency_gate.py` |
-| Main figure visual QC | OPEN | Inspect actual PNG/SVG plots, not just file presence |
+| Main figure technical QC | PASS | [#44780027918](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44780027918), `scripts/122_v623_figure_technical_qc.py` |\n| Main figure visual QC | OPEN | Human inspection of actual PNG/SVG plots is still required |\n| Supplement artifact inventory | PASS | [#44780027918](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44780027918), `scripts/123_v623_supplement_inventory.py` |
 | Original survey dates and sampling design | OPEN | Verify original primary source |
 | Predictor units, especially `rainann` | OPEN | Verify source data dictionary |
 | Data reuse/redistribution permissions | OPEN | Check original dataset license and public archive contents |
@@ -19,7 +19,7 @@
 
 ## Figure and numerical freeze
 
-The latest successful full comparison is [#44763794431](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44763794431). Its uploaded artifact `v623-matched-three-model-comparison` contains the outputs generated in the same run. The manuscript consistency gate passed against `taxon_pooled_oof_scores.csv` and the four main SVG/PNG figure files. This is **not** a claim of visual inspection.
+The latest successful full comparison is [#44780027918](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44780027918). Its uploaded artifact `v623-matched-three-model-comparison` contains the outputs generated in the same run. The manuscript consistency gate passed against `taxon_pooled_oof_scores.csv` and the four main SVG/PNG figure files. This is **not** a claim of visual inspection.
 
 | Equal-taxon mean | XGBoost | Linear GLM | Quadratic GLM |
 |---|---:|---:|---:|
