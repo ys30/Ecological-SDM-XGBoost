@@ -16,6 +16,12 @@ When model complexity helps: matched spatially buffered evaluation of gradient b
 
 **Conclusions:** Under a matched spatially buffered protocol, gradient boosting improved proper probability scores relative to a linear GLM but did not consistently dominate a quadratic GLM. Conclusions depended on comparator complexity, scoring rule and prevalence. These descriptive findings require independent validation and should not be interpreted as significance tests.
 
+## Reproducible model configuration (verified code; insert into Methods §2.3)
+
+The XGBoost classifier used a binary logistic objective, histogram tree construction, 100 trees, maximum depth 2, learning rate 0.03, minimum child weight 1, row subsampling 0.8, column subsampling 0.8 and random seed 622. Its predictors were `rainann`, `soildepth`, `tempann` and `topo`, on their original numeric scales. Both logistic regressions used L2-regularized `LogisticRegression` with `C=100`, `lbfgs`, maximum 3,000 iterations and convergence tolerance `1e-8`. Their `StandardScaler` was fitted on eligible training rows only. The linear GLM used all four standardized predictors; the quadratic GLM additionally used squared standardized `rainann` and `tempann`, without pairwise interactions. The experiment used fixed configurations, not inner-loop or nested hyperparameter optimization. See `docs/V623_EXACT_MODEL_SPECIFICATION.md` for the detailed source-linked description.
+
+**Updated verification (2026-11-20):** the full three-model comparison, manuscript-number gate, figure technical gate, and actual supplement artifact inventory all passed in [CI #44780027918](https://github.com/ys30/Ecological-SDM-XGBoost/actions/runs/44780027918). The inventory includes file-level SHA-256 digests and CSV row counts. Technical image checks are not a substitute for human visual review. Data licensing, original survey metadata, authoritative predictor units and upstream leakage remain unresolved.
+
 ## 1. Introduction — argument outline
 
 Ecological prediction is vulnerable to spatially optimistic validation and to comparisons that conflate algorithm choice with evaluation design. Proper scoring rules, ranking metrics and calibration address different properties of predictions; no single metric establishes a universal winner. Very low detection counts can also destabilize discrimination and reliability estimates. Our goal is a transparent, matched-protocol comparison, not a claim that a particular algorithm is always best.
