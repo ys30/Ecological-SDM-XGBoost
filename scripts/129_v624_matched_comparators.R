@@ -54,15 +54,24 @@ for (fold in 1:5) {
       tr <- train$Species == taxon
       te <- test$Species == taxon
       stopifnot(length(unique(train$pres.abs[tr])) == 2)
-      probability <- withCallingHandlers(
-        ridge(x[tr, , drop = FALSE], train$pres.abs[tr], v[te, , drop = FALSE]),
-        warning = function(w) {
-          if (!grepl("fewer than 8[[:space:]]+observations", conditionMessage(w))) {
-            stop(conditionMessage(w))
+      y <- train$pres.abs[tr]
+      probability <- if (min(table(y)) < 5) {
+        message(sprintf("Ridge prevalence fallback, fold %d, %s%s: %d detections",
+                        fold, taxon, suffix, sum(y)))
+        rep(mean(y), sum(te))
+      } else {
+        withCallingHandlers(
+          ridge(x[tr, , drop = FALSE], y, v[te, , drop = FALSE]),
+          warning = function(w) {
+            if (!grepl("fewer than 8[[:space:]]+observations", conditionMessage(w))) {
+              stop(conditionMessage(w))
+            }
+            message(sprintf("Sparse ridge fit, fold %d, %s%s: %d detections",
+                            fold, taxon, suffix, sum(y)))
+            invokeRestart("muffleWarning")
           }
-          message(sprintf("Sparse ridge fit, fold %d, %s%s: %d detections",\n                          fold, taxon, suffix, sum(train$pres.abs[tr])))\n          invokeRestart("muffleWarning")
-        }
-      )
+        )
+      }
       predictions[[length(predictions) + 1L]] <- emit(test[te, ], probability, fold,
                                                        paste0("no_sharing", suffix))
     }
