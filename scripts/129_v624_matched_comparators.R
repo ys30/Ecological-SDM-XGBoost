@@ -57,10 +57,10 @@ for (fold in 1:5) {
       probability <- withCallingHandlers(
         ridge(x[tr, , drop = FALSE], train$pres.abs[tr], v[te, , drop = FALSE]),
         warning = function(w) {
-          if (!grepl("fewer than 8 observations", conditionMessage(w), fixed = TRUE)) {
+          if (!grepl("fewer than 8[[:space:]]+observations", conditionMessage(w))) {
             stop(conditionMessage(w))
           }
-          invokeRestart("muffleWarning")
+          message(sprintf("Sparse ridge fit, fold %d, %s%s: %d detections",\n                          fold, taxon, suffix, sum(train$pres.abs[tr])))\n          invokeRestart("muffleWarning")
         }
       )
       predictions[[length(predictions) + 1L]] <- emit(test[te, ], probability, fold,
