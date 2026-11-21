@@ -32,16 +32,32 @@ def predict(config, seed, x, y, train, test):
     return p
 
 
+def expanded_candidates():
+    """Retain the original grid and add lower complexity and regularization coverage."""
+    from itertools import product
+
+    candidates = list(grid.candidates())
+    for depth, rate, rounds in product((1, 2), (.003, .01, .03), (10, 25, 50, 100)):
+        for child, subsample in ((.5, .8), (1, .8), (4, .6), (4, 1), (16, .8)):
+            candidate = dict(max_depth=depth, learning_rate=rate, n_estimators=rounds,
+                             min_child_weight=child, subsample=subsample, colsample_bytree=.8)
+            if candidate not in candidates:
+                candidates.append(candidate)
+    return candidates
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outer", required=True, type=int, choices=range(1, 6))
     parser.add_argument("--seed", type=int, default=622)
     parser.add_argument("--pilot", action="store_true")
+    parser.add_argument("--expanded", action="store_true")
     args = parser.parse_args()
     source = "data/train.csv"
     folds = "results/spatial_2d_block_assignments.csv"
     rows = fixed.read(source)
-    output = Path(f"results/v624_c1/{'pilot' if args.pilot else args.seed}/fold{args.outer}")
+    root = "v624_c1_expanded" if args.expanded else "v624_c1"
+    output = Path(f"results/{root}/{'pilot' if args.pilot else args.seed}/fold{args.outer}")
     output.mkdir(parents=True, exist_ok=True)
     if len({r["id"] for r in rows}) != len(rows):
         raise ValueError("Duplicate observation keys")
@@ -58,7 +74,7 @@ def main():
     diagnostics = []
     scores = []
     eligible = []
-    candidates = grid.candidates()
+    candidates = expanded_candidates() if args.expanded else grid.candidates()
     for taxon in taxa:
         taxon_splits = splits[taxon]
         usable = [(r, tr, va) for r, tr, va in taxon_splits if r["usable"]]
@@ -93,6 +109,7 @@ def main():
     selected = int(np.argmax(matrix.mean(axis=0)))
     fixed.write(output / "inner_diagnostics.csv", diagnostics)
     fixed.write(output / "candidate_scores.csv", scores)
+    (output / "candidate_parameters.json").write_text(json.dumps(candidates, indent=2) + "\n")
     predictions = []
     if not args.pilot:
         for taxon in taxa:
@@ -114,7 +131,7 @@ def main():
         fixed.write(output / "paired_oof.csv", predictions)
     manifest = dict(outer=args.outer, seed=args.seed, pilot=args.pilot,
                     selector_taxa=eligible, fallback_taxa=sorted(set(taxa) - set(eligible)),
-                    selected=selected, parameters=candidates[selected], oof_rows=len(predictions),
+                    selected=selected, parameters=candidates[selected], candidate_count=len(candidates), oof_rows=len(predictions),
                     data_sha256=fixed.sha(source), fold_sha256=fixed.sha(folds),
                     numpy=np.__version__, sklearn=sklearn.__version__, xgboost=xgboost.__version__,
                     git_sha=os.getenv("GITHUB_SHA"))
