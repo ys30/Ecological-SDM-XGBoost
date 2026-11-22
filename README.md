@@ -1,3 +1,49 @@
+# Spatially Robust Species Distribution Modeling | Research & Decision Analytics
+
+**Python · R · XGBoost · MaxEnt · Bayesian hierarchical models · Geospatial ML · Model evaluation**
+
+> **Industry takeaway:** The best model is not necessarily the most complex. Across **1,167 NSW survey plots, eight anonymized taxa, 13 model configurations and 23 spatial validation schemes**, a per-taxon quadratic logistic regression ranked first by within-taxon ROC AUC in **18/23 schemes**. Model rankings changed with geographic holdouts, target encoding, and whether performance was aggregated across taxa. These are retrospective within-region findings, not deployment guarantees.
+
+[**Visual portfolio case study**](https://ys30.github.io/projects/ecological-sdm-xgboost.html) · [**Study region map**](results/figures/figure1_geographic_nsw_holdouts.png) · [**Rare-taxon prioritization figure**](results/figures/24_rare_species_retrieval_publication.svg)
+
+## What I built — transferable to industry
+
+- **Leakage-aware evaluation:** Two outcome-blind geographic partition strategies (quantile blocks and k-means clusters), five held-out folds, 5–20 km training buffers, and a 23-scheme robustness matrix.
+- **Model benchmarking:** Matched holdouts for logistic regression, MaxEnt, pooled/per-taxon XGBoost, and hierarchical Bayesian models; comparison of ranking, probability accuracy, calibration and uncertainty.
+- **Hyperparameter sensitivity:** Exploratory nested spatial tuning on three designs. Tuning narrowed the pooled-versus-per-taxon XGBoost gap, but neither tuned variant surpassed the quadratic logistic baseline on the reported within-taxon AUC comparisons. These v6.25 results are from the author-provided manuscript and are **pending a fresh independently verified CI replay**.
+- **Decision support:** Retrospective top-k survey prioritization for rare taxa, explicitly comparing detections recovered at fixed inspection budgets and checking whether tuned false-positive thresholds transfer across folds.
+- **Reproducibility:** Versioned Python/R workflows, source/provenance checks, GitHub Actions and documented limits of reusing sensitive plot-level records.
+
+## Research findings at a glance
+
+| Question | Evidence from current v6.25b manuscript | Business / applied-ML relevance |
+|---|---|---|
+| Does a larger model win? | Quadratic logistic regression ranked first in **18/23** spatial schemes | Benchmark against well-specified interpretable baselines |
+| Is validation geometry important? | Pooled XGBoost beat MaxEnt under quantile blocks but trailed under k-means | Test model rankings under realistic geographic shift |
+| Does tuning settle the ranking? | Tuned per-taxon XGBoost remained **0.021–0.034 AUC below** quadratic GLM across three designs (approximate model-based intervals; exploratory) | Tune models *inside* training folds; distinguish tuning from external validation |
+| Can pooled metrics mislead? | Cross-taxon pooled AUC inflated by **0.07–0.11**; prevalence-only score reached **0.77** | Select metrics aligned to the actual prediction task |
+| Can scores guide scarce field resources? | Fixed top-25-per-fold screening recovered **17/18** recorded detections for one sparse taxon, but only **3/8** for another | Evaluate ranking at operational budgets, not AUC alone |
+
+### Spatial design
+
+![NSW study region and geographically held-out folds](results/figures/figure1_geographic_nsw_holdouts.png)
+
+### Model comparison and sensitivity
+
+![Matched taxon-level ROC AUC for historical model pipelines](results/figures/23_three_model_auc_publication.svg)
+
+*This figure visualizes the historical matched three-pipeline comparison, not the expanded v6.25b thirteen-configuration ranking. See the manuscript's Figure 3 and Figure 4 for the expanded comparisons; those new figures have not yet been published in this repository.*
+
+### Field decision-support example
+
+![Rare-taxon detection recovery at fixed survey budgets](results/figures/24_rare_species_retrieval_publication.svg)
+
+**Scope:** One NSW survey, eight taxa, retrospective within-region spatial validation. Sparse-taxon rates are unstable; observations are detections, not detection-corrected occupancy. The v6.25b manuscript is pre-submission, its nested tuning exploratory, and its latest code/results release is pending reproducibility and licensing checks. Do not interpret these results as a production field deployment or independent-region transfer.
+
+---
+
+## Historical repository notes and verified experiments
+
 ## Buffered spatial validation: GLM-only sensitivity
 
 The [verified alternative-partition buffer refits](results/BUFFERED_GLM_ALTERNATIVE_SPATIAL_VERIFIED.md) excluded training plots within 0, 5, 10, or 20 projected-distance km of any held-out plot and refitted both per-taxon regularized GLMs. Quadratic AUC changed **0.9022 → 0.9027 → 0.8994 → 0.8913**; linear AUC **0.8892 → 0.8894 → 0.8864 → 0.8771**. Quadratic GLM retained higher pooled AUC/AP at every radius, while absolute discrimination fell at 20 km. Training-set shrinkage and unverified source CRS metadata limit causal interpretation; these are **GLM-only within-dataset results**, not a matched buffered Bayesian comparison or external validation.
