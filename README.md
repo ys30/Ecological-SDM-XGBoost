@@ -2,7 +2,7 @@
 
 **Python · R · XGBoost · MaxEnt · Bayesian hierarchical models · Geospatial ML · Model evaluation**
 
-> **Industry takeaway:** The best model is not necessarily the most complex. Across **1,167 NSW survey plots, eight anonymized taxa, 13 model configurations and 23 spatial validation schemes**, a per-taxon quadratic logistic regression ranked first by within-taxon ROC AUC in **18/23 schemes**. Model rankings changed with geographic holdouts, target encoding, and whether performance was aggregated across taxa. These are retrospective within-region findings, not deployment guarantees.
+> **Industry takeaway:** The best model is not necessarily the most complex. Across **1,167 NSW survey plots, eight anonymized taxa, 12 common model configurations across 23 spatial validation schemes**, with GLMM now refitted across all 23 schemes. An archived comparison ranked per-taxon quadratic logistic regression first by within-taxon ROC AUC in **18/23 schemes**; the full common-cell ranking must be refreshed after the GLMM expansion. Model rankings changed with geographic holdouts, target encoding, and whether performance was aggregated across taxa. These are retrospective within-region findings, not deployment guarantees.
 
 [**Visual portfolio case study**](https://ys30.github.io/projects/ecological-sdm-xgboost.html) · [**Study region map**](results/figures/figure1_geographic_nsw_holdouts.png) · [**Rare-taxon prioritization figure**](results/figures/24_rare_species_retrieval_publication.svg)
 
@@ -18,7 +18,7 @@
 
 | Question | Evidence from current v6.25b manuscript | Business / applied-ML relevance |
 |---|---|---|
-| Does a larger model win? | Quadratic logistic regression ranked first in **18/23** spatial schemes | Benchmark against well-specified interpretable baselines |
+| Does a larger model win? | Archived ranking: quadratic logistic regression led **18/23** spatial schemes; refresh pending after GLMM completion | Benchmark against well-specified interpretable baselines |
 | Is validation geometry important? | Pooled XGBoost beat MaxEnt under quantile blocks but trailed under k-means | Test model rankings under realistic geographic shift |
 | Does tuning settle the ranking? | Tuned per-taxon XGBoost remained **0.021–0.034 AUC below** quadratic GLM across three designs (approximate model-based intervals; exploratory) | Tune models *inside* training folds; distinguish tuning from external validation |
 | Can pooled metrics mislead? | Cross-taxon pooled AUC inflated by **0.07–0.11**; prevalence-only score reached **0.77** | Select metrics aligned to the actual prediction task |
@@ -76,7 +76,10 @@ On the **original 23 cells**, quadratic Bayesian improved mean paired AUC by **+
 
 See [consolidated verified findings](results/BAYESIAN_EXTENSION_CONSOLIDATED_VERIFIED.md) for evidence, limitations and links to successful CI runs. The manuscript remains private.
 
-# Ecological Species Distribution Modeling — NSW, Australia
+# Ecological Species Distribution Modeling
+
+> **GLMM coverage update (November 2026):** GLMM refits now cover all 23 historical spatial validation schemes (original script `51_ems_r_models.R` and follow-up `51c` for the remaining 21). The 23 schemes reuse observations and are dependent. The archived benchmark compares **12 common model configurations** on shared evaluable taxon–fold cells; expanded tuned variants are separate. Previous **18/23** GLM winner counts are historical until the full common-cell rankings are recomputed. See manuscript Supplementary Information S1 and S11.
+ — NSW, Australia
 
 **Research portfolio | R · XGBoost · MaxEnt · Bayesian hierarchical modeling · Spatial validation**
 
