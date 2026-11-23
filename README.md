@@ -1,8 +1,8 @@
 # Spatially Robust Species Distribution Modeling | Research & Decision Analytics
 
-**Python · R · XGBoost · MaxEnt · Bayesian hierarchical models · Geospatial ML · Model evaluation**
+**Python · R · XGBoost · MaxEnt · GLM · GLMM · Bayesian hierarchical models · Geospatial ML · Model evaluation**
 
-> **Industry takeaway:** The best model is not necessarily the most complex. Across **1,167 NSW survey plots, eight anonymized taxa, 12 common model configurations across 23 spatial validation schemes**, with GLMM now refitted across all 23 schemes. An archived comparison ranked per-taxon quadratic logistic regression first by within-taxon ROC AUC in **18/23 schemes**; the full common-cell ranking must be refreshed after the GLMM expansion. Model rankings changed with geographic holdouts, target encoding, and whether performance was aggregated across taxa. These are retrospective within-region findings, not deployment guarantees.
+> **Industry takeaway:** The best model is not necessarily the most complex. Across **1,167 NSW survey plots, eight anonymized taxa, 12 common model configurations across 23 spatial validation schemes** (14 total including expanded configurations), with GLMM refitted across all 23 schemes. The latest v6.26m benchmark finds **GLM quad-4 leading 16/23** and quadratic regression models leading **19/23** schemes. Model rankings changed with geographic holdouts, target encoding, and whether performance was aggregated across taxa. These are retrospective within-region findings, not deployment guarantees.
 
 [**Visual portfolio case study**](https://ys30.github.io/projects/ecological-sdm-xgboost.html) · [**Study region map**](results/figures/figure1_geographic_nsw_holdouts.png) · [**Rare-taxon prioritization figure**](results/figures/24_rare_species_retrieval_publication.svg)
 
@@ -16,9 +16,9 @@
 
 ## Research findings at a glance
 
-| Question | Evidence from current v6.25b manuscript | Business / applied-ML relevance |
+| Question | Evidence from latest v6.26m manuscript | Business / applied-ML relevance |
 |---|---|---|
-| Does a larger model win? | Archived ranking: quadratic logistic regression led **18/23** spatial schemes; refresh pending after GLMM completion | Benchmark against well-specified interpretable baselines |
+| Does a larger model win? | GLM quad-4 led **16/23** schemes; quadratic regressions collectively led **19/23** | Benchmark against well-specified interpretable baselines |
 | Is validation geometry important? | Pooled XGBoost beat MaxEnt under quantile blocks but trailed under k-means | Test model rankings under realistic geographic shift |
 | Does tuning settle the ranking? | Tuned per-taxon XGBoost remained **0.021–0.034 AUC below** quadratic GLM across three designs (approximate model-based intervals; exploratory) | Tune models *inside* training folds; distinguish tuning from external validation |
 | Can pooled metrics mislead? | Cross-taxon pooled AUC inflated by **0.07–0.11**; prevalence-only score reached **0.77** | Select metrics aligned to the actual prediction task |
@@ -30,15 +30,33 @@
 
 ### Model comparison and sensitivity
 
+![Full-benchmark leading model by spatial scheme](results/figures/v626m_spatial_scheme_winners.svg)
+
 ![Matched taxon-level ROC AUC for historical model pipelines](results/figures/23_three_model_auc_publication.svg)
 
-*This figure visualizes the historical matched three-pipeline comparison, not the expanded v6.25b thirteen-configuration ranking. See the manuscript's Figure 3 and Figure 4 for the expanded comparisons; those new figures have not yet been published in this repository.*
+*This figure visualizes the historical matched three-pipeline comparison, not the expanded v6.25b thirteen-configuration ranking. The new winner-count summary above reflects v6.26m, while the manuscript Figure 4 provides the complete rank/AUC heatmap.*
 
 ### Field decision-support example
 
 ![Rare-taxon detection recovery at fixed survey budgets](results/figures/24_rare_species_retrieval_publication.svg)
 
 **Scope:** One NSW survey, eight taxa, retrospective within-region spatial validation. Sparse-taxon rates are unstable; observations are detections, not detection-corrected occupancy. The v6.25b manuscript is pre-submission, its nested tuning exploratory, and its latest code/results release is pending reproducibility and licensing checks. Do not interpret these results as a production field deployment or independent-region transfer.
+
+## Updated manuscript results — v6.26m (23-scheme GLMM-complete benchmark)
+
+The latest manuscript and supplementary information report **14 total configurations**, including **12 common configurations fitted across all 23 spatial validation schemes**. The GLMM expansion is complete (scripts `51_ems_r_models.R` and `51c` for the remaining 21 schemes). The earlier **18/23** headline is superseded by the new full-benchmark ranking:
+
+- **GLM quad-4 leads 16/23 schemes** by within-taxon ROC AUC; a quadratic regression (GLM quad-4, GLM quad-RT, or GLMM quad-RT) leads **19/23**.
+- **GLM quad-4 has the best average rank in 10/11 scheme families**; GLMM quad-RT leads under the 6×6-block family.
+- **GLMM quad-RT beats MaxEnt N4 in 20/23 schemes** and pooled XGBoost N4 in **21/23**.
+- Adding squared predictors raises within-taxon AUC in **all 23 schemes**, by **0.010–0.051** for per-taxon GLM and **0.018–0.046** for GLMM.
+- Pooled XGBoost N4 exceeds MaxEnt N4 in **11/23** schemes (or **14/23** with categorical predictors), illustrating sensitivity to predictors and partition geometry.
+
+![Leading model across 23 spatial validation schemes](results/figures/v626m_spatial_scheme_winners.svg)
+
+*Figure derived from the manuscript v6.26m Results §3.3; counts are descriptive because the spatial schemes reuse the same underlying observations. This chart is a summary of reported results, not a newly executed model replay.*
+
+**Reproducibility:** The supplementary information documents scripts 50–63, including `51c` GLMM completion, and points to the [Zenodo research archive](https://doi.org/10.5281/zenodo.24451053) and research commit `6d54748421421048f8d2be13d862861ea6c120ce`. Confirm archive access and licensing before reusing plot-level data.
 
 ---
 
